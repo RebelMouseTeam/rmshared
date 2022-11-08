@@ -2,9 +2,9 @@ from typing import Dict
 
 from aiohttp import web_request
 
-from rebelmouse.requests import adapters
-from rebelmouse.requests.interfaces import IRequest
-from rebelmouse.requests.request import Request
+from rmshared.requests import adapters
+from rmshared.requests.interfaces import IRequest
+from rmshared.requests.request import Request
 
 
 class Factory:

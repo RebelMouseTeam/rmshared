@@ -1,4 +1,4 @@
-from rebelmouse.requests.interfaces import IRequest, IDataAdapter
+from rmshared.requests.interfaces import IRequest, IDataAdapter
 
 
 class Request(IRequest):

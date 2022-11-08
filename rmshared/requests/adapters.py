@@ -4,7 +4,7 @@ from aiohttp import web_request
 
 from rmshared.tools import ItemGetter
 
-from rebelmouse.requests.interfaces import IDataAdapter, IRequest
+from rmshared.requests.interfaces import IDataAdapter, IRequest
 
 
 class StubDataAdapter(IDataAdapter):
