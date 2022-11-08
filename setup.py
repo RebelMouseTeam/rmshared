@@ -3,12 +3,12 @@ import setuptools
 
 setuptools.setup(
     name='rmshared',
-    version='0.2.3',
+    version='0.3.0',
     author='CordiS',
     author_email='cordis@rebelmouse.com',
     url='https://github.com/RebelMouseTeam/rmshared',
     license='Apache 2.0',
-    packages=['rmshared', 'rmshared.content', 'rmshared.content'],
+    packages=setuptools.find_packages(),
     test_suite='tests',
     classifiers=[
         'Intended Audience :: Developers',
