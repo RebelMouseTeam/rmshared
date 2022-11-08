@@ -7,9 +7,13 @@ from typing import Mapping
 from typing import Optional
 from typing import TypeVar
 
+from rmshared.dataclasses import total_ordering
+
 Scalar = TypeVar('Scalar', str, int, float)
 
 
+@dataclass(frozen=True)
+@total_ordering
 class Guid(metaclass=ABCMeta):
     pass
 
