@@ -13,6 +13,7 @@ from typing import TypeVar
 from typing import Union
 
 from faker import Faker
+from faker.providers import python
 from faker.providers import BaseProvider
 
 from rmshared.tools import ensure_map_is_complete
@@ -43,7 +44,7 @@ class Fakes:
 
     def __init__(self, now=NOW):
         self.now = now
-        self.faker: Union[Faker, BaseProvider] = Faker()
+        self.faker: Union[Faker, BaseProvider, python.Provider] = Faker()
         self.faker.seed_instance(1231)
         self.guid_to_entity_factory_map = ensure_map_is_complete(Guid, {
             None: self._pick_entity,
@@ -126,11 +127,16 @@ class Fakes:
             values=frozenset({
                 self._make_post_published_at_value(),
             }),
-            extras=read_only(dict()),
+            extras=read_only(self.faker.pydict(nb_elements=5, value_types=(str, int, float))),
         )
 
     def make_user_profile_aspects(self) -> Aspects:
-        raise NotImplementedError()
+        return Aspects(
+            texts=frozenset(),
+            labels=frozenset(),
+            values=frozenset(),
+            extras=read_only(self.faker.pydict(nb_elements=5, value_types=(str, int, float))),
+        )
 
     def make_filters(self) -> FrozenSet[Filter]:
         return frozenset(self._make_random_list(self._make_filter, max_size=5))
