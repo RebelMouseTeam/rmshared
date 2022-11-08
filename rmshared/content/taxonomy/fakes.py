@@ -1,10 +1,12 @@
 from collections import OrderedDict
+from dataclasses import replace
 from itertools import filterfalse
 from typing import AbstractSet
 from typing import Callable
 from typing import FrozenSet
 from typing import Iterator
 from typing import List
+from typing import Optional
 from typing import Tuple
 from typing import Type
 from typing import TypeVar
@@ -12,6 +14,9 @@ from typing import Union
 
 from faker import Faker
 from faker.providers import BaseProvider
+
+from rmshared.tools import ensure_map_is_complete
+from rmshared.typings import read_only
 
 from rmshared.content.taxonomy import groupings
 from rmshared.content.taxonomy import posts
@@ -22,6 +27,9 @@ from rmshared.content.taxonomy.abc import Guid
 from rmshared.content.taxonomy.abc import Text
 from rmshared.content.taxonomy.abc import Label
 from rmshared.content.taxonomy.abc import Field
+from rmshared.content.taxonomy.abc import Value
+from rmshared.content.taxonomy.abc import Aspects
+from rmshared.content.taxonomy.abc import Entity
 from rmshared.content.taxonomy.abc import Filter
 from rmshared.content.taxonomy.abc import Order
 from rmshared.content.taxonomy.abc import Chunk
@@ -37,6 +45,54 @@ class Fakes:
         self.now = now
         self.faker: Union[Faker, BaseProvider] = Faker()
         self.faker.seed_instance(1231)
+        self.guid_to_entity_factory_map = ensure_map_is_complete(Guid, {
+            None: self._pick_entity,
+            posts.guids.Post: self.make_post,
+            users.guids.UserProfile: self.make_user_profile,
+        })
+        self.guid_to_aspects_factory_map = ensure_map_is_complete(Guid, {
+            None: self._pick_aspects,
+            posts.guids.Post: self.make_post_aspects,
+            users.guids.UserProfile: self.make_user_profile_aspects,
+        })
+
+    def make_entity_without_aspects(self) -> Entity:
+        entity = self.make_entity()
+        entity = replace(entity, aspects=None)
+        return entity
+
+    def make_entity(self, guid_type: Optional[Type[Guid]] = None) -> Entity:
+        return self.guid_to_entity_factory_map[guid_type]()
+
+    def _pick_entity(self) -> Entity:
+        return self.faker.random_element(elements={
+            self.make_post(),
+            self.make_user_profile(),
+        })
+
+    def make_post(self) -> Entity:
+        return Entity(
+            guid=self.make_post_guid(),
+            aspects=self.make_post_aspects(),
+        )
+
+    def make_user_profile(self) -> Entity:
+        return Entity(
+            guid=self.make_user_profile_guid(),
+            aspects=self.make_user_profile_aspects(),
+        )
+
+    def make_guid(self):
+        return self.faker.random_element(elements={
+            self.make_post_guid(),
+            self.make_user_profile_guid(),
+        })
+
+    def make_post_guid(self) -> posts.guids.Post:
+        return posts.guids.Post(id=self.faker.random_int(min=99999, max=99999999))
+
+    def make_user_profile_guid(self) -> users.guids.UserProfile:
+        return users.guids.UserProfile(id=self.faker.random_int(min=9999, max=9999999))
 
     def make_guid_type(self) -> Type[Guid]:
         return self.faker.random_element(elements=self._make_guid_types())
@@ -51,6 +107,31 @@ class Fakes:
             users.guids.UserProfile,
         }
 
+    def make_aspects(self, guid_type: Optional[Type[Guid]] = None) -> Aspects:
+        return self.guid_to_aspects_factory_map[guid_type]()
+
+    def _pick_aspects(self) -> Aspects:
+        return self.faker.random_element(elements={
+            self.make_post_aspects(),
+            self.make_user_profile_aspects(),
+        })
+
+    def make_post_aspects(self) -> Aspects:  # TODO: add other aspects
+        return Aspects(
+            texts=frozenset(),
+            labels=frozenset({
+                self._make_post_primary_section_label(),
+                self._make_post_regular_section_label(),
+            }),
+            values=frozenset({
+                self._make_post_published_at_value(),
+            }),
+            extras=read_only(dict()),
+        )
+
+    def make_user_profile_aspects(self) -> Aspects:
+        raise NotImplementedError()
+
     def make_filters(self) -> FrozenSet[Filter]:
         return frozenset(self._make_random_list(self._make_filter, max_size=5))
 
@@ -58,6 +139,15 @@ class Fakes:
         return self.faker.random_element(elements={
             filters.Phrase(phrase=self.faker.sentence(), weights=None),
         })
+
+    def _make_post_primary_section_label(self) -> posts.labels.PrimarySection:
+        return posts.labels.PrimarySection(id=self.faker.random_int(max=99999))
+
+    def _make_post_regular_section_label(self) -> posts.labels.RegularSection:
+        return posts.labels.RegularSection(id=self.faker.random_int(max=99999))
+
+    def _make_post_published_at_value(self) -> Value:
+        return Value(field=posts.fields.PublishedAt(), value=self.faker.unix_time())
 
     def make_chunk(self) -> Chunk:
         return Chunk(

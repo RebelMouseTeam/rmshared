@@ -80,6 +80,7 @@ def ensure_map_is_complete(type_class: Type[K], instance_class_to_any_map: Mappi
     """
     subtypes = set(type_class.__subclasses__())
     different_instance_classes = set(instance_class_to_any_map.keys()).symmetric_difference(subtypes)
+    different_instance_classes -= {None}
     assert not different_instance_classes, different_instance_classes
     return instance_class_to_any_map
 
