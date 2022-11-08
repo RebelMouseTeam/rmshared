@@ -11,7 +11,7 @@ lint:
 
 test: clean
 	@echo "$(OK_COLOR)==> Running tests ...$(NO_COLOR)"
-	@py.test tests/* -vvv
+	@py.test tests/taxonomy/* -vvv
 
 tag:
 	@echo "$(OK_COLOR)==> Creating tag $(version) ...$(NO_COLOR)"

@@ -2,13 +2,13 @@ import setuptools
 
 
 setuptools.setup(
-    name='content-taxonomy',
+    name='rmshared',
     version='0.1.5',
     author='CordiS',
     author_email='cordis@rebelmouse.com',
-    url='https://github.com/RebelMouseTeam/python3-content-taxonomy',
+    url='https://github.com/RebelMouseTeam/rmshared',
     license='Apache 2.0',
-    packages=['content.taxonomy'],
+    packages=['rmshared'],
     test_suite='tests',
     classifiers=[
         'Intended Audience :: Developers',
