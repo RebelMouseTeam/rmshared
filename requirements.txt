@@ -1,0 +1,5 @@
+pytest==7.2.0
+faker==15.2.0
+flake8==5.0.4
+
+https://github.com/RebelMouseTeam/enumclasses/archive/refs/tags/v1.1.7.tar.gz#egg=enumclasses==1.1.7
