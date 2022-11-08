@@ -21,11 +21,7 @@ from rmshared.content.taxonomy.abc import Chunk
 from rmshared.content.taxonomy.abc import Grouping
 from rmshared.content.taxonomy.fakes import Fakes
 
-__version__ = '0.1.5'
-
 __all__ = [
-    '__version__',
-
     'Entity',
     'Guid',
     'Aspects',

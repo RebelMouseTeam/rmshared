@@ -2,8 +2,8 @@ OK_COLOR=\033[32;01m
 NO_COLOR=\033[0m
 
 export PYTHONPATH:=${PWD}
-version=`python -c 'import content.taxonomy; print(content.taxonomy.__version__)'`
-filename=content-taxonomy-`python -c 'import content.taxonomy; print(content.taxonomy.__version__)'`.tar.gz
+version=`python -c 'import rmshared; print(rmshared.__version__)'`
+filename=content-taxonomy-`python -c 'import rmshared; print(rmshared..__version__)'`.tar.gz
 
 lint:
 	@echo "$(OK_COLOR)==> Linting code ...$(NO_COLOR)"
@@ -20,10 +20,10 @@ tag:
 	@git push origin "v$(version)"
 
 bump:
-	@bumpversion --commit --current-version $(version) patch content/taxonomy/__init__.py --allow-dirty
+	@bumpversion --commit --current-version $(version) patch rmshared/__init__.py --allow-dirty
 
 bump-minor:
-	@bumpversion --commit --current-version $(version) minor content/taxonomy/__init__.py --allow-dirty
+	@bumpversion --commit --current-version $(version) minor rmshared/__init__.py --allow-dirty
 
 clean:
 	@echo "$(OK_COLOR)==> Cleaning up files that are already in .gitignore...$(NO_COLOR)"
