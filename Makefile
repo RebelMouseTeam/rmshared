@@ -3,7 +3,7 @@ NO_COLOR=\033[0m
 
 export PYTHONPATH:=${PWD}
 version=`python -c 'import rmshared; print(rmshared.__version__)'`
-filename=content-taxonomy-`python -c 'import rmshared; print(rmshared..__version__)'`.tar.gz
+filename=rmshared-`python -c 'import rmshared; print(rmshared..__version__)'`.tar.gz
 
 lint:
 	@echo "$(OK_COLOR)==> Linting code ...$(NO_COLOR)"

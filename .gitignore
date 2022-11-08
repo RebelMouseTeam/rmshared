@@ -2,4 +2,4 @@
 __pycache__
 build/
 dist/
-enumclasses.egg-info/
+rmshared.egg-info/
