@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name='content-taxonomy',
-    version='0.1.2',
+    version='0.1.4',
     author='CordiS',
     author_email='cordis@rebelmouse.com',
     url='https://github.com/RebelMouseTeam/python3-content-taxonomy',
