@@ -10,7 +10,7 @@ from rmshared.content.taxonomy.abc import Range
 @dataclass(frozen=True)
 class Phrase(Filter):
     phrase: str
-    weights: Optional[Sequence[int]]  # TODO: should we move it to `orders.Relevance`?
+    weights: Optional[Sequence[int]]  # TODO: should we move it to `orders.Relevance`? Probably, we should (@see `matcher.Matcher`). Or need to modify it
 
 
 @dataclass(frozen=True)
