@@ -1,3 +1,4 @@
+from collections import defaultdict
 from functools import partial
 from itertools import chain
 from operator import methodcaller
@@ -14,6 +15,10 @@ T = TypeVar('T')
 K = TypeVar('K')
 V = TypeVar('V')
 S = TypeVar('S', bound=Sequence)
+
+
+def as_is(value):
+    return value
 
 
 def curry(func_1: Callable[[Any], T], *funcs) -> Callable[[Any], T]:
@@ -214,6 +219,13 @@ def _make_dict(key_iterator, key_func, value_iterator, value_func, return_type):
 
 def filter_dict(source_dict: Mapping[K, V], value_func: Callable[[V], bool]) -> Mapping[K, V]:
     return type(source_dict)(filter(lambda key_value: value_func(key_value[1]), source_dict.items()))
+
+
+def group_to_mapping(iterable: Iterable[T], key_func: Callable[[T], K], value_func: Callable[[T], V] = as_is, return_type=dict) -> Mapping[K, Sequence[V]]:
+    ret = defaultdict(list)
+    for item in iterable:
+        ret[key_func(item)].append(value_func(item))
+    return return_type(ret)
 
 
 def parse_name_and_info(data: Mapping[str, Any]) -> Tuple[str, Any]:

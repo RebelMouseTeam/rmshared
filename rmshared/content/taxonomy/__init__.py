@@ -19,7 +19,9 @@ from rmshared.content.taxonomy.abc import Filter
 from rmshared.content.taxonomy.abc import Order
 from rmshared.content.taxonomy.abc import Chunk
 from rmshared.content.taxonomy.abc import Grouping
+from rmshared.content.taxonomy.abc import IMatcher
 from rmshared.content.taxonomy.fakes import Fakes
+from rmshared.content.taxonomy.matcher import Matcher
 
 __all__ = [
     'Entity',
@@ -50,4 +52,7 @@ __all__ = [
     'groupings',
 
     'Fakes',
+
+    'Matcher',
+    'IMatcher',
 ]
