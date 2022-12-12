@@ -21,9 +21,9 @@ def as_is(value):
     return value
 
 
-def curry(func_1: Callable[[Any], T], *funcs) -> Callable[[Any], T]:
+def apply(func_1: Callable[[Any], T], *funcs) -> Callable[[Any], T]:
     """
-    >>> curry(tuple, partial(map, int), partial(str.split, sep=','))('1,2,3')
+    >>> apply(tuple, partial(map, int), partial(str.split, sep=','))('1,2,3')
     (1, 2, 3)
     """
     def func(value: T):
@@ -63,7 +63,7 @@ def map_sequence(sequence_cast_func: Callable[[Any], Sequence], cast_func: CastF
     >>> map_sequence(tuple, int)(['1', '2', '3'])
     (1, 2, 3)
     """
-    return curry(sequence_cast_func, partial(map, cast_func))
+    return apply(sequence_cast_func, partial(map, cast_func))
 
 
 def comma_separated_sequence(sequence_cast_func: Callable[[Any], Sequence[Any]], cast_func: CastFunc[T]) -> Callable[[Any], Sequence[T]]:
@@ -71,7 +71,7 @@ def comma_separated_sequence(sequence_cast_func: Callable[[Any], Sequence[Any]],
     >>> comma_separated_sequence(tuple, int)('1,2,3')
     (1, 2, 3)
     """
-    return curry(
+    return apply(
         map_sequence(sequence_cast_func, cast_func),
         partial(filter, None),
         partial(map, str.strip),

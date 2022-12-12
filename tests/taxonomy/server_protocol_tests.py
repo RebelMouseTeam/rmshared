@@ -1,5 +1,7 @@
 from pytest import fixture
 
+from rmshared.typings import read_only
+
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import filters
 from rmshared.content.taxonomy.abc import Range
@@ -61,7 +63,7 @@ class TestServerProtocol:
             {'no_ranges': [
                 {'field': {'custom-post-field': {'path': 'path.to.value'}}, 'min': 'A', 'max': 'Z'},
             ]},
-            {'phrase': {'phrase': 'Hello'}},
+            {'phrase': {'phrase': 'Hello', 'syntax': {'any': {'thing': 'here'}}}},
             {'phrase': {'phrase': 'World', 'weights': ['10', '0', '4']}},
         ])
         assert filters_ == frozenset({
@@ -133,6 +135,6 @@ class TestServerProtocol:
                     max_value='Z',
                 ),
             )),
-            filters.Phrase(phrase='Hello', weights=None),
-            filters.Phrase(phrase='World', weights=(10, 0, 4)),
+            filters.Phrase(phrase='Hello', syntax=read_only({'any': {'thing': 'here'}}), weights=None),
+            filters.Phrase(phrase='World', syntax=None, weights=(10, 0, 4)),
         })

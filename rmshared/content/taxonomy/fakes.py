@@ -143,7 +143,7 @@ class Fakes:
 
     def _make_filter(self):  # TODO: add other filters
         return self.faker.random_element(elements={
-            filters.Phrase(phrase=self.faker.sentence(), weights=None),
+            filters.Phrase(phrase=self.faker.sentence(), syntax=None, weights=None),
         })
 
     def _make_post_primary_section_label(self) -> posts.labels.PrimarySection:
