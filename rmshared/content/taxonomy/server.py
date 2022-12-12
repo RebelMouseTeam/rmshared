@@ -4,10 +4,12 @@ from typing import Iterable
 from typing import Iterator
 from typing import Mapping
 
+from rmshared.tools import apply
 from rmshared.tools import ensure_map_is_complete
 from rmshared.tools import invert_dict
 from rmshared.tools import parse_name_and_info
 from rmshared.tools import unless_none
+from rmshared.typings import read_only
 
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
@@ -560,6 +562,7 @@ class Protocol:
         def _make_phrase_filter(data: Mapping[str, Any]):
             return filters.Phrase(
                 phrase=str(data['phrase']),
+                syntax=unless_none(apply(read_only, dict))(data.get('syntax')),
                 weights=unless_none(lambda weights: tuple(map(int, weights)))(data.get('weights')),
             )
 
