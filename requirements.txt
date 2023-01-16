@@ -1,7 +1,7 @@
 aiohttp==3.8.3
 
 pytest==7.2.0
-faker==15.3.4
+faker==16.4.0
 flake8==6.0.0
 
 https://github.com/RebelMouseTeam/enumclasses/archive/refs/tags/v1.1.7.tar.gz#egg=enumclasses==1.1.7
