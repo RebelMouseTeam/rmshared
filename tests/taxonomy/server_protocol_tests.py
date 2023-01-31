@@ -126,6 +126,10 @@ class TestServerProtocol:
                 {'default-post-editor-layout': {}},
             ]},
             {'any_range': [
+                {'post-modified-between': {'min_ts': self.NOW - 100, 'max_ts': self.NOW + 100}},
+                {'post-modified-before': {'ts': self.NOW - 100}},
+                {'post-modified-after': {'ts': self.NOW + 100}},
+
                 {'field': {'post-modified-at': {}}, 'min': self.NOW - 100, 'max': self.NOW + 100},
             ]},
             {'no_ranges': [

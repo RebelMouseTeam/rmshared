@@ -15,6 +15,7 @@ from rmshared.typings import T
 from rmshared.dataclasses import total_ordering
 
 Scalar = TypeVar('Scalar', str, int, float)
+T = TypeVar('T')
 
 
 @dataclass(frozen=True)
