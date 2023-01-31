@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from dataclasses import dataclass
@@ -7,7 +9,9 @@ from typing import Generic
 from typing import Mapping
 from typing import Optional
 from typing import TypeVar
+from typing import Union
 
+from rmshared.typings import T
 from rmshared.dataclasses import total_ordering
 
 Scalar = TypeVar('Scalar', str, int, float)
@@ -40,8 +44,31 @@ class Value(Generic[Scalar]):
 @dataclass(frozen=True)
 class Range(Generic[Scalar]):
     field: 'Field'
-    min_value: Optional[Scalar]
-    max_value: Optional[Scalar]
+    min_value: Optional[Union[Scalar, 'Variable[Scalar]']]
+    max_value: Optional[Union[Scalar, 'Variable[Scalar]']]
+
+
+@dataclass(frozen=True)
+class Scope(Generic[T], metaclass=ABCMeta):
+    pass
+
+
+@dataclass(frozen=True)
+class Variable(Generic[T]):
+    scope: Scope[T]
+    state: Optional[Mapping[str, Any]]
+
+
+@dataclass(frozen=True)
+class VariableLabel(Label):
+    label: Label
+
+
+@dataclass(frozen=True)
+class VariableRange(Range):
+    field: Field
+    min_value: Variable
+    max_value: Variable
 
 
 @dataclass(frozen=True)

@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any
 
 from rmshared.content.taxonomy.abc import Label
+from rmshared.content.taxonomy.abc import Variable
 from rmshared.content.taxonomy.posts import consts
 from rmshared.content.taxonomy.posts import statuses
 
@@ -13,12 +16,12 @@ class Id(Label):
 
 @dataclass(frozen=True)
 class Type(Label):
-    type: consts.POST.TYPE
+    type: consts.POST.TYPE | Variable[consts.POST.TYPE]  # TODO: Scalar
 
 
 @dataclass(frozen=True)
 class Status(Label):
-    status: statuses.Status
+    status: statuses.Status | Variable[statuses.Status]  # TODO: use Scalar --> Status(Published), Status(Published(site)), Status(Published(site(...)))
 
 
 @dataclass(frozen=True)
@@ -33,7 +36,7 @@ class Suspicious(Label):
 
 @dataclass(frozen=True)
 class PrimaryTag(Label):
-    slug: str
+    slug: str | Variable[str]
 
 
 @dataclass(frozen=True)
@@ -43,7 +46,7 @@ class NoPrimaryTags(Label):
 
 @dataclass(frozen=True)
 class RegularTag(Label):
-    slug: str
+    slug: str | Variable[str]
 
 
 @dataclass(frozen=True)
@@ -53,7 +56,7 @@ class NoRegularTags(Label):
 
 @dataclass(frozen=True)
 class PrimarySection(Label):
-    id: int
+    id: int | Variable[int]
 
 
 @dataclass(frozen=True)
@@ -63,7 +66,7 @@ class NoPrimarySections(Label):
 
 @dataclass(frozen=True)
 class RegularSection(Label):
-    id: int
+    id: int | Variable[int]
 
 
 @dataclass(frozen=True)
@@ -73,7 +76,7 @@ class NoRegularSections(Label):
 
 @dataclass(frozen=True)
 class Community(Label):
-    id: int
+    id: int | Variable[int]
 
 
 @dataclass(frozen=True)
@@ -83,7 +86,7 @@ class NoCommunities(Label):
 
 @dataclass(frozen=True)
 class Author(Label):
-    id: int
+    id: int | Variable[int]
 
 
 @dataclass(frozen=True)
@@ -104,7 +107,7 @@ class NoStages(Label):
 @dataclass(frozen=True)
 class CustomField(Label):
     path: str
-    value: Any
+    value: Any | Variable[Any]
 
 
 @dataclass(frozen=True)

@@ -17,6 +17,80 @@ class TestServerProtocol:
 
     def test_it_should_parse_post_filters(self, protocol: Protocol):
         filters_ = protocol.filters.make_filters(data=[
+            {'query': [
+                {'arguments': [
+                    {
+                        'scope': {'site-sections': {
+                            'filters': [
+                                {'parent': {'id': 1234}},
+                            ]},
+                        },
+                        'labels': {
+                            'any': True,
+                            'none': True,
+                        },
+                    },
+                    {'alias': 'post_section_1', 'scope': {'post-regular-sections': {'labels': {'none': True, 'any': True}}}},
+                    {'alias': 'post_section_2', 'scope': {'post-regular-sections': {'labels': {'none': True, 'any': True}}}},
+                    {'alias': 'max_age', 'scope': {'post-custom-field': {'path': 'path.to.age'}}},
+                ]},
+                {'filters': [
+                    {'any_label': [
+                        {'post-id': 123},
+                        {'post-type': {'how-to': {}}},
+                        {'post-status': {'published': {'scope': {'community': {'is_demoted': True}}}}},
+
+                        {'post-id': {'$use': '$1'}},
+                        {'$produce': {
+                            '$': [{'post-regular-section': {'id': '$'}}],
+                            '$any': [],  # always empty!
+                            '$none': [{'post-without-regular-sections': {}}],  # only applicable to labels
+                        }},
+                        {'$produce': {
+                            'what': 'post-regular-sections',
+                            'from': '$1',
+                        }},
+                    ]},
+                    {'any_range': {
+                        {'field': {'lifetime-post-page-views': {}}, 'min': 1234, 'max': 4567},
+
+                        {'$produce': {
+                            '$': [{'post-modified-before': {'ts': '$'}}],
+                            '$$': [{'post-modified-before': {'min_ts': '$1', 'max_ts': '$2'}}],  # only applicable to ranges
+                            '$any': [],  # always empty!
+                            '$none': ['???'],
+                        }},
+                        {'$produce': {
+                            'what': {'field': {'lifetime-post-page-views': {}}},
+                            'from': {
+                                'min': None,
+                                'max': None,
+                            },
+                        }},
+
+                        {'field': {'lifetime-post-page-views': {}}, 'min': None, 'max': {'$produce': {'from': 'max_age'}}},
+                    }},
+                ]},
+                {'$switch': {
+                    '$$each': [{
+                        'any_label': [
+                            {'post-id': 123},
+                            {'post-primary-section': {'id': '$.id'}},
+                        ],
+                    }],
+                    '$$none': [{
+                        'any_label': [
+                            {'post-id': 123},
+                            {'post-without-primary-sections': {}},
+                        ],
+                    }],
+                    '$$any': [{
+                        'any_label': [
+                            {'post-id': 123},
+                        ],
+                    }],
+                }},
+            ]},
             {'any_label': [
                 {'post-id': 123},
                 {'post-type': {'how-to': {}}},
@@ -35,6 +109,7 @@ class TestServerProtocol:
                 {'post-author': {'id': 890}},
                 {'post-stage': {'id': 901}},
                 {'post-custom-field': {'path': 'path.to.value', 'value': 'some-value'}},
+                # TODO: to consider {'post-custom-field': {'path.to.value': 'some-value'}},
                 {'special-post-page-layout': {'slug': 'some-post-page-layout'}},
                 {'special-post-editor-layout': {'slug': 'some-post-editor-layout'}},
             ]},
@@ -59,6 +134,8 @@ class TestServerProtocol:
             ]},
             {'any_range': [
                 {'field': {'lifetime-post-page-views': {}}, 'min': 1234, 'max': 4567},
+
+                {'field': {'lifetime-post-page-views': {}}, 'min': None, 'max': {'$produce': {'from': 'max_age'}}},
             ]},
             {'no_ranges': [
                 {'field': {'custom-post-field': {'path': 'path.to.value'}}, 'min': 'A', 'max': 'Z'},
@@ -73,6 +150,10 @@ class TestServerProtocol:
                 posts.labels.Status(status=posts.statuses.Published(
                     scope=posts.published.scopes.Community(is_demoted=True)
                 )),
+                posts.labels.Prototype(
+                    label=posts.labels.Status(status=NotImplemented),
+                    label=posts.labels.Status(status=posts.statuses.Variable(scope=NotImplemented)),
+                )
             )),
             filters.NoLabels(labels=(
                 posts.labels.Private(),
