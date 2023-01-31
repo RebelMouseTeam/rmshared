@@ -1,33 +1,38 @@
+from abc import ABCMeta
 from dataclasses import dataclass
 
 from rmshared.content.taxonomy.abc import Field
 
 
-@dataclass(frozen=True)
-class ModifiedAt(Field):
+class Base(Field, metaclass=ABCMeta):
     pass
 
 
 @dataclass(frozen=True)
-class ScheduledAt(Field):
+class ModifiedAt(Base):
     pass
 
 
 @dataclass(frozen=True)
-class PublishedAt(Field):
+class ScheduledAt(Base):
     pass
 
 
 @dataclass(frozen=True)
-class LifetimePageViews(Field):  # TODO: == Metric(event='lifetime_page_views') ???
+class PublishedAt(Base):
     pass
 
 
 @dataclass(frozen=True)
-class Metric(Field):
+class LifetimePageViews(Base):  # TODO: == Metric(event='lifetime_page_views') ???
+    pass
+
+
+@dataclass(frozen=True)
+class Metric(Base):
     event: str
 
 
 @dataclass(frozen=True)
-class CustomField(Field):
+class CustomField(Base):
     path: str
