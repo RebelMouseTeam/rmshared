@@ -16,7 +16,7 @@ class Id(Label):
 
 @dataclass(frozen=True)
 class Type(Label):
-    type: consts.POST.TYPE | Variable[consts.POST.TYPE]  # TODO: Scalar
+    type: consts.POST.TYPE
 
 
 @dataclass(frozen=True)

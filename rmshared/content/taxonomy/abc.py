@@ -1,7 +1,4 @@
-from __future__ import annotations
-
 from abc import ABCMeta
-from abc import abstractmethod
 from dataclasses import dataclass
 from typing import AbstractSet
 from typing import Any
@@ -11,10 +8,9 @@ from typing import Optional
 from typing import TypeVar
 from typing import Union
 
-from rmshared.typings import T
 from rmshared.dataclasses import total_ordering
 
-Scalar = TypeVar('Scalar', str, int, float)
+Scalar = TypeVar('Scalar', str, int, float, type(None))
 T = TypeVar('T')
 
 
@@ -45,8 +41,8 @@ class Value(Generic[Scalar]):
 @dataclass(frozen=True)
 class Range(Generic[Scalar]):
     field: 'Field'
-    min_value: Optional[Union[Scalar, 'Variable[Scalar]']]
-    max_value: Optional[Union[Scalar, 'Variable[Scalar]']]
+    min_value: Optional[Scalar]
+    max_value: Optional[Scalar]
 
 
 @dataclass(frozen=True)
@@ -118,9 +114,3 @@ class Chunk:
 
 class Grouping(metaclass=ABCMeta):
     pass
-
-
-class IMatcher(metaclass=ABCMeta):
-    @abstractmethod
-    def do_aspects_match_filters(self, aspects: Aspects, filters_: AbstractSet[Filter]) -> bool:
-        pass

@@ -1,23 +1,24 @@
 from dataclasses import dataclass
 
 from rmshared.content.taxonomy.core.abc import Field
-from rmshared.content.taxonomy.core.abc import Label
+from rmshared.content.taxonomy.core.abc import Range
 from rmshared.content.taxonomy.core.abc import Scalar
 
 
 @dataclass(frozen=True)
-class Value(Label):
+class Between(Range):
+    field: Field
+    min_value: Scalar
+    max_value: Scalar
+
+
+@dataclass(frozen=True)
+class LessThan(Range):
     field: Field
     value: Scalar
 
 
 @dataclass(frozen=True)
-class Badge(Label):
+class MoreThan(Range):
     field: Field
-    # value: False ???
-
-
-@dataclass(frozen=True)
-class Empty(Label):
-    field: Field
-    # value: EMPTY ???
+    value: Scalar
