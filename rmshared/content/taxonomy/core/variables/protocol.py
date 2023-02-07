@@ -4,6 +4,7 @@ from typing import Any
 from typing import Callable
 from typing import Mapping
 from typing import Sequence
+from typing import Type
 from typing import TypeVar
 from typing import cast
 
@@ -164,12 +165,12 @@ class Protocol(core_server.Protocol):
     class Arguments:
         def __init__(self):
             self.argument_name_to_argument_map = invert_dict({
-                arguments.Value(): '$',
-                arguments.Empty(): '$none',
-                arguments.Any(): '$any',
+                arguments.Value: '$',
+                arguments.Empty: '$none',
+                arguments.Any: '$any',
             })
 
-        def make_argument(self, data: str) -> Argument:
+        def make_argument(self, data: str) -> Type[Argument]:
             return self.argument_name_to_argument_map[data]
 
     class Variables:

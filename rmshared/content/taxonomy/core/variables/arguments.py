@@ -1,11 +1,13 @@
 from dataclasses import dataclass
+from typing import Sequence
 
+from rmshared.content.taxonomy.core.abc import Scalar
 from rmshared.content.taxonomy.core.variables.abc import Argument
 
 
 @dataclass(frozen=True)
 class Value(Argument):
-    pass
+    values: Sequence[Scalar]
 
 
 @dataclass(frozen=True)
