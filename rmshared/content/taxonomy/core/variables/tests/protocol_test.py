@@ -62,6 +62,7 @@ class TestServerProtocol:
                         ],
                         '$': [
                             {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3'}},
+                            {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3[2]'}},
                         ],
                     },
                 }},
@@ -93,10 +94,10 @@ class TestServerProtocol:
             filters.Switch(
                 ref=Reference('$1'),
                 cases=Cases(cases=read_only({
-                    arguments.Empty(): [
+                    arguments.Empty: [
                         core_filters.AnyLabel(labels=(core_labels.Empty(field=Field('post-regular-section')), ))
                     ],
-                    arguments.Value(): [
+                    arguments.Value: [
                         core_filters.AnyLabel(labels=(labels.Value(field=Field('post-regular-section'), value=Variable(ref=Reference('$1'), index=1)),)),
                     ],
                 }))
@@ -104,11 +105,11 @@ class TestServerProtocol:
             filters.Switch(
                 ref=Reference('$2'),
                 cases=Cases(cases=read_only({
-                    arguments.Any(): [],
-                    arguments.Empty(): [
+                    arguments.Any: [],
+                    arguments.Empty: [
                         core_filters.NoLabels(labels=(core_labels.Badge(field=Field('private-post')),)),
                     ],
-                    arguments.Value(): [
+                    arguments.Value: [
                         core_filters.AnyLabel(labels=(core_labels.Badge(field=Field('private-post')),)),
                     ],
                 }))
@@ -118,11 +119,12 @@ class TestServerProtocol:
                 labels.Switch(
                     ref=Reference('$3'),
                     cases=Cases(cases=read_only({
-                        arguments.Empty(): [
+                        arguments.Empty: [
                             core_labels.Empty(field=Field('post-primary-tag')),
                         ],
-                        arguments.Value(): [
+                        arguments.Value: [
                             labels.Value(field=Field('post-primary-tag'), value=Variable(ref=Reference('$3'), index=1)),
+                            labels.Value(field=Field('post-primary-tag'), value=Variable(ref=Reference('$3'), index=2)),
                         ],
                     }))
                 ),
@@ -130,7 +132,7 @@ class TestServerProtocol:
             filters.Switch(
                 ref=Reference('$4'),
                 cases=Cases(cases=read_only({
-                    arguments.Value(): [
+                    arguments.Value: [
                         core_filters.AnyRange(ranges=(
                             ranges.Between(
                                 field=Field('post-modified-at'),
@@ -145,7 +147,7 @@ class TestServerProtocol:
                 ranges.Switch(
                     ref=Reference('$5'),
                     cases=Cases(cases=read_only({
-                        arguments.Value(): [
+                        arguments.Value: [
                             ranges.MoreThan(
                                 field=Field('post-modified-at'),
                                 value=Variable(ref=Reference('$5'), index=1),
