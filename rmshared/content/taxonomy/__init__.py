@@ -5,8 +5,8 @@ from rmshared.content.taxonomy import filters
 from rmshared.content.taxonomy import orders
 from rmshared.content.taxonomy import groupings
 from rmshared.content.taxonomy import mappers
-from rmshared.content.taxonomy.abc import Entity
 from rmshared.content.taxonomy.abc import Guid
+from rmshared.content.taxonomy.abc import Entity
 from rmshared.content.taxonomy.abc import Aspects
 from rmshared.content.taxonomy.abc import Text
 from rmshared.content.taxonomy.abc import Label
@@ -25,8 +25,8 @@ from rmshared.content.taxonomy.fakes import Fakes
 __all__ = [
     'core',
 
-    'Entity',
     'Guid',
+    'Entity',
     'Aspects',
 
     'Text',

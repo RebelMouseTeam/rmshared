@@ -32,26 +32,6 @@ from rmshared.content.taxonomy.core.variables.abc import Variable
 
 
 class Protocol(core_server.Protocol):
-    """
-    TODO:
-        {'arguments': [
-            {
-                'scope': {'site-sections': {
-                    'filters': [
-                        {'parent': {'id': 1234}},
-                    ]},
-                },
-                'labels': {
-                    'any': True,
-                    'none': True,
-                },
-            },
-            {'alias': 'post_section_1', 'scope': {'post-regular-sections': {'labels': {'none': True, 'any': True}}}},
-            {'alias': 'post_section_2', 'scope': {'post-regular-sections': {'labels': {'none': True, 'any': True}}}},
-            {'alias': 'max_age', 'scope': {'post-custom-field': {'path': 'path.to.age'}}},
-        ]},
-    """
-
     Case = TypeVar('Case')
 
     def __init__(self):

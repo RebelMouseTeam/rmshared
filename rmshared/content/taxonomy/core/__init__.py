@@ -1,3 +1,4 @@
+from rmshared.content.taxonomy.core import variables
 from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
@@ -9,6 +10,8 @@ from rmshared.content.taxonomy.core.abc import Range
 from rmshared.content.taxonomy.core.abc import Order
 
 __all__ = (
+    'variables',
+
     'filters',
     'labels',
     'ranges',
