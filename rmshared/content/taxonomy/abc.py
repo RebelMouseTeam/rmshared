@@ -1,5 +1,4 @@
 from abc import ABCMeta
-from abc import abstractmethod
 from dataclasses import dataclass
 from typing import AbstractSet
 from typing import Any
@@ -90,9 +89,3 @@ class Chunk:
 
 class Grouping(metaclass=ABCMeta):
     pass
-
-
-class IMatcher(metaclass=ABCMeta):
-    @abstractmethod
-    def do_aspects_match_filters(self, aspects: Aspects, filters_: AbstractSet[Filter]) -> bool:
-        pass

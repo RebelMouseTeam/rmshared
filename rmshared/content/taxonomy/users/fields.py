@@ -1,23 +1,28 @@
+from abc import ABCMeta
 from dataclasses import dataclass
 
 from rmshared.content.taxonomy.abc import Field
 
 
-@dataclass(frozen=True)
-class Title(Field):
+class Base(Field, metaclass=ABCMeta):
     pass
 
 
 @dataclass(frozen=True)
-class LastLoggedInAt(Field):
+class Title(Base):
     pass
 
 
 @dataclass(frozen=True)
-class LifetimePosts(Field):
+class LastLoggedInAt(Base):
     pass
 
 
 @dataclass(frozen=True)
-class CustomField(Field):
+class LifetimePosts(Base):
+    pass
+
+
+@dataclass(frozen=True)
+class CustomField(Base):
     path: str

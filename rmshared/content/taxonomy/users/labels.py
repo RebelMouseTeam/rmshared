@@ -1,3 +1,4 @@
+from abc import ABCMeta
 from dataclasses import dataclass
 from typing import Any
 
@@ -5,57 +6,61 @@ from rmshared.content.taxonomy.abc import Label
 from rmshared.content.taxonomy.users import statuses
 
 
+class Base(Label, metaclass=ABCMeta):
+    pass
+
+
 @dataclass(frozen=True)
-class Id(Label):
+class Id(Base):
     value: int
 
 
 @dataclass(frozen=True)
-class Owner(Label):
+class Owner(Base):
     user_id: int
 
 
 @dataclass(frozen=True)
-class Status(Label):
+class Status(Base):
     status: statuses.Status
 
 
 @dataclass(frozen=True)
-class UserGroup(Label):
+class UserGroup(Base):
     slug: str
 
 
 @dataclass(frozen=True)
-class NoUserGroups(Label):
+class NoUserGroups(Base):
     pass
 
 
 @dataclass(frozen=True)
-class Community(Label):
+class Community(Base):
     id: int
 
 
 @dataclass(frozen=True)
-class NoCommunities(Label):
+class NoCommunities(Base):
     pass
 
 
 @dataclass(frozen=True)
-class AccessRole(Label):
+class AccessRole(Base):
     id: int
 
 
 @dataclass(frozen=True)
-class NoAccessRoles(Label):
+class NoAccessRoles(Base):
     pass
 
 
 @dataclass(frozen=True)
-class CustomField(Label):
+class CustomField(Base):
     path: str
     value: Any
 
 
 @dataclass(frozen=True)
-class NoCustomField(Label):
+class NoCustomField(Base):
     path: str

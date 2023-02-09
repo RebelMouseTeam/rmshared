@@ -1,9 +1,10 @@
+from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
 from rmshared.content.taxonomy import filters
 from rmshared.content.taxonomy import orders
 from rmshared.content.taxonomy import groupings
-from rmshared.content.taxonomy import server
+from rmshared.content.taxonomy import mappers
 from rmshared.content.taxonomy.abc import Entity
 from rmshared.content.taxonomy.abc import Guid
 from rmshared.content.taxonomy.abc import Aspects
@@ -19,11 +20,11 @@ from rmshared.content.taxonomy.abc import Filter
 from rmshared.content.taxonomy.abc import Order
 from rmshared.content.taxonomy.abc import Chunk
 from rmshared.content.taxonomy.abc import Grouping
-from rmshared.content.taxonomy.abc import IMatcher
 from rmshared.content.taxonomy.fakes import Fakes
-from rmshared.content.taxonomy.matcher import Matcher
 
 __all__ = [
+    'core',
+
     'Entity',
     'Guid',
     'Aspects',
@@ -42,17 +43,13 @@ __all__ = [
     'Chunk',
     'Grouping',
 
-    'server',
-
-    'posts',
-    'users',
-
     'filters',
     'orders',
     'groupings',
 
-    'Fakes',
+    'posts',
+    'users',
+    'mappers',
 
-    'Matcher',
-    'IMatcher',
+    'Fakes',
 ]

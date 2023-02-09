@@ -1,3 +1,4 @@
+from functools import cached_property
 from typing import Union, Type, Callable, TypeVar, Any
 
 T = TypeVar('T')
@@ -33,7 +34,14 @@ class ReadOnlyDict(dict):
     @see: https://stackoverflow.com/questions/1151658/python-hashable-dicts
     """
     def __hash__(self):
-        return hash(tuple(sorted(self.items())))
+        return hash(tuple(self._sorted_items))
+
+    @cached_property
+    def _sorted_items(self):  # TODO: Seems safe but worth checking in the process
+        try:
+            return sorted(self.items())
+        except TypeError:
+            return sorted(map(str, self.items()))
 
     def __readonly__(self, *args, **kwargs):
         raise RuntimeError("Cannot modify ReadOnlyDict")

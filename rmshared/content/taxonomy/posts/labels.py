@@ -1,3 +1,4 @@
+from abc import ABCMeta
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,127 +7,131 @@ from rmshared.content.taxonomy.posts import consts
 from rmshared.content.taxonomy.posts import statuses
 
 
+class Base(Label, metaclass=ABCMeta):
+    pass
+
+
 @dataclass(frozen=True)
-class Id(Label):
+class Id(Base):
     value: int
 
 
 @dataclass(frozen=True)
-class Type(Label):
+class Type(Base):
     type: consts.POST.TYPE
 
 
 @dataclass(frozen=True)
-class Status(Label):
-    status: statuses.Status
+class Status(Base):
+    status: statuses.Status  # TODO: Status(Published), Status(Published(scope=site)), Status(Published(scope=site(...)))
 
 
 @dataclass(frozen=True)
-class Private(Label):
+class Private(Base):
     pass
 
 
 @dataclass(frozen=True)
-class Suspicious(Label):
+class Suspicious(Base):
     pass
 
 
 @dataclass(frozen=True)
-class PrimaryTag(Label):
+class PrimaryTag(Base):
     slug: str
 
 
 @dataclass(frozen=True)
-class NoPrimaryTags(Label):
+class NoPrimaryTags(Base):
     pass
 
 
 @dataclass(frozen=True)
-class RegularTag(Label):
+class RegularTag(Base):
     slug: str
 
 
 @dataclass(frozen=True)
-class NoRegularTags(Label):
+class NoRegularTags(Base):
     pass
 
 
 @dataclass(frozen=True)
-class PrimarySection(Label):
+class PrimarySection(Base):
     id: int
 
 
 @dataclass(frozen=True)
-class NoPrimarySections(Label):
+class NoPrimarySections(Base):
     pass
 
 
 @dataclass(frozen=True)
-class RegularSection(Label):
+class RegularSection(Base):
     id: int
 
 
 @dataclass(frozen=True)
-class NoRegularSections(Label):
+class NoRegularSections(Base):
     pass
 
 
 @dataclass(frozen=True)
-class Community(Label):
+class Community(Base):
     id: int
 
 
 @dataclass(frozen=True)
-class NoCommunities(Label):
+class NoCommunities(Base):
     pass
 
 
 @dataclass(frozen=True)
-class Author(Label):
+class Author(Base):
     id: int
 
 
 @dataclass(frozen=True)
-class NoAuthors(Label):
+class NoAuthors(Base):
     pass
 
 
 @dataclass(frozen=True)
-class Stage(Label):
+class Stage(Base):
     id: int
 
 
 @dataclass(frozen=True)
-class NoStages(Label):
+class NoStages(Base):
     pass
 
 
 @dataclass(frozen=True)
-class CustomField(Label):
+class CustomField(Base):
     path: str
     value: Any
 
 
 @dataclass(frozen=True)
-class NoCustomField(Label):
+class NoCustomField(Base):
     path: str
 
 
 @dataclass(frozen=True)
-class DefaultPageLayout(Label):
+class DefaultPageLayout(Base):
     pass
 
 
 @dataclass(frozen=True)
-class SpecialPageLayout(Label):
+class SpecialPageLayout(Base):
     slug: str
 
 
 @dataclass(frozen=True)
-class DefaultEditorLayout(Label):
+class DefaultEditorLayout(Base):
     pass
 
 
 @dataclass(frozen=True)
-class SpecialEditorLayout(Label):
+class SpecialEditorLayout(Base):
     slug: str
