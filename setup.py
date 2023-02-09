@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name='rmshared',
-    version='0.3.8',
+    version='0.4.0',
     author='CordiS',
     author_email='cordis@rebelmouse.com',
     url='https://github.com/RebelMouseTeam/rmshared',
@@ -13,7 +13,7 @@ setuptools.setup(
     classifiers=[
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.11',
         'License :: OSI Approved :: Apache Software License',
     ],
 )
