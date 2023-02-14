@@ -1,3 +1,4 @@
+from typing import AbstractSet
 from typing import Any
 from typing import Callable
 from typing import FrozenSet
@@ -10,10 +11,11 @@ from rmshared.tools import filter_dict
 from rmshared.tools import invert_dict
 from rmshared.tools import parse_name_and_info
 
+from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import labels
-from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import orders
+from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core.abc import Field
 from rmshared.content.taxonomy.core.abc import Label
 from rmshared.content.taxonomy.core.abc import Range
@@ -116,11 +118,11 @@ class Protocol(IProtocol):
             return labels.Empty(self.protocol.fields.make_field(info['field']))
 
     class Ranges:
-        FIELDS = frozenset({'min', 'max'})
+        KEYS = frozenset({'min', 'max'})
 
         def __init__(self, protocol: 'Protocol'):
             self.protocol = protocol
-            self.fields_to_factory_func_map: Mapping[FrozenSet[str], Callable[[Mapping[str, Any]], Range]] = {
+            self.keys_to_factory_func_map: Mapping[FrozenSet[str], Callable[[Mapping[str, Any]], Range]] = {
                 frozenset({'max'}): self._make_less_than_range,
                 frozenset({'min'}): self._make_more_than_range,
                 frozenset({'min', 'max'}): self._make_between_range,
@@ -130,9 +132,9 @@ class Protocol(IProtocol):
             return map(self._make_range, data)
 
         def _make_range(self, data: Mapping[str, Any]) -> Range:
-            fields = frozenset(filter_dict(data, value_func=lambda _: _ is not None).keys())
-            fields = fields.intersection(self.FIELDS)
-            return self.fields_to_factory_func_map[fields](data)
+            keys = frozenset(filter_dict(data, value_func=lambda _: _ is not None).keys())
+            keys = keys.intersection(self.KEYS)
+            return self.keys_to_factory_func_map[keys](data)
 
         def _make_less_than_range(self, data: Mapping[str, Any]) -> ranges.LessThan:
             return ranges.LessThan(
@@ -154,7 +156,21 @@ class Protocol(IProtocol):
             )
 
     class Fields:
+        def __init__(self):
+            self.keys_to_factory_func_map: Mapping[AbstractSet[str], Callable[[str, Mapping[str, Any]], Field]] = {
+                frozenset(): self._make_system_field,
+                frozenset({'path'}): self._make_custom_field,
+            }
+
+        def make_field(self, data: Mapping[str, Any]) -> Field:
+            name, info = parse_name_and_info(data)
+            keys = frozenset(info.keys())
+            return self.keys_to_factory_func_map[keys](name, info)
+
         @staticmethod
-        def make_field(data: Mapping[str, Any]) -> Field:
-            name, _ = parse_name_and_info(data)
-            return Field(name)
+        def _make_system_field(name: str, _data: Mapping[str, Any]) -> fields.System:
+            return fields.System(name)
+
+        @staticmethod
+        def _make_custom_field(name: str, data: Mapping[str, Any]) -> fields.Custom:
+            return fields.Custom(name, path=str(data['path']))

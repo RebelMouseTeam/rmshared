@@ -1,10 +1,10 @@
 from pytest import fixture
 
+from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import orders
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import filters
-from rmshared.content.taxonomy.core.abc import Field
 from rmshared.content.taxonomy.core.server.protocol import Protocol
 
 
@@ -24,7 +24,7 @@ class TestServerProtocol:
             ]},
             {'no_labels': [
                 {'badge': {'field': {'private-post': {}}}},
-                {'empty': {'field': {'custom-post-field(path.to.field)': {}}}},
+                {'empty': {'field': {'custom-post-field': {'path': 'path.to.field'}}}},
             ]},
             {'any_range': [
                 {'field': {'post-modified-at': {}}, 'min': self.NOW - 100, 'max': self.NOW + 100},
@@ -36,20 +36,20 @@ class TestServerProtocol:
         ]))
         assert filters_ == frozenset({
             filters.AnyLabel(labels=(
-                labels.Value(field=Field('post-id'), value=123),
-                labels.Value(field=Field('post-type'), value='how-to'),
-                labels.Value(field=Field('post-status'), value='published-to-community(demoted=true)'),
+                labels.Value(field=fields.System('post-id'), value=123),
+                labels.Value(field=fields.System('post-type'), value='how-to'),
+                labels.Value(field=fields.System('post-status'), value='published-to-community(demoted=true)'),
             )),
             filters.NoLabels(labels=(
-                labels.Badge(field=Field('private-post')),
-                labels.Empty(field=Field('custom-post-field(path.to.field)')),
+                labels.Badge(field=fields.System('private-post')),
+                labels.Empty(field=fields.Custom('custom-post-field', path='path.to.field')),
             )),
             filters.AnyRange(ranges=(
-                ranges.Between(field=Field('post-modified-at'), min_value=self.NOW - 100, max_value=self.NOW + 100),
+                ranges.Between(field=fields.System('post-modified-at'), min_value=self.NOW - 100, max_value=self.NOW + 100),
             )),
             filters.NoRanges(ranges=(
-                ranges.MoreThan(field=Field('post-scheduled-at'), value=self.NOW - 200),
-                ranges.LessThan(field=Field('post-published-at'), value=self.NOW + 300),
+                ranges.MoreThan(field=fields.System('post-scheduled-at'), value=self.NOW - 200),
+                ranges.LessThan(field=fields.System('post-published-at'), value=self.NOW + 300),
             )),
         })
 
@@ -58,4 +58,4 @@ class TestServerProtocol:
             'field': {'post-modified-at': {}},
             'reverse': False,
         })
-        assert order == orders.Value(field=Field('post-modified-at'), reverse=False)
+        assert order == orders.Value(field=fields.System('post-modified-at'), reverse=False)

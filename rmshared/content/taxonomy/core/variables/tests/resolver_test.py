@@ -8,7 +8,7 @@ from rmshared.typings import read_only
 from rmshared.content.taxonomy.core import filters as core_filters
 from rmshared.content.taxonomy.core import labels as core_labels
 from rmshared.content.taxonomy.core import ranges as core_ranges
-from rmshared.content.taxonomy.core.abc import Field
+from rmshared.content.taxonomy.core import fields as core_fields
 from rmshared.content.taxonomy.core.abc import Scalar
 
 from rmshared.content.taxonomy.core.variables import arguments
@@ -33,16 +33,16 @@ class TestServerResolver:
     def test_it_should_dereference_filters(self, resolver: Resolver):
         filters_with_references = [
             core_filters.AnyLabel(labels=(
-                core_labels.Value(field=Field('post-id'), value=123),
+                core_labels.Value(field=core_fields.System('post-id'), value=123),
             )),
             filters.Switch(
                 ref=Reference('$1'),
                 cases=Cases(cases=read_only({
                     arguments.Empty: [
-                        core_filters.AnyLabel(labels=(core_labels.Empty(field=Field('post-regular-section')),))
+                        core_filters.AnyLabel(labels=(core_labels.Empty(field=core_fields.System('post-regular-section')),))
                     ],
                     arguments.Value: [
-                        core_filters.AnyLabel(labels=(labels.Value(field=Field('post-regular-section'), value=Variable(ref=Reference('$1'), index=1)),)),
+                        core_filters.AnyLabel(labels=(labels.Value(field=core_fields.System('post-regular-section'), value=Variable(ref=Reference('$1'), index=1)),)),
                     ],
                 }))
             ),
@@ -51,24 +51,24 @@ class TestServerResolver:
                 cases=Cases(cases=read_only({
                     arguments.Any: [],
                     arguments.Empty: [
-                        core_filters.NoLabels(labels=(core_labels.Badge(field=Field('private-post')),)),
+                        core_filters.NoLabels(labels=(core_labels.Badge(field=core_fields.System('private-post')),)),
                     ],
                     arguments.Value: [
-                        core_filters.AnyLabel(labels=(core_labels.Badge(field=Field('private-post')),)),
+                        core_filters.AnyLabel(labels=(core_labels.Badge(field=core_fields.System('private-post')),)),
                     ],
                 }))
             ),
             core_filters.AnyLabel(labels=(
-                core_labels.Value(field=Field('post-id'), value=123),
+                core_labels.Value(field=core_fields.System('post-id'), value=123),
                 labels.Switch(
                     ref=Reference('$3'),
                     cases=Cases(cases=read_only({
                         arguments.Empty: [
-                            core_labels.Empty(field=Field('post-primary-tag')),
+                            core_labels.Empty(field=core_fields.System('post-primary-tag')),
                         ],
                         arguments.Value: [
-                            labels.Value(field=Field('post-primary-tag'), value=Variable(ref=Reference('$3'), index=1)),
-                            labels.Value(field=Field('post-primary-tag'), value=Variable(ref=Reference('$3'), index=2)),
+                            labels.Value(field=core_fields.System('post-primary-tag'), value=Variable(ref=Reference('$3'), index=1)),
+                            labels.Value(field=core_fields.System('post-primary-tag'), value=Variable(ref=Reference('$3'), index=2)),
                         ],
                     }))
                 ),
@@ -79,7 +79,7 @@ class TestServerResolver:
                     arguments.Value: [
                         core_filters.AnyRange(ranges=(
                             ranges.Between(
-                                field=Field('post-modified-at'),
+                                field=core_fields.System('post-modified-at'),
                                 min_value=Variable(ref=Reference('$4'), index=2),
                                 max_value=Variable(ref=Reference('$5'), index=1)
                             ),
@@ -93,11 +93,11 @@ class TestServerResolver:
                     cases=Cases(cases=read_only({
                         arguments.Value: [
                             ranges.MoreThan(
-                                field=Field('post-modified-at'),
+                                field=core_fields.System('post-modified-at'),
                                 value=Variable(ref=Reference('$4'), index=1),
                             ),
                             ranges.Between(
-                                field=Field('post-published-at'),
+                                field=core_fields.System('post-published-at'),
                                 min_value=Constant(100),
                                 max_value=Variable(ref=Reference('$5'), index=2),
                             ),
@@ -129,25 +129,25 @@ class TestServerResolver:
 
         assert filters_ == (
             core_filters.AnyLabel(labels=(
-                core_labels.Value(field=Field('post-id'), value=123),
+                core_labels.Value(field=core_fields.System('post-id'), value=123),
             )),
             core_filters.AnyLabel(labels=(
-                core_labels.Empty(field=Field('post-regular-section')),
+                core_labels.Empty(field=core_fields.System('post-regular-section')),
             )),
             core_filters.AnyLabel(labels=(
-                core_labels.Badge(field=Field('private-post')),
+                core_labels.Badge(field=core_fields.System('private-post')),
             )),
             core_filters.AnyLabel(labels=(
-                core_labels.Value(field=Field('post-id'), value=123),
-                core_labels.Value(field=Field('post-primary-tag'), value='tag-1'),
-                core_labels.Value(field=Field('post-primary-tag'), value='tag-2'),
+                core_labels.Value(field=core_fields.System('post-id'), value=123),
+                core_labels.Value(field=core_fields.System('post-primary-tag'), value='tag-1'),
+                core_labels.Value(field=core_fields.System('post-primary-tag'), value='tag-2'),
             )),
             core_filters.AnyRange(ranges=(
-                core_ranges.Between(field=Field('post-modified-at'), min_value=200, max_value=300),
+                core_ranges.Between(field=core_fields.System('post-modified-at'), min_value=200, max_value=300),
             )),
             core_filters.NoRanges(ranges=(
-                core_ranges.MoreThan(field=Field('post-modified-at'), value=100),
-                core_ranges.Between(field=Field('post-published-at'), min_value=100, max_value=maxsize),
+                core_ranges.MoreThan(field=core_fields.System('post-modified-at'), value=100),
+                core_ranges.Between(field=core_fields.System('post-published-at'), min_value=100, max_value=maxsize),
             )),
         )
 
@@ -161,14 +161,14 @@ class TestServerResolver:
 
         assert filters_ == (
             core_filters.AnyLabel(labels=(
-                core_labels.Value(field=Field('post-id'), value=123),
+                core_labels.Value(field=core_fields.System('post-id'), value=123),
             )),
             core_filters.AnyLabel(labels=(
-                core_labels.Value(field=Field('post-regular-section'), value=567),
+                core_labels.Value(field=core_fields.System('post-regular-section'), value=567),
             )),
             core_filters.AnyLabel(labels=(
-                core_labels.Value(field=Field('post-id'), value=123),
-                core_labels.Empty(field=Field('post-primary-tag')),
+                core_labels.Value(field=core_fields.System('post-id'), value=123),
+                core_labels.Empty(field=core_fields.System('post-primary-tag')),
             )),
             core_filters.NoRanges(ranges=tuple()),
         )

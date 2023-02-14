@@ -6,7 +6,6 @@ from typing import Generic
 from typing import Iterable
 from typing import TypeVar
 
-Field = str
 Scalar = TypeVar('Scalar', str, int, float)
 
 
@@ -20,7 +19,7 @@ class Label(metaclass=ABCMeta):
 
 @dataclass(frozen=True)
 class Value(metaclass=ABCMeta):
-    field: Field
+    field: 'Field'
     value: Scalar
 
 
@@ -29,6 +28,10 @@ class Range(Generic[Scalar], metaclass=ABCMeta):
 
 
 class Order(metaclass=ABCMeta):
+    pass
+
+
+class Field(metaclass=ABCMeta):
     pass
 
 

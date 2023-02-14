@@ -26,9 +26,9 @@ class Labels(mappers.ILabels[labels.Base]):
             labels.UserGroup: self._map_user_group,
             labels.Community: self._map_user_community,
             labels.AccessRole: self._map_user_access_role,
-            labels.NoUserGroups: lambda _: core.labels.Empty(field=core.Field('user-group')),
-            labels.NoCommunities: lambda _: core.labels.Empty(field=core.Field('user-community')),
-            labels.NoAccessRoles: lambda _: core.labels.Empty(field=core.Field('user-access-role')),
+            labels.NoUserGroups: lambda _: core.labels.Empty(field=core.fields.System('user-group')),
+            labels.NoCommunities: lambda _: core.labels.Empty(field=core.fields.System('user-community')),
+            labels.NoAccessRoles: lambda _: core.labels.Empty(field=core.fields.System('user-access-role')),
             labels.CustomField: self._map_custom_user_profile_field,
             labels.NoCustomField: self._map_no_custom_user_profile_field,
         })
@@ -38,42 +38,42 @@ class Labels(mappers.ILabels[labels.Base]):
 
     @staticmethod
     def _map_user_profile_id(label: labels.Id) -> core.labels.Value:
-        return core.labels.Value(field=core.Field('user-id'), value=label.value)
+        return core.labels.Value(field=core.fields.System('user-id'), value=label.value)
 
     @staticmethod
     def _map_user_profile_owner(label: labels.Owner) -> core.labels.Value:
-        return core.labels.Value(field=core.Field('user-owner'), value=label.user_id)
+        return core.labels.Value(field=core.fields.System('user-owner'), value=label.user_id)
 
     def _map_user_profile_status(self, label: labels.Status) -> core.labels.Value:
-        return core.labels.Value(field=core.Field('user-status'), value=self.aspects.map_user_profile_status(label.status))
+        return core.labels.Value(field=core.fields.System('user-status'), value=self.aspects.map_user_profile_status(label.status))
 
     @staticmethod
     def _map_user_group(label: labels.UserGroup) -> core.labels.Value:
-        return core.labels.Value(field=core.Field('user-group'), value=label.slug)
+        return core.labels.Value(field=core.fields.System('user-group'), value=label.slug)
 
     @staticmethod
     def _map_user_community(label: labels.Community) -> core.labels.Value:
-        return core.labels.Value(field=core.Field('user-community'), value=label.id)
+        return core.labels.Value(field=core.fields.System('user-community'), value=label.id)
 
     @staticmethod
     def _map_user_access_role(label: labels.AccessRole) -> core.labels.Value:
-        return core.labels.Value(field=core.Field('user-access-role'), value=label.id)
+        return core.labels.Value(field=core.fields.System('user-access-role'), value=label.id)
 
     @staticmethod
     def _map_custom_user_profile_field(label: labels.CustomField) -> core.labels.Value:
-        return core.labels.Value(field=core.Field(f'custom-user-field({label.path})'), value=label.value)
+        return core.labels.Value(field=core.fields.Custom('custom-user-field', path=label.path), value=label.value)
 
     @staticmethod
     def _map_no_custom_user_profile_field(label: labels.NoCustomField) -> core.labels.Empty:
-        return core.labels.Empty(field=core.Field(f'custom-user-field({label.path})'))
+        return core.labels.Empty(field=core.fields.Custom('custom-user-field', path=label.path))
 
 
 class Fields(mappers.IFields[fields.Base]):
     def __init__(self):
         self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
-            fields.Title: lambda _: core.Field('user-profile-title'),
-            fields.LastLoggedInAt: lambda _: core.Field('user-last-logged-in-at'),
-            fields.LifetimePosts: lambda _: core.Field('lifetime-user-posts'),
+            fields.Title: lambda _: core.fields.System('user-profile-title'),
+            fields.LastLoggedInAt: lambda _: core.fields.System('user-last-logged-in-at'),
+            fields.LifetimePosts: lambda _: core.fields.System('lifetime-user-posts'),
             fields.CustomField: self._map_custom_user_field,
         })
 
@@ -82,7 +82,7 @@ class Fields(mappers.IFields[fields.Base]):
 
     @staticmethod
     def _map_custom_user_field(field: fields.CustomField) -> core.Field:
-        return core.Field(f'custom-user-field({field.path})')
+        return core.fields.Custom('custom-user-field', path=field.path)
 
 
 class Aspects:
