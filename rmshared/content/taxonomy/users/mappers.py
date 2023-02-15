@@ -21,11 +21,15 @@ class Labels(mappers.ILabels[labels.Base]):
         self.aspects = aspects
         self.label_to_factory_func_map = ensure_map_is_complete(labels.Base, {
             labels.Id: self._map_user_profile_id,
+            labels.Slug: self._map_user_profile_slug,
+            labels.Title: self._map_user_profile_title,
+            labels.Email: self._map_user_profile_email,
             labels.Owner: self._map_user_profile_owner,
             labels.Status: self._map_user_profile_status,
             labels.UserGroup: self._map_user_group,
             labels.Community: self._map_user_community,
             labels.AccessRole: self._map_user_access_role,
+            labels.NoEmails: lambda _: core.labels.Empty(field=core.fields.System('user-email')),
             labels.NoUserGroups: lambda _: core.labels.Empty(field=core.fields.System('user-group')),
             labels.NoCommunities: lambda _: core.labels.Empty(field=core.fields.System('user-community')),
             labels.NoAccessRoles: lambda _: core.labels.Empty(field=core.fields.System('user-access-role')),
@@ -39,6 +43,18 @@ class Labels(mappers.ILabels[labels.Base]):
     @staticmethod
     def _map_user_profile_id(label: labels.Id) -> core.labels.Value:
         return core.labels.Value(field=core.fields.System('user-id'), value=label.value)
+
+    @staticmethod
+    def _map_user_profile_slug(label: labels.Slug) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('user-profile-slug'), value=label.slug)
+
+    @staticmethod
+    def _map_user_profile_title(label: labels.Title) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('user-profile-title'), value=label.title)
+
+    @staticmethod
+    def _map_user_profile_email(label: labels.Email) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('user-email'), value=label.email)
 
     @staticmethod
     def _map_user_profile_owner(label: labels.Owner) -> core.labels.Value:

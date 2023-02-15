@@ -16,6 +16,26 @@ class Id(Base):
 
 
 @dataclass(frozen=True)
+class Slug(Base):
+    slug: str
+
+
+@dataclass(frozen=True)
+class Title(Base):
+    title: str
+
+
+@dataclass(frozen=True)
+class Email(Base):
+    email: str
+
+
+@dataclass(frozen=True)
+class NoEmails(Base):
+    pass
+
+
+@dataclass(frozen=True)
 class Owner(Base):
     user_id: int
 
