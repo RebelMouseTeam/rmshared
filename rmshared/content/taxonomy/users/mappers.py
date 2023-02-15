@@ -23,7 +23,7 @@ class Labels(mappers.ILabels[labels.Base]):
             labels.Id: self._map_user_profile_id,
             labels.Slug: self._map_user_profile_slug,
             labels.Title: self._map_user_profile_title,
-            labels.Email: self._map_user_profile_email,
+            labels.Email: self._map_user_email,
             labels.Owner: self._map_user_profile_owner,
             labels.Status: self._map_user_profile_status,
             labels.UserGroup: self._map_user_group,
@@ -53,7 +53,7 @@ class Labels(mappers.ILabels[labels.Base]):
         return core.labels.Value(field=core.fields.System('user-profile-title'), value=label.title)
 
     @staticmethod
-    def _map_user_profile_email(label: labels.Email) -> core.labels.Value:
+    def _map_user_email(label: labels.Email) -> core.labels.Value:
         return core.labels.Value(field=core.fields.System('user-email'), value=label.email)
 
     @staticmethod
