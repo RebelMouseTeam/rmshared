@@ -262,11 +262,15 @@ class Protocol:
                 posts.labels.SpecialEditorLayout: 'special-post-editor-layout',
 
                 users.labels.Id: 'user-id',
+                users.labels.Slug: 'user-slug',
+                users.labels.Title: 'user-title',
+                users.labels.Email: 'user-email',
                 users.labels.Owner: 'user-owner',
                 users.labels.Status: 'user-status',
                 users.labels.UserGroup: 'user-group',
                 users.labels.Community: 'user-community',
                 users.labels.AccessRole: 'user-access-role',
+                users.labels.NoEmails: 'user-without-emails',
                 users.labels.NoUserGroups: 'user-without-groups',
                 users.labels.NoCommunities: 'user-without-communities',
                 users.labels.NoAccessRoles: 'user-without-access-roles',
@@ -301,11 +305,15 @@ class Protocol:
                 posts.labels.SpecialEditorLayout: self._make_special_post_editor_layout,
 
                 users.labels.Id: self._make_user_profile_id,
+                users.labels.Slug: self._make_user_profile_slug,
+                users.labels.Title: self._make_user_profile_title,
+                users.labels.Email: self._make_user_profile_email,
                 users.labels.Owner: self._make_user_profile_owner,
                 users.labels.Status: self._make_user_profile_status,
                 users.labels.UserGroup: self._make_user_group,
                 users.labels.Community: self._make_user_community,
                 users.labels.AccessRole: self._make_user_access_role,
+                users.labels.NoEmails: lambda _: users.labels.NoEmails(),
                 users.labels.NoUserGroups: lambda _: users.labels.NoUserGroups(),
                 users.labels.NoCommunities: lambda _: users.labels.NoCommunities(),
                 users.labels.NoAccessRoles: lambda _: users.labels.NoAccessRoles(),
@@ -378,6 +386,18 @@ class Protocol:
         @staticmethod
         def _make_user_profile_id(data: Any):
             return users.labels.Id(value=int(data))
+
+        @staticmethod
+        def _make_user_profile_slug(data: Any):
+            return users.labels.Slug(slug=str(data))
+
+        @staticmethod
+        def _make_user_profile_title(data: Any):
+            return users.labels.Title(title=str(data))
+
+        @staticmethod
+        def _make_user_profile_email(data: Any):
+            return users.labels.Email(email=str(data))
 
         @staticmethod
         def _make_user_profile_owner(data: Any):

@@ -11,6 +11,26 @@ class Id(Label):
 
 
 @dataclass(frozen=True)
+class Slug(Label):
+    slug: str
+
+
+@dataclass(frozen=True)
+class Title(Label):
+    title: str
+
+
+@dataclass(frozen=True)
+class Email(Label):
+    email: str
+
+
+@dataclass(frozen=True)
+class NoEmails(Label):
+    pass
+
+
+@dataclass(frozen=True)
 class Owner(Label):
     user_id: int
 
