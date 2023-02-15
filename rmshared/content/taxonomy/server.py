@@ -262,8 +262,8 @@ class Protocol:
                 posts.labels.SpecialEditorLayout: 'special-post-editor-layout',
 
                 users.labels.Id: 'user-id',
-                users.labels.Slug: 'user-slug',
-                users.labels.Title: 'user-title',
+                users.labels.Slug: 'user-profile-slug',
+                users.labels.Title: 'user-profile-title',
                 users.labels.Email: 'user-email',
                 users.labels.Owner: 'user-owner',
                 users.labels.Status: 'user-status',
@@ -307,7 +307,7 @@ class Protocol:
                 users.labels.Id: self._make_user_profile_id,
                 users.labels.Slug: self._make_user_profile_slug,
                 users.labels.Title: self._make_user_profile_title,
-                users.labels.Email: self._make_user_profile_email,
+                users.labels.Email: self._make_user_email,
                 users.labels.Owner: self._make_user_profile_owner,
                 users.labels.Status: self._make_user_profile_status,
                 users.labels.UserGroup: self._make_user_group,
@@ -396,7 +396,7 @@ class Protocol:
             return users.labels.Title(title=str(data))
 
         @staticmethod
-        def _make_user_profile_email(data: Any):
+        def _make_user_email(data: Any):
             return users.labels.Email(email=str(data))
 
         @staticmethod
