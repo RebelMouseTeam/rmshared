@@ -6,15 +6,21 @@ from rmshared.content.taxonomy.core.variables.abc import Argument
 from rmshared.content.taxonomy.core.variables.abc import Cases
 from rmshared.content.taxonomy.core.variables.abc import Constant
 from rmshared.content.taxonomy.core.variables.abc import Reference
+from rmshared.content.taxonomy.core.variables.abc import Variable
+from rmshared.content.taxonomy.core.variables.abc import IResolver
+from rmshared.content.taxonomy.core.variables.resolver import Resolver
 
 __all__ = (
     'Argument',
     'Cases',
     'Constant',
     'Reference',
+    'Variable',
 
     'arguments',
     'filters',
     'labels',
     'ranges',
+
+    'IResolver', 'Resolver',
 )
