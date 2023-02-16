@@ -9,6 +9,8 @@ from rmshared.content.taxonomy.core.abc import Label
 from rmshared.content.taxonomy.core.abc import Range
 from rmshared.content.taxonomy.core.abc import Order
 from rmshared.content.taxonomy.core.abc import Field
+from rmshared.content.taxonomy.core.abc import IMatcher
+from rmshared.content.taxonomy.core.matcher import Matcher
 
 __all__ = (
     'variables',
@@ -24,4 +26,6 @@ __all__ = (
     'Range',
     'Field',
     'Order',
+
+    'IMatcher', 'Matcher',
 )
