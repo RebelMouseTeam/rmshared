@@ -9,6 +9,7 @@ from rmshared.content.taxonomy.core.variables.abc import Reference
 from rmshared.content.taxonomy.core.variables.abc import Variable
 from rmshared.content.taxonomy.core.variables.abc import IResolver
 from rmshared.content.taxonomy.core.variables.resolver import Resolver
+from rmshared.content.taxonomy.core.variables.protocol import Protocol
 
 __all__ = (
     'Argument',
@@ -23,4 +24,6 @@ __all__ = (
     'ranges',
 
     'IResolver', 'Resolver',
+
+    'Protocol',
 )
