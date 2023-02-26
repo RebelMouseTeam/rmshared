@@ -10,6 +10,7 @@ from typing import TypeVar
 
 from rmshared.dataclasses import total_ordering
 
+from rmshared.content.taxonomy.core import server as core_server
 from rmshared.content.taxonomy.core.abc import Scalar
 from rmshared.content.taxonomy.core.abc import Filter
 
@@ -56,3 +57,13 @@ class IResolver(metaclass=ABCMeta):
         @abstractmethod
         def get_value(self, alias: str, index: int) -> Scalar:
             pass
+
+
+class IProtocol(core_server.IProtocol, metaclass=ABCMeta):
+    @abstractmethod
+    def make_argument(self, data: str) -> Type[Argument]:
+        pass
+
+    @abstractmethod
+    def jsonify_argument(self, argument: Type[Argument]) -> str:
+        pass

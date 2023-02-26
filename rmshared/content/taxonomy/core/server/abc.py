@@ -16,6 +16,10 @@ class IProtocol(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def jsonify_filters(self, filters: Iterable[Filter]) -> Iterator[Mapping[str, Any]]:
+        pass
+
+    @abstractmethod
     def make_order(self, data: Mapping[str, Any]) -> Order:
         pass
 
