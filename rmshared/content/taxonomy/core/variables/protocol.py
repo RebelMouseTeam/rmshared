@@ -42,6 +42,9 @@ class Protocol(core_server.Protocol):
         self.arguments = self.Arguments()
         self.variables = self.Variables()
 
+    def make_argument(self, data: str) -> Type[Argument]:
+        return self.arguments.make_argument(data)
+
     def _make_cases(self, data: Mapping[str, Any], make_case: Callable[[Any], 'Protocol.Case']):
         case_map = map_dict(data, map_key_func=self.arguments.make_argument, map_value_func=make_case)
         return Cases(cases=read_only(case_map))
