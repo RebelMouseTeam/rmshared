@@ -37,6 +37,9 @@ class Protocol(IProtocol):
     def make_order(self, data):
         return self.orders.make_order(data)
 
+    def make_field(self, data):
+        return self.fields.make_field(data)
+
     class Filters:
         """
         TODO:

@@ -7,6 +7,7 @@ from typing import Mapping
 
 from rmshared.content.taxonomy.core.abc import Filter
 from rmshared.content.taxonomy.core.abc import Order
+from rmshared.content.taxonomy.core.abc import Field
 
 
 class IProtocol(metaclass=ABCMeta):
@@ -16,4 +17,8 @@ class IProtocol(metaclass=ABCMeta):
 
     @abstractmethod
     def make_order(self, data: Mapping[str, Any]) -> Order:
+        pass
+
+    @abstractmethod
+    def make_field(self, data: Mapping[str, Any]) -> Field:
         pass
