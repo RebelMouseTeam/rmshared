@@ -1,3 +1,4 @@
+from rmshared.content.taxonomy.core import server
 from rmshared.content.taxonomy.core import variables
 from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import labels
@@ -13,6 +14,8 @@ from rmshared.content.taxonomy.core.abc import IMatcher
 from rmshared.content.taxonomy.core.matcher import Matcher
 
 __all__ = (
+    'server',
+
     'variables',
 
     'filters',
