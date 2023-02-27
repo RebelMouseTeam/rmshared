@@ -45,6 +45,9 @@ class Protocol(IProtocol):
     def make_field(self, data):
         return self.fields.make_field(data)
 
+    def jsonify_field(self, field):
+        return self.fields.jsonify_field(field)
+
     class Filters:
         F = TypeVar('F', bound=Filter)
 

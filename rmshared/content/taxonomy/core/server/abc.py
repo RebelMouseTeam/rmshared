@@ -26,3 +26,7 @@ class IProtocol(metaclass=ABCMeta):
     @abstractmethod
     def make_field(self, data: Mapping[str, Any]) -> Field:
         pass
+
+    @abstractmethod
+    def jsonify_field(self, field: Field) -> Mapping[str, Any]:
+        pass
