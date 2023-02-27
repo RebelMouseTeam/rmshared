@@ -54,7 +54,7 @@ class Protocol(IProtocol, core_server.Protocol):
         return Cases(cases=read_only(case_map))
 
     def _jsonify_cases(self, cases: Cases, jsonify_case: Callable[['Protocol.Case'], Any]) -> Mapping[str, Any]:
-        return map_dict(cases.cases, map_key_func=unless_none(self.arguments.jsonify_argument), map_value_func=jsonify_case)
+        return dict(map_dict(cases.cases, map_key_func=unless_none(self.arguments.jsonify_argument), map_value_func=jsonify_case))
 
     class Filters(core_server.Protocol.Filters):
         def __init__(self, protocol: 'Protocol'):
