@@ -12,6 +12,7 @@ from rmshared.content.taxonomy.core.abc import Order
 from rmshared.content.taxonomy.core.abc import Field
 from rmshared.content.taxonomy.core.abc import IMatcher
 from rmshared.content.taxonomy.core.matcher import Matcher
+from rmshared.content.taxonomy.core.fakes import Fakes
 
 __all__ = (
     'server',
@@ -31,4 +32,6 @@ __all__ = (
     'Order',
 
     'IMatcher', 'Matcher',
+
+    'Fakes',
 )

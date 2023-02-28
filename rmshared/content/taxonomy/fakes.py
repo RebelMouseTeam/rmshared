@@ -2,23 +2,24 @@ from collections import OrderedDict
 from dataclasses import replace
 from itertools import filterfalse
 from typing import AbstractSet
-from typing import Callable
 from typing import FrozenSet
+from typing import Iterable
 from typing import Iterator
-from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Type
 from typing import TypeVar
-from typing import Union
 
 from faker import Faker
+from faker.providers import lorem
 from faker.providers import python
 from faker.providers import BaseProvider
 
+from rmshared import faker_ext
 from rmshared.tools import ensure_map_is_complete
 from rmshared.typings import read_only
 
+from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import groupings
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
@@ -37,15 +38,18 @@ from rmshared.content.taxonomy.abc import Chunk
 from rmshared.content.taxonomy.abc import Grouping
 
 T = TypeVar('T')
+FakerWithProviders = Faker | BaseProvider | python.Provider | lorem.Provider | faker_ext.Provider
 
 
 class Fakes:
     NOW = 1440000000
+    SEED = 1231
 
-    def __init__(self, now=NOW):
+    def __init__(self, now=NOW, seed=SEED):
         self.now = now
-        self.faker: Union[Faker, BaseProvider, python.Provider] = Faker()
-        self.faker.seed_instance(1231)
+        self.faker: FakerWithProviders = Faker()
+        self.faker.seed_instance(seed)
+        self.core = core.Fakes(seed)
         self.guid_to_entity_factory_map = ensure_map_is_complete(Guid, {
             None: self._pick_entity,
             posts.guids.Post: self.make_post,
@@ -139,7 +143,7 @@ class Fakes:
         )
 
     def make_filters(self) -> FrozenSet[Filter]:
-        return frozenset(self._make_random_list(self._make_filter, max_size=5))
+        return frozenset(self.faker.stream_random_items(self._make_filter, max_size=5))
 
     def _make_filter(self):  # TODO: add other filters
         return self.faker.random_element(elements={
@@ -180,7 +184,7 @@ class Fakes:
 
     def _make_labels_grouping(self) -> groupings.Labels:
         return groupings.Labels(
-            labels=frozenset(self._make_random_list(self.make_label, max_size=20))
+            labels=frozenset(self.faker.stream_random_items(self.make_label, max_size=20))
         )
 
     def make_text(self) -> Text:  # TODO: add more texts
@@ -245,5 +249,8 @@ class Fakes:
         yield users.statuses.Inactive(is_banned=True), 0.10
         yield users.statuses.Inactive(is_banned=False), 0.10
 
-    def _make_random_list(self, factory_func: Callable[[], T], max_size, min_size=0) -> List[T]:
-        return list([factory_func() for _ in range(self.faker.random_int(max=max_size, min=min_size))])
+    def stream_core_variable_filters(self) -> Iterator[core.Filter]:
+        return self.core.stream_variable_filters()
+
+    def sample_core_variable_argument_types(self, size: Optional[int] = None) -> Iterable[Type[core.variables.Argument]]:
+        return self.core.sample_variable_argument_types(size)
