@@ -1,4 +1,5 @@
 from itertools import chain
+from typing import Any
 from typing import Iterable
 from typing import Iterator
 from typing import Optional
@@ -141,7 +142,7 @@ class Fakes:
             return variables.Reference(alias=self.faker.word())
 
         def _make_cases(self, make_case_item):
-            def make_case():
+            def make_case(_: Any):
                 return tuple(self.faker.stream_random_items(factory_func=make_case_item, min_size=1, max_size=3))
 
             return variables.Cases(
