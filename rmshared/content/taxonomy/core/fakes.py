@@ -33,6 +33,7 @@ class Fakes:
     def __init__(self, now=NOW, seed=SEED):
         self.now = now
         self.faker: FakerWithProviders = Faker()
+        self.faker.add_provider(faker_ext.Provider)
         self.faker.seed_instance(seed)
         self.variables = self.Variables(self)
 
@@ -46,7 +47,7 @@ class Fakes:
         yield filters.NoRanges(ranges=tuple(self._stream_random_ranges()))
 
     def _stream_random_labels(self) -> Iterator[Label]:
-        return self.faker.stream_random_items(factory_func=self.make_label, min_size=1, max_size=3)
+        return self.faker.stream_random_items(self.make_label, min_size=1, max_size=3)
 
     def make_label(self) -> Label:
         return self.faker.random_element(elements=frozenset(self._stream_labels()))
@@ -101,7 +102,7 @@ class Fakes:
             yield variables.filters.Switch(ref=self._make_reference(), cases=self._make_cases(make_case_item=self.fakes.make_filter))
 
         def _stream_random_labels(self) -> Iterator[Label]:
-            return self.faker.stream_random_items(factory_func=self.make_label, min_size=1, max_size=3)
+            return self.faker.stream_random_items(self.make_label, min_size=1, max_size=3)
 
         def make_label(self) -> Label:
             return self.faker.random_element(elements=frozenset(chain(self._stream_labels(), self.fakes._stream_labels())))

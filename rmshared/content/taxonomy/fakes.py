@@ -48,6 +48,7 @@ class Fakes:
     def __init__(self, now=NOW, seed=SEED):
         self.now = now
         self.faker: FakerWithProviders = Faker()
+        self.faker.add_provider(faker_ext.Provider)
         self.faker.seed_instance(seed)
         self.core = core.Fakes(seed)
         self.guid_to_entity_factory_map = ensure_map_is_complete(Guid, {
