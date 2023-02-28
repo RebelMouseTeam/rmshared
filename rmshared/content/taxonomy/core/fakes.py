@@ -150,7 +150,7 @@ class Fakes:
             )
 
         def sample_argument_types(self, size: Optional[int] = None) -> Iterable[Type[variables.Argument]]:
-            return self.faker.random_sample(elements=frozenset(self._stream_argument_types()), length=size)
+            return self.faker.random_sample(elements=tuple(self._stream_argument_types()), length=size)
 
         @staticmethod
         def _stream_argument_types() -> Iterator[Type[variables.Argument]]:
