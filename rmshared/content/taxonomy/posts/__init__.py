@@ -8,6 +8,7 @@ from rmshared.content.taxonomy.posts import fields
 from rmshared.content.taxonomy.posts import labels
 from rmshared.content.taxonomy.posts import events
 from rmshared.content.taxonomy.posts import conditions
+from rmshared.content.taxonomy.posts import mappers
 
 __all__ = [
     'consts',
@@ -21,4 +22,5 @@ __all__ = [
     'labels',
     'events',
     'conditions',
+    'mappers',
 ]
