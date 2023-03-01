@@ -21,6 +21,10 @@ from rmshared.content.taxonomy.posts import conditions
 
 
 class Labels(mappers.ILabels[labels.Base]):
+    @classmethod
+    def make_instance(cls):
+        return cls(aspects=Aspects.make_instance())
+
     def __init__(self, aspects: 'Aspects'):
         self.aspects = aspects
         self.label_to_factory_func_map = ensure_map_is_complete(labels.Base, {
@@ -110,6 +114,10 @@ class Labels(mappers.ILabels[labels.Base]):
 
 
 class Fields(mappers.IFields[fields.Base]):
+    @classmethod
+    def make_instance(cls):
+        return cls()
+
     def __init__(self):
         self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
             fields.ModifiedAt: lambda _: core.fields.System('post-modified-at'),
@@ -129,6 +137,10 @@ class Fields(mappers.IFields[fields.Base]):
 
 
 class Aspects:
+    @classmethod
+    def make_instance(cls):
+        return cls()
+
     def __init__(self):
         self.post_status_to_factory_func_map = ensure_map_is_complete(statuses.Status, {
             statuses.Draft: self._map_draft_post_status,
@@ -194,6 +206,10 @@ class Aspects:
 
 
 class Conditions:
+    @classmethod
+    def make_instance(cls):
+        return cls()
+
     def __init__(self):
         self.condition_to_name_map = ensure_map_is_complete(Condition, {
             conditions.IsDraft: 'post-is-draft',
@@ -212,6 +228,10 @@ class Conditions:
 
 
 class Texts:
+    @classmethod
+    def make_instance(cls):
+        return cls()
+
     def __init__(self):
         self.text_to_name_map = ensure_map_is_complete(Text, {
             texts.Titles: 'post-titles',

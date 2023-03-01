@@ -17,6 +17,10 @@ from rmshared.content.taxonomy.users import texts
 
 
 class Labels(mappers.ILabels[labels.Base]):
+    @classmethod
+    def make_instance(cls):
+        return cls(aspects=Aspects())
+
     def __init__(self, aspects: 'Aspects'):
         self.aspects = aspects
         self.label_to_factory_func_map = ensure_map_is_complete(labels.Base, {
@@ -85,6 +89,10 @@ class Labels(mappers.ILabels[labels.Base]):
 
 
 class Fields(mappers.IFields[fields.Base]):
+    @classmethod
+    def make_instance(cls):
+        return cls()
+
     def __init__(self):
         self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
             fields.Title: lambda _: core.fields.System('user-profile-title'),
@@ -102,6 +110,10 @@ class Fields(mappers.IFields[fields.Base]):
 
 
 class Aspects:
+    @classmethod
+    def make_instance(cls):
+        return cls()
+
     def __init__(self):
         self.user_status_to_factory_func_map = ensure_map_is_complete(statuses.Status, {
             statuses.Active: lambda _: 'active',
@@ -127,6 +139,10 @@ class Aspects:
 
 
 class Texts:
+    @classmethod
+    def make_instance(cls):
+        return cls()
+
     def __init__(self):
         self.text_to_name_map = ensure_map_is_complete(Text, {
             texts.Titles: 'user-titles',
