@@ -17,6 +17,7 @@ AnyField = TypeVar('AnyField', bound=Field)
 
 
 class IFilters(metaclass=ABCMeta):
+    @abstractmethod
     def map_filters(self, filters_: Iterable[Filter]) -> Iterator[core.Filter]:
         pass
 
@@ -24,13 +25,17 @@ class IFilters(metaclass=ABCMeta):
 class ILabels(Generic[AnyLabel], metaclass=ABCMeta):
     @abstractmethod
     def map_label(self, label: AnyLabel) -> core.Label:
-        pass
+        """
+        :raises: LookupError
+        """
 
 
 class IRanges(metaclass=ABCMeta):
     @abstractmethod
     def map_range(self, range_: Range) -> Iterator[core.Range]:
-        pass
+        """
+        :raises: LookupError
+        """
 
 
 class IOrders(metaclass=ABCMeta):
