@@ -1,9 +1,9 @@
 from abc import ABCMeta
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import AbstractSet
 from typing import Generic
 from typing import Iterable
+from typing import Optional
 from typing import TypeVar
 
 Scalar = TypeVar('Scalar', str, int, float)
@@ -41,12 +41,10 @@ class IMatcher(metaclass=ABCMeta):
         pass
 
     class IAspects(metaclass=ABCMeta):
-        @property
         @abstractmethod
-        def labels(self) -> AbstractSet['Label']:
+        def does_have_label(self, label: 'Label') -> bool:
             pass
 
-        @property
         @abstractmethod
-        def values(self) -> AbstractSet['Value']:
+        def get_value_or_none(self, field: 'Field') -> Optional['Scalar']:
             pass

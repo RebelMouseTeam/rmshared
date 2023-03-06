@@ -1,3 +1,5 @@
+from typing import Mapping
+
 from pytest import fixture
 
 from rmshared.units import Hours
@@ -7,7 +9,8 @@ from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import filters
-from rmshared.content.taxonomy.core.abc import Value
+from rmshared.content.taxonomy.core.abc import Field
+from rmshared.content.taxonomy.core.abc import Scalar
 from rmshared.content.taxonomy.core.matcher import Matcher
 
 
@@ -94,9 +97,8 @@ class TestMatcher:
         }))
 
     class Aspects(Matcher.IAspects):
-        @property
-        def labels(self):
-            return frozenset({
+        def __init__(self):
+            self.labels = frozenset({
                 labels.Value(field=TestMatcher.FIELDS.POST_ID, value=123456),
                 labels.Value(field=TestMatcher.FIELDS.POST_TYPE, value='page'),
                 labels.Value(field=TestMatcher.FIELDS.POST_STATUS, value='published-to-site(promoted=false)'),
@@ -112,13 +114,16 @@ class TestMatcher:
                 labels.Value(field=TestMatcher.FIELDS.POST_AUTHOR, value=3456),
                 labels.Empty(field=TestMatcher.FIELDS.POST_STAGE),
             })
+            self.values: Mapping[Field, Scalar] = {
+                TestMatcher.FIELDS.POST_MODIFIED_AT: TestMatcher.NOW - Days(3),
+                TestMatcher.FIELDS.POST_PUBLISHED_AT: TestMatcher.NOW - Days(7),
+            }
 
-        @property
-        def values(self):
-            return frozenset({
-                Value(field=TestMatcher.FIELDS.POST_MODIFIED_AT, value=TestMatcher.NOW - Days(3)),
-                Value(field=TestMatcher.FIELDS.POST_PUBLISHED_AT, value=TestMatcher.NOW - Days(7)),
-            })
+        def does_have_label(self, label):
+            return label in self.labels
+
+        def get_value_or_none(self, field):
+            return self.values.get(field)
 
     class FIELDS:
         USER_ID = fields.System(name='user-id')

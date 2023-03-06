@@ -10,6 +10,7 @@ from rmshared.content.taxonomy.core.abc import Filter
 from rmshared.content.taxonomy.core.abc import Label
 from rmshared.content.taxonomy.core.abc import Range
 from rmshared.content.taxonomy.core.abc import Value
+from rmshared.content.taxonomy.core.abc import Scalar
 from rmshared.content.taxonomy.core.abc import IMatcher
 
 
@@ -51,7 +52,7 @@ class Matcher(IMatcher):
 
     @staticmethod
     def _do_aspects_match_any_label(aspects: 'Matcher.IAspects', labels: Iterable[Label]) -> bool:
-        return bool(frozenset(labels).intersection(aspects.labels))
+        return any(aspects.does_have_label(label) for label in labels)
 
     def _do_aspects_match_any_range_filter(self, aspects: 'Matcher.IAspects', filter_: filters.AnyRange) -> bool:
         return self._do_aspects_match_any_range(aspects, filter_.ranges) is True
@@ -63,23 +64,23 @@ class Matcher(IMatcher):
         return any(self._do_aspects_match_range(aspects, range_) for range_ in ranges_)
 
     def _do_aspects_match_range(self, aspects: 'Matcher.IAspects', range_: Range) -> bool:
-        for value in aspects.values:
-            if self._does_value_match_range(value, range_):
-                return True
+        value = aspects.get_value_or_none(range_.field)
+        if value is not None:
+            return self._does_value_match_range(value, range_)
         else:
             return False
 
-    def _does_value_match_range(self, value: 'Value', range_: Range) -> bool:
+    def _does_value_match_range(self, value: 'Scalar', range_: Range) -> bool:
         return self.range_to_matcher_map[type(range_)](value, range_)
 
     @staticmethod
-    def _does_value_match_between_range(value: 'Value', range_: ranges.Between) -> bool:
-        return value.field == range_.field and range_.min_value <= value.value <= range_.max_value
+    def _does_value_match_between_range(value: 'Scalar', range_: ranges.Between) -> bool:
+        return range_.min_value <= value <= range_.max_value
 
     @staticmethod
-    def _does_value_match_less_than_range(value: 'Value', range_: ranges.LessThan) -> bool:
-        return value.field == range_.field and value.value <= range_.value
+    def _does_value_match_less_than_range(value: 'Scalar', range_: ranges.LessThan) -> bool:
+        return value <= range_.value
 
     @staticmethod
-    def _does_value_match_more_than_range(value: 'Value', range_: ranges.MoreThan) -> bool:
-        return value.field == range_.field and value.value >= range_.value
+    def _does_value_match_more_than_range(value: 'Scalar', range_: ranges.MoreThan) -> bool:
+        return value >= range_.value
