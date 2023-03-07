@@ -1,12 +1,22 @@
 from abc import ABCMeta
 from abc import abstractmethod
 from dataclasses import dataclass
+from typing import AbstractSet
+from typing import Any
 from typing import Generic
 from typing import Iterable
+from typing import Mapping
 from typing import Optional
 from typing import TypeVar
 
 Scalar = TypeVar('Scalar', str, int, float)
+
+
+@dataclass(frozen=True)
+class Aspects:
+    labels: AbstractSet['Label']
+    values: AbstractSet['Value']
+    extras: Mapping[str, Any]
 
 
 class Filter(metaclass=ABCMeta):

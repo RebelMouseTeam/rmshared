@@ -9,6 +9,26 @@ class Base(Field, metaclass=ABCMeta):
 
 
 @dataclass(frozen=True)
+class PrimaryTag(Base):
+    pass
+
+
+@dataclass(frozen=True)
+class RegularTag(Base):
+    pass
+
+
+@dataclass(frozen=True)
+class PrimarySection(Base):
+    pass
+
+
+@dataclass(frozen=True)
+class RegularSection(Base):
+    pass
+
+
+@dataclass(frozen=True)
 class ModifiedAt(Base):
     pass
 

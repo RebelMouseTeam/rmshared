@@ -22,7 +22,7 @@ from rmshared.content.taxonomy.posts import conditions
 
 class Labels(mappers.ILabels[labels.Base]):
     @classmethod
-    def make_instance(cls):
+    def make_instance(cls) -> 'Labels':
         return cls(aspects=Aspects.make_instance())
 
     def __init__(self, aspects: 'Aspects'):
@@ -120,6 +120,10 @@ class Fields(mappers.IFields[fields.Base]):
 
     def __init__(self):
         self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
+            fields.PrimaryTag: lambda _: core.fields.System('post-primary-tag'),
+            fields.RegularTag: lambda _: core.fields.System('post-regular-tag'),
+            fields.PrimarySection: lambda _: core.fields.System('post-primary-section'),
+            fields.RegularSection: lambda _: core.fields.System('post-regular-section'),
             fields.ModifiedAt: lambda _: core.fields.System('post-modified-at'),
             fields.ScheduledAt: lambda _: core.fields.System('post-scheduled-at'),
             fields.PublishedAt: lambda _: core.fields.System('post-published-at'),
@@ -138,7 +142,7 @@ class Fields(mappers.IFields[fields.Base]):
 
 class Aspects:
     @classmethod
-    def make_instance(cls):
+    def make_instance(cls) -> 'Aspects':
         return cls()
 
     def __init__(self):
@@ -229,7 +233,7 @@ class Conditions:
 
 class Texts:
     @classmethod
-    def make_instance(cls):
+    def make_instance(cls) -> 'Texts':
         return cls()
 
     def __init__(self):
