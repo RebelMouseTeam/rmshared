@@ -4,8 +4,6 @@ from typing import Mapping
 from typing import Type
 from typing import TypeVar
 
-from rmshared.typings import read_only
-
 from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import filters
 from rmshared.content.taxonomy.abc import Filter
@@ -25,7 +23,6 @@ class Filters(IFilters):
             filters.NoLabels: self._map_no_labels_filter,
             filters.AnyRange: self._map_any_range_filter,
             filters.NoRanges: self._map_no_ranges_filter,
-            filters.Phrase: self._map_phrase_filter,
         }
 
     def map_filters(self, filters_):
@@ -45,13 +42,3 @@ class Filters(IFilters):
 
     def _map_no_ranges_filter(self, filter_: filters.NoRanges) -> core.filters.NoRanges:
         return core.filters.NoRanges(ranges=tuple(chain.from_iterable(map(self.ranges.map_range, filter_.ranges))))
-
-    @staticmethod
-    def _map_phrase_filter(filter_: filters.Phrase) -> core.filters.Phrase:
-        return core.filters.Phrase(
-            phrase=filter_.phrase,
-            payload=read_only({
-                'syntax': filter_.syntax,
-                'weights': filter_.weights,
-            }),
-        )
