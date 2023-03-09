@@ -2,9 +2,9 @@ from mock.mock import Mock
 from mock.mock import call
 from pytest import fixture
 
-from rmshared.content.taxonomy.core2.protocols.abc import IFilters
-from rmshared.content.taxonomy.core2.protocols.abc import IOrders
-from rmshared.content.taxonomy.core2.protocols.protocol import Protocol
+from rmshared.content.taxonomy.protocols.abc import IFilters
+from rmshared.content.taxonomy.protocols.abc import IOrders
+from rmshared.content.taxonomy.protocols.protocol import Protocol
 
 
 class TestProtocol:

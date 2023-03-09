@@ -1,75 +1,62 @@
-from typing import Any
-from typing import Callable
-from typing import Mapping
-from typing import Type
-from typing import TypeVar
-
-from rmshared.tools import invert_dict
-from rmshared.tools import parse_name_and_info
-
+from rmshared.content.taxonomy import protocols
 from rmshared.content.taxonomy.core2 import labels
-from rmshared.content.taxonomy.core2.protocols.abc import ILabels
-from rmshared.content.taxonomy.core2.protocols.abc import IFields
-from rmshared.content.taxonomy.core2.protocols.abc import IValues
 
 
-class Labels(ILabels[labels.Label]):
-    L = TypeVar('L', bound=labels.Label)
-
-    def __init__(self, fields: IFields, values: IValues):
+class Value(protocols.builders.ILabels.IProtocol[labels.Value]):
+    def __init__(self, fields: protocols.IFields, values: protocols.IValues):
         self.fields = fields
         self.values = values
-        self.label_to_label_name_map: Mapping[Type[labels.Label], str] = {
-            labels.Value: 'value',
-            labels.Badge: 'badge',
-            labels.Empty: 'empty',
-        }
-        self.label_name_to_label_map: Mapping[str, Type[labels.Label]] = invert_dict(self.label_to_label_name_map)
-        self.label_to_factory_func_map: Mapping[Type[labels.Label], Callable[[Mapping[str, Any]], labels.Label]] = {
-            labels.Value: self._make_value_label,
-            labels.Badge: self._make_badge_label,
-            labels.Empty: self._make_empty_label,
-        }
-        self.label_to_jsonify_func_map: Mapping[Type[labels.Label], Callable[[Labels.L], Mapping[str, Any]]] = {
-            labels.Value: self._jsonify_value_label_info,
-            labels.Badge: self._jsonify_badge_label_info,
-            labels.Empty: self._jsonify_empty_label_info,
-        }
 
-    def make_label(self, data):
-        name, info = parse_name_and_info(data)
-        label_type = self.label_name_to_label_map[name]
-        return self.label_to_factory_func_map[label_type](info)
+    @classmethod
+    def get_name(cls):
+        return 'value'
 
-    def jsonify_label(self, label):
-        name = self.label_to_label_name_map[type(label)]
-        info = self.label_to_jsonify_func_map[type(label)](label)
-        return {name: info}
-
-    def _make_value_label(self, info: Mapping[str, Any]):
+    def make_label(self, info):
         return labels.Value(
             field=self.fields.make_field(info['field']),
             value=self.values.make_value(info['value']),
         )
 
-    def _jsonify_value_label_info(self, label: labels.Value) -> Mapping[str, Any]:
+    def jsonify_label_info(self, label_: labels.Value):
         return {
-            'field': self.fields.jsonify_field(label.field),
-            'value': self.values.jsonify_value(label.value),
+            'field': self.fields.jsonify_field(label_.field),
+            'value': self.values.jsonify_value(label_.value),
         }
 
-    def _make_badge_label(self, info: Mapping[str, Any]):
-        return labels.Badge(field=self.fields.make_field(info['field']))
 
-    def _jsonify_badge_label_info(self, label: labels.Badge) -> Mapping[str, Any]:
+class Badge(protocols.builders.ILabels.IProtocol[labels.Badge]):
+    def __init__(self, fields: protocols.IFields):
+        self.fields = fields
+
+    @classmethod
+    def get_name(cls):
+        return 'badge'
+
+    def make_label(self, info):
+        return labels.Badge(
+            field=self.fields.make_field(info['field']),
+        )
+
+    def jsonify_label_info(self, label_: labels.Badge):
         return {
-            'field': self.fields.jsonify_field(label.field),
+            'field': self.fields.jsonify_field(label_.field),
         }
 
-    def _make_empty_label(self, info: Mapping[str, Any]):
-        return labels.Empty(field=self.fields.make_field(info['field']))
 
-    def _jsonify_empty_label_info(self, label: labels.Empty) -> Mapping[str, Any]:
+class Empty(protocols.builders.ILabels.IProtocol[labels.Empty]):
+    def __init__(self, fields: protocols.IFields):
+        self.fields = fields
+
+    @classmethod
+    def get_name(cls):
+        return 'empty'
+
+    def make_label(self, info):
+        return labels.Empty(
+            field=self.fields.make_field(info['field']),
+        )
+
+    def jsonify_label_info(self, label_: labels.Empty):
         return {
-            'field': self.fields.jsonify_field(label.field),
+            'field': self.fields.jsonify_field(label_.field),
         }

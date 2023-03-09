@@ -1,19 +1,15 @@
-from rmshared.content.taxonomy.core2.protocols.abc import IFilters
-from rmshared.content.taxonomy.core2.protocols.abc import IOrders
-from rmshared.content.taxonomy.core2.protocols.abc import ILabels
-from rmshared.content.taxonomy.core2.protocols.abc import IRanges
-from rmshared.content.taxonomy.core2.protocols.abc import IFields
-from rmshared.content.taxonomy.core2.protocols.abc import IBuilder
-from rmshared.content.taxonomy.core2.protocols.abc import IProtocol
-from rmshared.content.taxonomy.core2.protocols.builder import Builder
+from rmshared.content.taxonomy.core2.protocols import filters
+from rmshared.content.taxonomy.core2.protocols import orders
+from rmshared.content.taxonomy.core2.protocols import labels
+from rmshared.content.taxonomy.core2.protocols import ranges
+from rmshared.content.taxonomy.core2.protocols import fields
+from rmshared.content.taxonomy.core2.protocols import values
 
 __all__ = (
-    'IFilters',
-    'IOrders',
-    'ILabels',
-    'IRanges',
-    'IFields',
-
-    'IProtocol',
-    'IBuilder', 'Builder',
+    'filters',
+    'orders',
+    'labels',
+    'ranges',
+    'fields',
+    'values',
 )

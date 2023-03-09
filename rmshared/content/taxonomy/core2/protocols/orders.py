@@ -1,21 +1,23 @@
+from rmshared.content.taxonomy import protocols
 from rmshared.content.taxonomy.core2 import orders
-from rmshared.content.taxonomy.core2.protocols.abc import IOrders
-from rmshared.content.taxonomy.core2.protocols.abc import IFields
 
 
-class Orders(IOrders[orders.Order]):
-    def __init__(self, fields: IFields):
+class Value(protocols.builders.IOrders.IProtocol[orders.Value]):
+    def __init__(self, fields: protocols.IFields):
         self.fields = fields
 
-    def make_order(self, data):
+    @classmethod
+    def get_name(cls):
+        return 'value'
+
+    def make_order(self, info):
         return orders.Value(
-            field=self.fields.make_field(data['value']['field']),
-            reverse=bool(data['value']['reverse']),
+            field=self.fields.make_field(info['field']),
+            reverse=bool(info['reverse']),
         )
 
-    def jsonify_order(self, order):
-        assert isinstance(order, orders.Value)
-        return {'value': {
-            'field': self.fields.jsonify_field(order.field),
-            'reverse': order.reverse,
-        }}
+    def jsonify_order_info(self, order_: orders.Value):
+        return {
+            'field': self.fields.jsonify_field(order_.field),
+            'reverse': order_.reverse,
+        }

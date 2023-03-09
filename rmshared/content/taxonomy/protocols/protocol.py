@@ -1,6 +1,6 @@
-from rmshared.content.taxonomy.core2.protocols.abc import IOrders
-from rmshared.content.taxonomy.core2.protocols.abc import IFilters
-from rmshared.content.taxonomy.core2.protocols.abc import IProtocol
+from rmshared.content.taxonomy.protocols.abc import IOrders
+from rmshared.content.taxonomy.protocols.abc import IFilters
+from rmshared.content.taxonomy.protocols.abc import IProtocol
 
 
 class Protocol(IProtocol):
