@@ -25,9 +25,9 @@ class TestLabels:
 
         protocol = protocols.labels.Value(fields_, values_)
 
-        assert protocol.get_name() == 'value'
-        assert protocol.make_label({'field': {'field_1': {}}, 'value': {'value_1': {}}}) == labels.Value(field='field_1', value='value_1')
-        assert protocol.jsonify_label_info(labels.Value(field='field_1', value='value_1')) == {'field': {'field_1': {}}, 'value': {'value_1': {}}}
+        assert protocol.get_keys() == {'value'}
+        assert protocol.make_label({'value': {'field': {'field_1': {}}, 'value': {'value_1': {}}}}) == labels.Value(field='field_1', value='value_1')
+        assert protocol.jsonify_label(labels.Value(field='field_1', value='value_1')) == {'value': {'field': {'field_1': {}}, 'value': {'value_1': {}}}}
         assert values_.make_value.call_args_list == [call({'value_1': {}})]
         assert fields_.make_field.call_args_list == [call({'field_1': {}})]
         assert values_.jsonify_value.call_args_list == [call('value_1')]
@@ -39,9 +39,9 @@ class TestLabels:
 
         protocol = protocols.labels.Badge(fields_)
 
-        assert protocol.get_name() == 'badge'
-        assert protocol.make_label({'field': {'field_2': {}}}) == labels.Badge(field='field_2')
-        assert protocol.jsonify_label_info(labels.Badge(field='field_2')) == {'field': {'field_2': {}}}
+        assert protocol.get_keys() == {'badge'}
+        assert protocol.make_label({'badge': {'field': {'field_2': {}}}}) == labels.Badge(field='field_2')
+        assert protocol.jsonify_label(labels.Badge(field='field_2')) == {'badge': {'field': {'field_2': {}}}}
         assert fields_.make_field.call_args_list == [call({'field_2': {}})]
         assert fields_.jsonify_field.call_args_list == [call('field_2')]
 
@@ -51,8 +51,8 @@ class TestLabels:
 
         protocol = protocols.labels.Empty(fields_)
 
-        assert protocol.get_name() == 'empty'
-        assert protocol.make_label({'field': {'field_3': {}}}) == labels.Empty(field='field_3')
-        assert protocol.jsonify_label_info(labels.Empty(field='field_3')) == {'field': {'field_3': {}}}
+        assert protocol.get_keys() == {'empty'}
+        assert protocol.make_label({'empty': {'field': {'field_3': {}}}}) == labels.Empty(field='field_3')
+        assert protocol.jsonify_label(labels.Empty(field='field_3')) == {'empty': {'field': {'field_3': {}}}}
         assert fields_.make_field.call_args_list == [call({'field_3': {}})]
         assert fields_.jsonify_field.call_args_list == [call('field_3')]

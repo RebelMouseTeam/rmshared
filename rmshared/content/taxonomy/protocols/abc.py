@@ -45,7 +45,7 @@ class ILabels(Generic[Label], metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def jsonify_label(self, labels: Label) -> Mapping[str, Any]:
+    def jsonify_label(self, label: Label) -> Mapping[str, Any]:
         pass
 
 
@@ -55,7 +55,7 @@ class IRanges(Generic[Range], metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def jsonify_range(self, ranges: Range) -> Mapping[str, Any]:
+    def jsonify_range(self, range_: Range) -> Mapping[str, Any]:
         pass
 
 

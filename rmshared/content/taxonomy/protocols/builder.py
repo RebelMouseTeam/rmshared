@@ -20,8 +20,8 @@ from rmshared.content.taxonomy.protocols.protocol import Protocol
 class Builder(IBuilder):
     P = TypeVar('P')
 
-    def __init__(self, interface_to_factory_map: Mapping[IBuilder.Dependency, 'Builder.Factory']):
-        self.interface_to_factory_map = dict(interface_to_factory_map)
+    def __init__(self, interface_to_factory_map: Mapping[IBuilder.Dependency, 'Builder.Factory'] = None):
+        self.interface_to_factory_map = dict(interface_to_factory_map or dict())
 
     def customize_filters(self, factory, dependencies):
         self.interface_to_factory_map[IFilters] = self.Factory(factory, dependencies)

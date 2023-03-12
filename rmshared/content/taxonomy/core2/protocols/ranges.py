@@ -2,13 +2,12 @@ from rmshared.content.taxonomy import protocols
 from rmshared.content.taxonomy.core2 import ranges
 
 
-class Between(protocols.builders.IRanges.IProtocol[ranges.Between]):
+class Between(protocols.composites.IRanges.IProtocol[ranges.Between]):
     def __init__(self, fields: protocols.IFields, values: protocols.IValues):
         self.fields = fields
         self.values = values
 
-    @classmethod
-    def get_keys(cls):
+    def get_keys(self):
         return {'field', 'min', 'max'}
 
     def make_range(self, data):
@@ -26,13 +25,12 @@ class Between(protocols.builders.IRanges.IProtocol[ranges.Between]):
         }
 
 
-class LessThan(protocols.builders.IRanges.IProtocol[ranges.LessThan]):
+class LessThan(protocols.composites.IRanges.IProtocol[ranges.LessThan]):
     def __init__(self, fields: protocols.IFields, values: protocols.IValues):
         self.fields = fields
         self.values = values
 
-    @classmethod
-    def get_keys(cls):
+    def get_keys(self):
         return {'field', 'max'}
 
     def make_range(self, data):
@@ -48,13 +46,12 @@ class LessThan(protocols.builders.IRanges.IProtocol[ranges.LessThan]):
         }
 
 
-class MoreThan(protocols.builders.IRanges.IProtocol[ranges.MoreThan]):
+class MoreThan(protocols.composites.IRanges.IProtocol[ranges.MoreThan]):
     def __init__(self, fields: protocols.IFields, values: protocols.IValues):
         self.fields = fields
         self.values = values
 
-    @classmethod
-    def get_keys(cls):
+    def get_keys(self):
         return {'field', 'min'}
 
     def make_range(self, data):

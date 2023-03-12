@@ -2,25 +2,23 @@ from rmshared.content.taxonomy import protocols
 from rmshared.content.taxonomy.core2 import fields
 
 
-class System(protocols.builders.IFields.IProtocol[fields.System]):
-    @classmethod
-    def get_keys(cls):
+class System(protocols.composites.IFields.IProtocol[fields.System]):
+    def get_keys(self):
         return set()
 
     def make_field(self, name, info):
         return fields.System(name=str(name))
 
-    def jsonify_field(self, field_: fields.System):
-        return field_.name, dict()
+    def jsonify_field(self, field: fields.System):
+        return field.name, dict()
 
 
-class Custom(protocols.builders.IFields.IProtocol[fields.Custom]):
-    @classmethod
-    def get_keys(cls):
+class Custom(protocols.composites.IFields.IProtocol[fields.Custom]):
+    def get_keys(self):
         return {'path'}
 
     def make_field(self, name, info):
         return fields.Custom(name=str(name), path=str(info['path']))
 
-    def jsonify_field(self, field_: fields.Custom):
-        return field_.name, {'path': field_.path}
+    def jsonify_field(self, field: fields.Custom):
+        return field.name, {'path': field.path}

@@ -1,32 +1,31 @@
 from typing import Dict
+from typing import FrozenSet
 from typing import Type
 from typing import TypeVar
+from typing import get_origin
 
-from rmshared.tools import parse_name_and_info
-
-from rmshared.content.taxonomy.protocols import builders
+from rmshared.content.taxonomy.protocols import composites
 from rmshared.content.taxonomy.protocols.abc import ILabels
 
 Label = TypeVar('Label')
 
 
-class Labels(ILabels[Label], builders.ILabels[Label]):
+class Labels(ILabels[Label], composites.ILabels[Label]):
     def __init__(self):
-        self.label_to_protocol_map: Dict[Type[Label], builders.ILabels.IProtocol[Label]] = dict()
-        self.label_name_to_label_map: Dict[str, Type[Label]] = dict()
+        self.label_type_to_protocol_map: Dict[Type[Label], composites.ILabels.IProtocol[Label]] = dict()
+        self.label_keys_to_label_type_map: Dict[FrozenSet[str], Type[Label]] = dict()
 
     def add_label(self, label_type, protocol):
-        self.label_to_protocol_map[label_type] = protocol
-        self.label_name_to_label_map[protocol.get_name()] = label_type
+        label_type = get_origin(label_type) or label_type
+        self.label_type_to_protocol_map[label_type] = protocol
+        self.label_keys_to_label_type_map[frozenset(protocol.get_keys())] = label_type
 
     def make_label(self, data):
-        name, info = parse_name_and_info(data)
-        label_type = self.label_name_to_label_map[name]
-        protocol = self.label_to_protocol_map[label_type]
-        return protocol.make_label(info)
+        label_keys = frozenset(data.keys())
+        label_type = self.label_keys_to_label_type_map[label_keys]
+        protocol = self.label_type_to_protocol_map[label_type]
+        return protocol.make_label(data)
 
-    def jsonify_label(self, label_):
-        protocol = self.label_to_protocol_map[type(label_)]
-        name = protocol.get_name()
-        info = protocol.jsonify_label_info(label_)
-        return {name: info}
+    def jsonify_label(self, label):
+        protocol = self.label_type_to_protocol_map[type(label)]
+        return protocol.jsonify_label(label)
