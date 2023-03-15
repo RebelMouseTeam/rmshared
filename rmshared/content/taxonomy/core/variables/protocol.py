@@ -17,11 +17,10 @@ from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core import protocol
-from rmshared.content.taxonomy.core.variables import Argument
-from rmshared.content.taxonomy.core.variables import Reference
 from rmshared.content.taxonomy.core.variables import arguments
 from rmshared.content.taxonomy.core.variables import operators
 from rmshared.content.taxonomy.core.variables import values
+from rmshared.content.taxonomy.core.variables.abc import Reference
 
 T = TypeVar('T')
 Scalar = TypeVar('Scalar', str, int, float)
@@ -278,7 +277,7 @@ class Factory:
         VALUE_REGEX = re.compile(r'^\$(?P<alias>\$\d+)(?:\[(?P<index>\d+)])?$')
 
         def __init__(self):
-            self.argument_to_argument_name_map: Mapping[Type[Argument], str] = {
+            self.argument_to_argument_name_map: Mapping[Type[arguments.Argument], str] = {
                 arguments.Value: '$',
                 arguments.Empty: '$none',
                 arguments.Any: '$any',

@@ -1,12 +1,19 @@
+from abc import ABCMeta
 from dataclasses import dataclass
+from typing import Generic
 from typing import Sequence
+from typing import TypeVar
 
-from rmshared.content.taxonomy.core.abc import Scalar
-from rmshared.content.taxonomy.core.variables.abc import Argument
+Scalar = TypeVar('Scalar')
 
 
 @dataclass(frozen=True)
-class Value(Argument):
+class Argument(Generic[Scalar], metaclass=ABCMeta):
+    pass
+
+
+@dataclass(frozen=True)
+class Value(Argument[Scalar]):
     values: Sequence[Scalar]
 
 

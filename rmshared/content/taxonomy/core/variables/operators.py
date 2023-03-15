@@ -6,7 +6,7 @@ from typing import Sequence
 from typing import Type
 from typing import TypeVar
 
-from rmshared.content.taxonomy.core.variables.abc import Argument
+from rmshared.content.taxonomy.core.variables import arguments
 from rmshared.content.taxonomy.core.variables.abc import Reference
 
 Case = TypeVar('Case')
@@ -19,7 +19,7 @@ class Operator(Generic[Case], metaclass=ABCMeta):
 @dataclass(frozen=True)
 class Switch(Operator[Case]):
     ref: Reference
-    cases: Mapping[Type[Argument], Operator[Case]]
+    cases: Mapping[Type[arguments.Argument], Operator[Case]]
 
 
 @dataclass(frozen=True)

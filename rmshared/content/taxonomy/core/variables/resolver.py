@@ -18,9 +18,9 @@ from rmshared.content.taxonomy.core.variables.abc import IResolver
 T = TypeVar('T')
 
 
-class Resolver(IResolver[operators.Operator[filters.Filter], Iterator[filters.Filter]]):
-    def dereference_filters(self, filters_, arguments):
-        factory = self.Factory(arguments)
+class Resolver(IResolver[operators.Operator[filters.Filter], filters.Filter]):
+    def dereference_filters(self, filters_, arguments_):
+        factory = self.Factory(arguments_)
         visitor_ = factory.make_visitor()
         return chain.from_iterable(visitor_.visit_filters(filters_))
 

@@ -1,5 +1,6 @@
 from sys import maxsize
 from typing import Mapping
+from typing import TypeVar
 
 from pytest import fixture
 
@@ -9,12 +10,12 @@ from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import fields
-from rmshared.content.taxonomy.core.abc import Scalar
 
 from rmshared.content.taxonomy.core.variables import arguments
-from rmshared.content.taxonomy.core.variables.abc import Argument
 from rmshared.content.taxonomy.core.variables.resolver import Resolver
 from rmshared.content.taxonomy.core.variables.tests import fixtures
+
+Scalar = TypeVar('Scalar', str, int, float)
 
 
 class TestServerResolver:
@@ -25,7 +26,7 @@ class TestServerResolver:
         return Resolver()
 
     def test_it_should_dereference_filters(self, resolver: Resolver):
-        filters_ = tuple(resolver.dereference_filters(filters_=read_only(fixtures.FILTERS), arguments=self.Arguments({
+        filters_ = tuple(resolver.dereference_filters(filters_=read_only(fixtures.FILTERS), arguments_=self.Arguments({
             '$1': arguments.Empty(),
             '$2': arguments.Value(values=tuple()),
             '$3': arguments.Value(values=('tag-1', 'tag-2')),
@@ -60,7 +61,7 @@ class TestServerResolver:
         from pprint import pprint
         pprint([1, fixtures.FILTERS])
 
-        filters_ = tuple(resolver.dereference_filters(filters_=read_only(fixtures.FILTERS), arguments=self.Arguments({
+        filters_ = tuple(resolver.dereference_filters(filters_=read_only(fixtures.FILTERS), arguments_=self.Arguments({
             '$1': arguments.Value(values=(567,)),
             '$2': arguments.Any(),
             '$3': arguments.Empty(),
@@ -83,10 +84,10 @@ class TestServerResolver:
         )
 
     class Arguments(Resolver.IArguments):
-        def __init__(self, alias_to_argument_map: Mapping[str, Argument]):
+        def __init__(self, alias_to_argument_map: Mapping[str, arguments.Argument]):
             self.alias_to_argument_map = alias_to_argument_map
 
-        def get_argument(self, alias: str) -> 'Argument':
+        def get_argument(self, alias: str) -> arguments.Argument:
             return self.alias_to_argument_map[alias]
 
         def get_value(self, alias: str, index: int) -> Scalar:
