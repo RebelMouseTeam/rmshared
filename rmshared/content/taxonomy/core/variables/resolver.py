@@ -1,104 +1,145 @@
-from dataclasses import replace
 from itertools import chain
-from typing import Iterable
+from typing import Any
+from typing import Callable
 from typing import Iterator
+from typing import TypeVar
 
-from rmshared.content.taxonomy.core import filters as core_filters
-from rmshared.content.taxonomy.core import labels as core_labels
-from rmshared.content.taxonomy.core import ranges as core_ranges
-from rmshared.content.taxonomy.core.abc import Filter
-from rmshared.content.taxonomy.core.abc import Label
-from rmshared.content.taxonomy.core.abc import Range
-from rmshared.content.taxonomy.core.abc import Scalar
+from rmshared.content.taxonomy import visitors as taxonomy_visitors
 
-from rmshared.content.taxonomy.core.variables import filters
-from rmshared.content.taxonomy.core.variables import labels
-from rmshared.content.taxonomy.core.variables import ranges
-from rmshared.content.taxonomy.core.variables.abc import Constant
-from rmshared.content.taxonomy.core.variables.abc import Variable
+from rmshared.content.taxonomy.core import filters
+from rmshared.content.taxonomy.core import labels
+from rmshared.content.taxonomy.core import ranges
+from rmshared.content.taxonomy.core import visitor
+from rmshared.content.taxonomy.core.variables import values
+from rmshared.content.taxonomy.core.variables import operators
+from rmshared.content.taxonomy.core.variables.abc import Scalar
 from rmshared.content.taxonomy.core.variables.abc import IResolver
 
+T = TypeVar('T')
 
-class Resolver(IResolver):
+
+class Resolver(IResolver[operators.Operator[filters.Filter], Iterator[filters.Filter]]):
     def dereference_filters(self, filters_, arguments):
-        return self.ConfiguredResolver(arguments).dereference_filters(filters_)
+        factory = self.Factory(arguments)
+        visitor_ = factory.make_visitor()
+        return chain.from_iterable(visitor_.visit_filters(filters_))
 
-    class ConfiguredResolver:
+    class Factory:
         def __init__(self, arguments_: IResolver.IArguments):
+            self.delegate = visitor.Factory()
             self.arguments = arguments_
+            self.operators = self.Operators(arguments_)
 
-        def dereference_filters(self, filters_: Iterable[Filter]) -> Iterator[Filter]:
-            return chain.from_iterable(map(self._dereference_filter, filters_))
+        def make_visitor(self) -> taxonomy_visitors.IVisitor:
+            builder = taxonomy_visitors.Builder()
+            builder.customize_filters(self._make_filters, dependencies=(taxonomy_visitors.ILabels, taxonomy_visitors.IRanges))
+            builder.customize_labels(self._make_labels, dependencies=(taxonomy_visitors.IFields, taxonomy_visitors.IValues))
+            builder.customize_ranges(self._make_ranges, dependencies=(taxonomy_visitors.IFields, taxonomy_visitors.IValues))
+            builder.customize_values(self._make_values, dependencies=())
+            builder.customize_orders(self.delegate.make_orders, dependencies=())
+            builder.customize_fields(self.delegate.make_fields, dependencies=())
+            return builder.make_visitor()
 
-        def _dereference_filter(self, filter_: Filter) -> Iterator[Filter]:
-            if isinstance(filter_, filters.Switch):
-                return self._dereference_switch_filter(filter_)
-            elif isinstance(filter_, (core_filters.AnyLabel, core_filters.NoLabels)):
-                return [self._dereference_labels_filter(filter_)]
-            elif isinstance(filter_, (core_filters.AnyRange, core_filters.NoRanges)):
-                return [self._dereference_ranges_filter(filter_)]
-            else:
-                raise NotImplementedError(['dereference_filter', filter_])
+        def _make_filters(self, labels_: taxonomy_visitors.ILabels, ranges_: taxonomy_visitors.IRanges) -> taxonomy_visitors.IFilters:
+            delegate = self.delegate.make_filters(labels_, ranges_)
+            instance = taxonomy_visitors.composites.Filters()
+            instance.add_filter(operators.Switch[filters.Filter], self.SwitchFilters(instance, self.operators))
+            instance.add_filter(operators.Return[filters.Filter], self.ReturnFilters(delegate, self.operators))
+            return taxonomy_visitors.fallbacks.Filters(instance, delegate)
 
-        def _dereference_switch_filter(self, filter_: filters.Switch) -> Iterator[Filter]:
-            argument = self.arguments.get_argument(filter_.ref.alias)
-            return chain.from_iterable(map(self._dereference_filter, filter_.cases.cases.get(type(argument), [])))
+        def _make_labels(self, fields_: taxonomy_visitors.IFields, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.ILabels:
+            delegate = self.delegate.make_labels(fields_, values_)
+            instance = taxonomy_visitors.composites.Labels()
+            instance.add_label(operators.Switch[labels.Label], self.SwitchLabels(instance, self.operators))
+            instance.add_label(operators.Return[labels.Label], self.ReturnLabels(delegate, self.operators))
+            return taxonomy_visitors.fallbacks.Labels(instance, delegate)
 
-        def _dereference_labels_filter(self, filter_: core_filters.AnyLabel | core_filters.NoLabels) -> Filter:
-            return replace(filter_, labels=tuple(chain.from_iterable(map(self._dereference_label, filter_.labels))))
+        def _make_ranges(self, fields_: taxonomy_visitors.IFields, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.IRanges:
+            delegate = self.delegate.make_ranges(fields_, values_)
+            instance = taxonomy_visitors.composites.Ranges()
+            instance.add_range(operators.Switch[ranges.Range], self.SwitchRanges(instance, self.operators))
+            instance.add_range(operators.Return[ranges.Range], self.ReturnRanges(delegate, self.operators))
+            return taxonomy_visitors.fallbacks.Ranges(instance, delegate)
 
-        def _dereference_ranges_filter(self, filter_: core_filters.AnyRange | core_filters.NoRanges) -> Filter:
-            return replace(filter_, ranges=tuple(chain.from_iterable(map(self._dereference_range, filter_.ranges))))
+        def _make_values(self) -> taxonomy_visitors.IValues:
+            delegate = self.delegate.make_values()
+            instance = taxonomy_visitors.composites.Values()
+            instance.add_value(values.Variable, self.ResolveVariable(self.arguments))
+            instance.add_value(values.Constant, self.ResolveConstant())
+            return taxonomy_visitors.fallbacks.Values(instance, delegate)
 
-        def _dereference_label(self, label_: Label) -> Iterator[Label]:
-            if isinstance(label_, labels.Switch):
-                return self._dereference_switch_label(label_)
-            elif isinstance(label_, labels.Value):
-                return [self._dereference_value_label(label_)]
-            else:
-                return [label_]
+        class SwitchFilters(taxonomy_visitors.IFilters[operators.Switch[filters.Filter], Iterator[filters.Filter]]):
+            def __init__(self, delegate: taxonomy_visitors.IFilters[operators.Operator, Iterator[filters.Filter]], operators_: 'Resolver.Factory.Operators'):
+                self.delegate = delegate
+                self.operators = operators_
 
-        def _dereference_switch_label(self, label_: labels.Switch) -> Iterator[Label]:
-            argument = self.arguments.get_argument(label_.ref.alias)
-            return chain.from_iterable(map(self._dereference_label, label_.cases.cases.get(type(argument), [])))
+            def visit_filter(self, filter_: operators.Switch[filters.Filter]) -> Iterator[filters.Filter]:
+                return self.operators.visit_switch(filter_, self.delegate.visit_filter)
 
-        def _dereference_value_label(self, label_: labels.Value) -> Label:
-            value = self.arguments.get_value(label_.value.ref.alias, label_.value.index)
-            return core_labels.Value(field=label_.field, value=value)
+        class ReturnFilters(taxonomy_visitors.IFilters[operators.Return[filters.Filter], Iterator[filters.Filter]]):
+            def __init__(self, delegate: taxonomy_visitors.IFilters[filters.Filter, Iterator[filters.Filter]], operators_: 'Resolver.Factory.Operators'):
+                self.delegate = delegate
+                self.operators = operators_
 
-        def _dereference_range(self, range_: Range) -> Iterator[Range]:
-            if isinstance(range_, ranges.Switch):
-                return self._dereference_switch_range(range_)
-            elif isinstance(range_, ranges.LessThan):
-                return [self._dereference_less_than_range(range_)]
-            elif isinstance(range_, ranges.MoreThan):
-                return [self._dereference_more_than_range(range_)]
-            elif isinstance(range_, ranges.Between):
-                return [self._dereference_between_range(range_)]
-            else:
-                return [range_]
+            def visit_filter(self, filter_: operators.Return[filters.Filter]) -> Iterator[filters.Filter]:
+                return self.operators.visit_return(filter_, self.delegate.visit_filter)
 
-        def _dereference_switch_range(self, range_: ranges.Switch) -> Iterator[Range]:
-            argument = self.arguments.get_argument(range_.ref.alias)
-            return chain.from_iterable(map(self._dereference_range, range_.cases.cases.get(type(argument), [])))
+        class SwitchLabels(taxonomy_visitors.ILabels[operators.Switch[labels.Label], Iterator[labels.Label]]):
+            def __init__(self, delegate: taxonomy_visitors.ILabels[operators.Operator, Iterator[labels.Label]], operators_: 'Resolver.Factory.Operators'):
+                self.delegate = delegate
+                self.operators = operators_
 
-        def _dereference_less_than_range(self, range_: ranges.LessThan) -> Range:
-            value = self.arguments.get_value(range_.value.ref.alias, range_.value.index)
-            return core_ranges.LessThan(field=range_.field, value=value)
+            def visit_label(self, label: operators.Switch[labels.Label]) -> Iterator[labels.Label]:
+                return self.operators.visit_switch(label, self.delegate.visit_label)
 
-        def _dereference_more_than_range(self, range_: ranges.MoreThan) -> Range:
-            value = self.arguments.get_value(range_.value.ref.alias, range_.value.index)
-            return core_ranges.MoreThan(field=range_.field, value=value)
+        class ReturnLabels(taxonomy_visitors.ILabels[operators.Return[labels.Label], Iterator[labels.Label]]):
+            def __init__(self, delegate: taxonomy_visitors.ILabels[labels.Label, Iterator[labels.Label]], operators_: 'Resolver.Factory.Operators'):
+                self.delegate = delegate
+                self.operators = operators_
 
-        def _dereference_between_range(self, range_: ranges.Between) -> Range:
-            min_value = self._dereference_variable_or_constant(range_.min_value)
-            max_value = self._dereference_variable_or_constant(range_.max_value)
-            return core_ranges.Between(field=range_.field, min_value=min_value, max_value=max_value)
+            def visit_label(self, label: operators.Return[labels.Label]) -> Iterator[labels.Label]:
+                return self.operators.visit_return(label, self.delegate.visit_label)
 
-        def _dereference_variable_or_constant(self, value: Variable | Constant) -> Scalar:
-            if isinstance(value, Variable):
-                return self.arguments.get_value(value.ref.alias, value.index)
-            elif isinstance(value, Constant):
-                return value.value
-            else:
-                raise NotImplementedError(['dereference_variable_or_constant', value])
+        class SwitchRanges(taxonomy_visitors.IRanges[operators.Switch[ranges.Range], Iterator[ranges.Range]]):
+            def __init__(self, delegate: taxonomy_visitors.IRanges[operators.Operator, Iterator[ranges.Range]], operators_: 'Resolver.Factory.Operators'):
+                self.delegate = delegate
+                self.operators = operators_
+
+            def visit_range(self, range_: operators.Switch[ranges.Range]) -> Iterator[ranges.Range]:
+                return self.operators.visit_switch(range_, self.delegate.visit_range)
+
+        class ReturnRanges(taxonomy_visitors.IRanges[operators.Return[ranges.Range], Iterator[ranges.Range]]):
+            def __init__(self, delegate: taxonomy_visitors.IRanges[ranges.Range, Iterator[ranges.Range]], operators_: 'Resolver.Factory.Operators'):
+                self.delegate = delegate
+                self.operators = operators_
+
+            def visit_range(self, range_: operators.Return[ranges.Range]) -> Iterator[ranges.Range]:
+                return self.operators.visit_return(range_, self.delegate.visit_range)
+
+        class ResolveVariable(taxonomy_visitors.IValues[values.Variable, Scalar]):
+            def __init__(self, arguments: IResolver.IArguments):
+                self.arguments = arguments
+
+            def visit_value(self, value_: values.Variable) -> Scalar:
+                return self.arguments.get_value(value_.ref.alias, value_.index)
+
+        class ResolveConstant(taxonomy_visitors.IValues[values.Constant, Scalar]):
+            def visit_value(self, value_: values.Constant) -> Scalar:
+                return value_.value
+
+        class Operators:
+            def __init__(self, arguments: IResolver.IArguments):
+                self.arguments = arguments
+
+            def visit_switch(self, operator: operators.Switch[T], visit_case: Callable[[operators.Operator[T]], Any]) -> Iterator[T]:
+                argument = self.arguments.get_argument(operator.ref.alias)
+                try:
+                    operator = operator.cases[type(argument)]
+                except LookupError:
+                    return []
+                else:
+                    return visit_case(operator)
+
+            @staticmethod
+            def visit_return(operator: operators.Return[T], visit_case: Callable[[T], Any]) -> Iterator[T]:
+                return chain.from_iterable(map(visit_case, operator.cases))

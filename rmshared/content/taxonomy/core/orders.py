@@ -1,10 +1,16 @@
+from abc import ABCMeta
 from dataclasses import dataclass
+from typing import Generic
+from typing import TypeVar
 
-from rmshared.content.taxonomy.core.abc import Order
-from rmshared.content.taxonomy.core.abc import Field
+Field = TypeVar('Field')
+
+
+class Order(metaclass=ABCMeta):
+    pass
 
 
 @dataclass(frozen=True)
-class Value(Order):
+class Value(Order, Generic[Field]):
     field: Field
     reverse: bool

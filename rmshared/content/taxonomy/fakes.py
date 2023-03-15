@@ -19,7 +19,7 @@ from rmshared import faker_ext
 from rmshared.tools import ensure_map_is_complete
 from rmshared.typings import read_only
 
-from rmshared.content.taxonomy import core
+from rmshared.content.taxonomy import core0
 from rmshared.content.taxonomy import groupings
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
@@ -50,7 +50,7 @@ class Fakes:
         self.faker: FakerWithProviders = Faker()
         self.faker.add_provider(faker_ext.Provider)
         self.faker.seed_instance(seed)
-        self.core = core.Fakes(seed)
+        self.core = core0.Fakes(seed)
         self.guid_to_entity_factory_map = ensure_map_is_complete(Guid, {
             None: self._pick_entity,
             posts.guids.Post: self.make_post,
@@ -250,8 +250,8 @@ class Fakes:
         yield users.statuses.Inactive(is_banned=True), 0.10
         yield users.statuses.Inactive(is_banned=False), 0.10
 
-    def stream_core_variable_filters(self) -> Iterator[core.Filter]:
+    def stream_core0_variable_filters(self) -> Iterator[core0.Filter]:
         return self.core.stream_variable_filters()
 
-    def sample_core_variable_argument_types(self, size: Optional[int] = None) -> Iterable[Type[core.variables.Argument]]:
+    def sample_core0_variable_argument_types(self, size: Optional[int] = None) -> Iterable[Type[core0.variables.Argument]]:
         return self.core.sample_variable_argument_types(size)

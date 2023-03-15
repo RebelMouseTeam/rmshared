@@ -1,24 +1,30 @@
+from abc import ABCMeta
 from dataclasses import dataclass
+from typing import Generic
+from typing import TypeVar
 
-from rmshared.content.taxonomy.core.abc import Field
-from rmshared.content.taxonomy.core.abc import Range
-from rmshared.content.taxonomy.core.abc import Scalar
-
-
-@dataclass(frozen=True)
-class Between(Range):
-    field: Field
-    min_value: Scalar
-    max_value: Scalar
+Field = TypeVar('Field')
+Value = TypeVar('Value')
 
 
 @dataclass(frozen=True)
-class LessThan(Range):
+class Range(Generic[Field], metaclass=ABCMeta):
     field: Field
-    value: Scalar
 
 
 @dataclass(frozen=True)
-class MoreThan(Range):
+class Between(Range[Field], Generic[Field, Value]):
+    min_value: Value
+    max_value: Value
+
+
+@dataclass(frozen=True)
+class LessThan(Range[Field], Generic[Field, Value]):
     field: Field
-    value: Scalar
+    value: Value
+
+
+@dataclass(frozen=True)
+class MoreThan(Range[Field], Generic[Field, Value]):
+    field: Field
+    value: Value

@@ -10,11 +10,10 @@ from typing import TypeVar
 
 from rmshared.dataclasses import total_ordering
 
-from rmshared.content.taxonomy.core import server as core_server
-from rmshared.content.taxonomy.core.abc import Scalar
-from rmshared.content.taxonomy.core.abc import Filter
-
 Case = TypeVar('Case')
+Scalar = TypeVar('Scalar')
+InFilter = TypeVar('InFilter')
+OutFilter = TypeVar('OutFilter')
 
 
 @dataclass(frozen=True)
@@ -29,24 +28,13 @@ class Cases(Generic[Case]):
 
 
 @dataclass(frozen=True)
-class Constant(Generic[Scalar]):
-    value: Scalar
-
-
-@dataclass(frozen=True)
 class Reference:
     alias: str
 
 
-@dataclass(frozen=True)
-class Variable:
-    ref: 'Reference'
-    index: int
-
-
-class IResolver(metaclass=ABCMeta):
+class IResolver(Generic[InFilter, OutFilter], metaclass=ABCMeta):
     @abstractmethod
-    def dereference_filters(self, filters_: Iterable[Filter], arguments: 'IResolver.IArguments') -> Iterator[Filter]:
+    def dereference_filters(self, filters_: Iterable[InFilter], arguments: 'IResolver.IArguments') -> Iterator[OutFilter]:
         pass
 
     class IArguments(metaclass=ABCMeta):
@@ -57,13 +45,3 @@ class IResolver(metaclass=ABCMeta):
         @abstractmethod
         def get_value(self, alias: str, index: int) -> Scalar:
             pass
-
-
-class IProtocol(core_server.IProtocol, metaclass=ABCMeta):
-    @abstractmethod
-    def make_argument(self, data: str) -> Type[Argument]:
-        pass
-
-    @abstractmethod
-    def jsonify_argument(self, argument: Type[Argument]) -> str:
-        pass

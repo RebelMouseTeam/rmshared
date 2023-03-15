@@ -1,116 +1,25 @@
 from pytest import fixture
 
-from rmshared.typings import read_only
-
-from rmshared.content.taxonomy.core import filters as core_filters
-from rmshared.content.taxonomy.core import labels as core_labels
-from rmshared.content.taxonomy.core import fields as core_fields
-
-from rmshared.content.taxonomy.core.variables import arguments
-from rmshared.content.taxonomy.core.variables import filters
-from rmshared.content.taxonomy.core.variables import labels
-from rmshared.content.taxonomy.core.variables import ranges
-from rmshared.content.taxonomy.core.variables.abc import Cases
-from rmshared.content.taxonomy.core.variables.abc import Constant
-from rmshared.content.taxonomy.core.variables.abc import Variable
-from rmshared.content.taxonomy.core.variables.abc import Reference
-from rmshared.content.taxonomy.core.variables.protocol import Protocol
+from rmshared.content.taxonomy.core.variables import protocol
+from rmshared.content.taxonomy.core.variables.tests import fixtures
 
 
 class TestServerProtocol:
     NOW = 1440000000
 
     @fixture
-    def protocol(self) -> Protocol:
-        return Protocol()
+    def protocol_(self) -> protocol.ITaxonomyProtocol:
+        return protocol.Factory().make_protocol()
 
-    def test_it_should_make_filters(self, protocol: Protocol):
-        filters_ = tuple(protocol.make_filters(data=self.FILTERS_DATA))
-        assert filters_ == self.FILTERS
+    def test_it_should_make_filters(self, protocol_: protocol.ITaxonomyProtocol):
+        filters_ = tuple(protocol_.make_filters(data=self.FILTERS_DATA))
+        assert filters_ == fixtures.FILTERS
 
-    def test_it_should_jsonify_filters(self, protocol: Protocol):
-        data = tuple(protocol.jsonify_filters(filters=self.FILTERS))
+    def test_it_should_jsonify_filters(self, protocol_: protocol.ITaxonomyProtocol):
+        data = tuple(protocol_.jsonify_filters(filters=fixtures.FILTERS))
         assert data == self.FILTERS_DATA
 
-    FILTERS = tuple([
-        core_filters.AnyLabel(labels=(
-            core_labels.Value(field=core_fields.System('post-id'), value=123),
-        )),
-        filters.Switch(
-            ref=Reference('$1'),
-            cases=Cases(cases=read_only({
-                arguments.Empty: [
-                    core_filters.AnyLabel(labels=(core_labels.Empty(field=core_fields.System('post-regular-section')), ))
-                ],
-                arguments.Value: [
-                    core_filters.AnyLabel(labels=(
-                        labels.Value(field=core_fields.System('post-regular-section'), value=Variable(ref=Reference('$1'), index=1)),
-                    )),
-                ],
-            }))
-        ),
-        filters.Switch(
-            ref=Reference('$2'),
-            cases=Cases(cases=read_only({
-                arguments.Any: [],
-                arguments.Empty: [
-                    core_filters.NoLabels(labels=(core_labels.Badge(field=core_fields.System('private-post')),)),
-                ],
-                arguments.Value: [
-                    core_filters.AnyLabel(labels=(core_labels.Badge(field=core_fields.System('private-post')),)),
-                ],
-            }))
-        ),
-        core_filters.AnyLabel(labels=(
-            core_labels.Value(field=core_fields.System('post-id'), value=123),
-            labels.Switch(
-                ref=Reference('$3'),
-                cases=Cases(cases=read_only({
-                    arguments.Empty: [
-                        core_labels.Empty(field=core_fields.System('post-primary-tag')),
-                    ],
-                    arguments.Value: [
-                        labels.Value(field=core_fields.System('post-primary-tag'), value=Variable(ref=Reference('$3'), index=1)),
-                        labels.Value(field=core_fields.System('post-primary-tag'), value=Variable(ref=Reference('$3'), index=2)),
-                    ],
-                }))
-            ),
-        )),
-        filters.Switch(
-            ref=Reference('$4'),
-            cases=Cases(cases=read_only({
-                arguments.Value: [
-                    core_filters.AnyRange(ranges=(
-                        ranges.Between(
-                            field=core_fields.System('post-modified-at'),
-                            min_value=Variable(ref=Reference('$4'), index=1),
-                            max_value=Variable(ref=Reference('$3'), index=1)
-                        ),
-                    )),
-                ],
-            }))
-        ),
-        core_filters.NoRanges(ranges=(
-            ranges.Switch(
-                ref=Reference('$5'),
-                cases=Cases(cases=read_only({
-                    arguments.Value: [
-                        ranges.MoreThan(
-                            field=core_fields.System('post-modified-at'),
-                            value=Variable(ref=Reference('$5'), index=1),
-                        ),
-                        ranges.Between(
-                            field=core_fields.System('post-published-at'),
-                            min_value=Constant(100),
-                            max_value=Variable(ref=Reference('$5'), index=2),
-                        ),
-                    ],
-                })),
-            ),
-        )),
-    ])
-
-    FILTERS_DATA = tuple([
+    FILTERS_DATA = (
         {'any_label': [
             {'value': {'field': {'post-id': {}}, 'value': 123}},
         ]},
@@ -156,7 +65,7 @@ class TestServerProtocol:
             '$ref': '$$4',
             '$cases': {
                 '$': [{'any_range': [
-                    {'field': {'post-modified-at': {}}, 'min': '$$4[1]', 'max': '$$3[1]'},
+                    {'field': {'post-modified-at': {}}, 'min': '$$4[2]', 'max': '$$5[1]'},
                 ]}],
             },
         }},
@@ -165,10 +74,10 @@ class TestServerProtocol:
                 '$ref': '$$5',
                 '$cases': {
                     '$': [
-                        {'field': {'post-modified-at': {}}, 'min': '$$5[1]'},
+                        {'field': {'post-modified-at': {}}, 'min': '$$4[1]'},
                         {'field': {'post-published-at': {}}, 'min': 100, 'max': '$$5[2]'},
                     ],
                 },
             }},
         ]},
-    ])
+    )

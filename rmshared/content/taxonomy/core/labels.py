@@ -1,21 +1,27 @@
+from abc import ABCMeta
 from dataclasses import dataclass
+from typing import Generic
+from typing import TypeVar
 
-from rmshared.content.taxonomy.core.abc import Field
-from rmshared.content.taxonomy.core.abc import Label
-from rmshared.content.taxonomy.core.abc import Scalar
-
-
-@dataclass(frozen=True)
-class Value(Label):
-    field: Field
-    value: Scalar
+Field = TypeVar('Field')
+Value = TypeVar('Value')
 
 
 @dataclass(frozen=True)
-class Badge(Label):
+class Label(Generic[Field], metaclass=ABCMeta):
     field: Field
 
 
 @dataclass(frozen=True)
-class Empty(Label):
-    field: Field
+class Value(Label[Field], Generic[Field, Value]):
+    value: Value
+
+
+@dataclass(frozen=True)
+class Badge(Label[Field]):
+    pass
+
+
+@dataclass(frozen=True)
+class Empty(Label[Field]):
+    pass

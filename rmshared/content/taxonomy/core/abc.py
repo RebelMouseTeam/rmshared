@@ -19,14 +19,6 @@ class Aspects:
     extras: Mapping[str, Any]
 
 
-class Filter(metaclass=ABCMeta):
-    pass
-
-
-class Label(metaclass=ABCMeta):
-    pass
-
-
 @dataclass(frozen=True)
 class Value(metaclass=ABCMeta):
     field: 'Field'

@@ -5,7 +5,7 @@ from rmshared.tools import ensure_map_is_complete
 from rmshared.tools import invert_dict
 from rmshared.tools import parse_name_and_info
 
-from rmshared.content.taxonomy import core
+from rmshared.content.taxonomy import core0
 from rmshared.content.taxonomy import mappers
 from rmshared.content.taxonomy.abc import Text
 
@@ -33,10 +33,10 @@ class Labels(mappers.ILabels[labels.Base]):
             labels.UserGroup: self._map_user_group,
             labels.Community: self._map_user_community,
             labels.AccessRole: self._map_user_access_role,
-            labels.NoEmails: lambda _: core.labels.Empty(field=core.fields.System('user-email')),
-            labels.NoUserGroups: lambda _: core.labels.Empty(field=core.fields.System('user-group')),
-            labels.NoCommunities: lambda _: core.labels.Empty(field=core.fields.System('user-community')),
-            labels.NoAccessRoles: lambda _: core.labels.Empty(field=core.fields.System('user-access-role')),
+            labels.NoEmails: lambda _: core0.labels.Empty(field=core0.fields.System('user-email')),
+            labels.NoUserGroups: lambda _: core0.labels.Empty(field=core0.fields.System('user-group')),
+            labels.NoCommunities: lambda _: core0.labels.Empty(field=core0.fields.System('user-community')),
+            labels.NoAccessRoles: lambda _: core0.labels.Empty(field=core0.fields.System('user-access-role')),
             labels.CustomField: self._map_custom_user_profile_field,
             labels.NoCustomField: self._map_no_custom_user_profile_field,
         })
@@ -45,47 +45,47 @@ class Labels(mappers.ILabels[labels.Base]):
         return self.label_to_factory_func_map[type(label)](label)
 
     @staticmethod
-    def _map_user_profile_id(label: labels.Id) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.System('user-id'), value=label.value)
+    def _map_user_profile_id(label: labels.Id) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.System('user-id'), value=label.value)
 
     @staticmethod
-    def _map_user_profile_slug(label: labels.Slug) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.System('user-profile-slug'), value=label.slug)
+    def _map_user_profile_slug(label: labels.Slug) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.System('user-profile-slug'), value=label.slug)
 
     @staticmethod
-    def _map_user_profile_title(label: labels.Title) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.System('user-profile-title'), value=label.title)
+    def _map_user_profile_title(label: labels.Title) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.System('user-profile-title'), value=label.title)
 
     @staticmethod
-    def _map_user_email(label: labels.Email) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.System('user-email'), value=label.email)
+    def _map_user_email(label: labels.Email) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.System('user-email'), value=label.email)
 
     @staticmethod
-    def _map_user_profile_owner(label: labels.Owner) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.System('user-owner'), value=label.user_id)
+    def _map_user_profile_owner(label: labels.Owner) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.System('user-owner'), value=label.user_id)
 
-    def _map_user_profile_status(self, label: labels.Status) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.System('user-status'), value=self.aspects.map_user_profile_status(label.status))
-
-    @staticmethod
-    def _map_user_group(label: labels.UserGroup) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.System('user-group'), value=label.slug)
+    def _map_user_profile_status(self, label: labels.Status) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.System('user-status'), value=self.aspects.map_user_profile_status(label.status))
 
     @staticmethod
-    def _map_user_community(label: labels.Community) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.System('user-community'), value=label.id)
+    def _map_user_group(label: labels.UserGroup) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.System('user-group'), value=label.slug)
 
     @staticmethod
-    def _map_user_access_role(label: labels.AccessRole) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.System('user-access-role'), value=label.id)
+    def _map_user_community(label: labels.Community) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.System('user-community'), value=label.id)
 
     @staticmethod
-    def _map_custom_user_profile_field(label: labels.CustomField) -> core.labels.Value:
-        return core.labels.Value(field=core.fields.Custom('custom-user-field', path=label.path), value=label.value)
+    def _map_user_access_role(label: labels.AccessRole) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.System('user-access-role'), value=label.id)
 
     @staticmethod
-    def _map_no_custom_user_profile_field(label: labels.NoCustomField) -> core.labels.Empty:
-        return core.labels.Empty(field=core.fields.Custom('custom-user-field', path=label.path))
+    def _map_custom_user_profile_field(label: labels.CustomField) -> core0.labels.Value:
+        return core0.labels.Value(field=core0.fields.Custom('custom-user-field', path=label.path), value=label.value)
+
+    @staticmethod
+    def _map_no_custom_user_profile_field(label: labels.NoCustomField) -> core0.labels.Empty:
+        return core0.labels.Empty(field=core0.fields.Custom('custom-user-field', path=label.path))
 
 
 class Fields(mappers.IFields[fields.Base]):
@@ -95,9 +95,9 @@ class Fields(mappers.IFields[fields.Base]):
 
     def __init__(self):
         self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
-            fields.Title: lambda _: core.fields.System('user-profile-title'),
-            fields.LastLoggedInAt: lambda _: core.fields.System('user-last-logged-in-at'),
-            fields.LifetimePosts: lambda _: core.fields.System('lifetime-user-posts'),
+            fields.Title: lambda _: core0.fields.System('user-profile-title'),
+            fields.LastLoggedInAt: lambda _: core0.fields.System('user-last-logged-in-at'),
+            fields.LifetimePosts: lambda _: core0.fields.System('lifetime-user-posts'),
             fields.CustomField: self._map_custom_user_field,
         })
 
@@ -105,8 +105,8 @@ class Fields(mappers.IFields[fields.Base]):
         return self.field_to_factory_func_map[type(field)](field)
 
     @staticmethod
-    def _map_custom_user_field(field: fields.CustomField) -> core.Field:
-        return core.fields.Custom('custom-user-field', path=field.path)
+    def _map_custom_user_field(field: fields.CustomField) -> core0.Field:
+        return core0.fields.Custom('custom-user-field', path=field.path)
 
 
 class Aspects:
