@@ -12,13 +12,14 @@ from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import visitor
 from rmshared.content.taxonomy.core.variables import values
 from rmshared.content.taxonomy.core.variables import operators
+from rmshared.content.taxonomy.core.variables.abc import Operator
 from rmshared.content.taxonomy.core.variables.abc import Scalar
 from rmshared.content.taxonomy.core.variables.abc import IResolver
 
 T = TypeVar('T')
 
 
-class Resolver(IResolver[operators.Operator[filters.Filter], filters.Filter]):
+class Resolver(IResolver[Operator[filters.Filter], filters.Filter]):
     def dereference_filters(self, filters_, arguments_):
         factory = self.Factory(arguments_)
         visitor_ = factory.make_visitor()
@@ -69,7 +70,7 @@ class Resolver(IResolver[operators.Operator[filters.Filter], filters.Filter]):
             return taxonomy_visitors.fallbacks.Values(instance, delegate)
 
         class SwitchFilters(taxonomy_visitors.IFilters[operators.Switch[filters.Filter], Iterator[filters.Filter]]):
-            def __init__(self, delegate: taxonomy_visitors.IFilters[operators.Operator, Iterator[filters.Filter]], operators_: 'Resolver.Factory.Operators'):
+            def __init__(self, delegate: taxonomy_visitors.IFilters[Operator, Iterator[filters.Filter]], operators_: 'Resolver.Factory.Operators'):
                 self.delegate = delegate
                 self.operators = operators_
 
@@ -85,7 +86,7 @@ class Resolver(IResolver[operators.Operator[filters.Filter], filters.Filter]):
                 return self.operators.visit_return(filter_, self.delegate.visit_filter)
 
         class SwitchLabels(taxonomy_visitors.ILabels[operators.Switch[labels.Label], Iterator[labels.Label]]):
-            def __init__(self, delegate: taxonomy_visitors.ILabels[operators.Operator, Iterator[labels.Label]], operators_: 'Resolver.Factory.Operators'):
+            def __init__(self, delegate: taxonomy_visitors.ILabels[Operator, Iterator[labels.Label]], operators_: 'Resolver.Factory.Operators'):
                 self.delegate = delegate
                 self.operators = operators_
 
@@ -101,7 +102,7 @@ class Resolver(IResolver[operators.Operator[filters.Filter], filters.Filter]):
                 return self.operators.visit_return(label, self.delegate.visit_label)
 
         class SwitchRanges(taxonomy_visitors.IRanges[operators.Switch[ranges.Range], Iterator[ranges.Range]]):
-            def __init__(self, delegate: taxonomy_visitors.IRanges[operators.Operator, Iterator[ranges.Range]], operators_: 'Resolver.Factory.Operators'):
+            def __init__(self, delegate: taxonomy_visitors.IRanges[Operator, Iterator[ranges.Range]], operators_: 'Resolver.Factory.Operators'):
                 self.delegate = delegate
                 self.operators = operators_
 
@@ -131,7 +132,7 @@ class Resolver(IResolver[operators.Operator[filters.Filter], filters.Filter]):
             def __init__(self, arguments: IResolver.IArguments):
                 self.arguments = arguments
 
-            def visit_switch(self, operator: operators.Switch[T], visit_case: Callable[[operators.Operator[T]], Any]) -> Iterator[T]:
+            def visit_switch(self, operator: operators.Switch[T], visit_case: Callable[[Operator[T]], Any]) -> Iterator[T]:
                 argument = self.arguments.get_argument(operator.ref.alias)
                 try:
                     operator = operator.cases[type(argument)]

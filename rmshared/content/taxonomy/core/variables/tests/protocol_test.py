@@ -1,6 +1,7 @@
 from pytest import fixture
 
 from rmshared.content.taxonomy.core.variables import protocol
+from rmshared.content.taxonomy.core.variables.abc import IProtocol
 from rmshared.content.taxonomy.core.variables.tests import fixtures
 
 
@@ -8,15 +9,15 @@ class TestServerProtocol:
     NOW = 1440000000
 
     @fixture
-    def protocol_(self) -> protocol.ITaxonomyProtocol:
+    def protocol_(self) -> IProtocol:
         return protocol.Factory().make_protocol()
 
-    def test_it_should_make_filters(self, protocol_: protocol.ITaxonomyProtocol):
+    def test_it_should_make_filters(self, protocol_: IProtocol):
         filters_ = tuple(protocol_.make_filters(data=self.FILTERS_DATA))
         assert filters_ == fixtures.FILTERS
 
-    def test_it_should_jsonify_filters(self, protocol_: protocol.ITaxonomyProtocol):
-        data = tuple(protocol_.jsonify_filters(filters=fixtures.FILTERS))
+    def test_it_should_jsonify_filters(self, protocol_: IProtocol):
+        data = tuple(protocol_.jsonify_filters(filters_=fixtures.FILTERS))
         assert data == self.FILTERS_DATA
 
     FILTERS_DATA = (

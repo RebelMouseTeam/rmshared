@@ -44,7 +44,8 @@ class Builder(IBuilder):
     def make_protocol(self):
         filters = self._make_protocol(IFilters)
         orders = self._make_protocol(IOrders)
-        return Protocol(filters=filters, orders=orders)
+        fields = self._make_protocol(IFields)
+        return Protocol(filters=filters, orders=orders, fields=fields)
 
     @lru_cache(maxsize=None, typed=True)
     def _make_protocol(self, interface: IBuilder.Dependency):

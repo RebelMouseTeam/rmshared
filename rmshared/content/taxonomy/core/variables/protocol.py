@@ -20,18 +20,12 @@ from rmshared.content.taxonomy.core import protocol
 from rmshared.content.taxonomy.core.variables import arguments
 from rmshared.content.taxonomy.core.variables import operators
 from rmshared.content.taxonomy.core.variables import values
+from rmshared.content.taxonomy.core.variables.abc import Argument
+from rmshared.content.taxonomy.core.variables.abc import Operator
 from rmshared.content.taxonomy.core.variables.abc import Reference
+from rmshared.content.taxonomy.core.variables.abc import IProtocol
 
 T = TypeVar('T')
-Scalar = TypeVar('Scalar', str, int, float)
-ITaxonomyProtocol = base_protocols.IProtocol[
-    operators.Operator[filters.Filter],
-    operators.Operator[orders.Order],
-    operators.Operator[labels.Label],
-    operators.Operator[ranges.Range],
-    fields.Field,
-    Scalar
-]
 
 
 class Factory:
@@ -40,7 +34,7 @@ class Factory:
         self.variables = self.Variables()
         self.operators = self.Operators(self.variables)
 
-    def make_protocol(self) -> ITaxonomyProtocol:
+    def make_protocol(self) -> IProtocol:
         builder = base_protocols.Builder()
         builder.customize_filters(self.make_filters, dependencies=(base_protocols.ILabels, base_protocols.IRanges))
         builder.customize_orders(self.make_orders, dependencies=(base_protocols.IFields,))
@@ -48,9 +42,11 @@ class Factory:
         builder.customize_ranges(self.make_ranges, dependencies=(base_protocols.IFields, base_protocols.IValues))
         builder.customize_fields(self.make_fields, dependencies=())
         builder.customize_values(self.make_values, dependencies=())
-        return builder.make_protocol()
+        instance = builder.make_protocol()
+        instance = self.Protocol(instance, self.variables)
+        return instance
 
-    def make_filters(self, labels_: base_protocols.ILabels, ranges_: base_protocols.IRanges) -> base_protocols.IFilters[operators.Operator[filters.Filter]]:
+    def make_filters(self, labels_: base_protocols.ILabels, ranges_: base_protocols.IRanges) -> base_protocols.IFilters[Operator[filters.Filter]]:
         delegate = self.delegate.make_filters(labels_, ranges_)
         instance = base_protocols.Filters()
         # TODO: consider `fallback = base_protocols.fallbacks.Filters(delegate=delegate, fallback=instance)` for {'$switch': {...: {'$<operator>': ...}}}
@@ -61,7 +57,7 @@ class Factory:
     def make_orders(self, fields_: base_protocols.IFields) -> base_protocols.IOrders[orders.Order]:
         return self.delegate.make_orders(fields_)
 
-    def make_labels(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.ILabels[operators.Operator[labels.Label]]:
+    def make_labels(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.ILabels[Operator[labels.Label]]:
         delegate = self.delegate.make_labels(fields_, values_)
         instance = base_protocols.Labels()
         # TODO: consider `fallback = base_protocols.fallbacks.Labels(delegate=delegate, fallback=instance)` for {'$switch': {...: {'$<operator>': ...}}}
@@ -69,7 +65,7 @@ class Factory:
         # TODO: consider `instance.add_label(operators.Return[labels.Label], self.ReturnLabelsProtocol(delegate, self.operators))` for {'$return': ...}
         return base_protocols.fallbacks.Labels(delegate=instance, fallback=self.ReturnLabelsFallback(delegate))
 
-    def make_ranges(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.IRanges[operators.Operator[ranges.Range]]:
+    def make_ranges(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.IRanges[Operator[ranges.Range]]:
         delegate = self.delegate.make_ranges(fields_, values_)
         instance = base_protocols.Ranges()
         # TODO: consider `fallback = base_protocols.fallbacks.Ranges(delegate=delegate, fallback=instance)` for {'$switch': {...: {'$<operator>': ...}}}
@@ -248,7 +244,7 @@ class Factory:
             )
 
         def jsonify_switch(self, operator: operators.Switch[T], jsonify_case: Callable[[T], Any]) -> Mapping[str, Any]:
-            def jsonify_operator(operator_: operators.Operator[T]) -> Any:
+            def jsonify_operator(operator_: Operator[T]) -> Any:
                 assert isinstance(operator_, operators.Return)
                 return list(map(jsonify_case, operator_.cases))
 
@@ -271,13 +267,47 @@ class Factory:
         def jsonify_return(operator: operators.Return[T], jsonify_case: Callable[[T], Any]) -> Mapping[str, Any]:
             return {'$return': list(map(jsonify_case, operator.cases))}
 
+    class Protocol(IProtocol):
+        def __init__(self, delegate: base_protocols.IProtocol, variables: 'Factory.Variables'):
+            self.delegate = delegate
+            self.variables = variables
+
+        def make_filters(self, data):
+            return self.delegate.make_filters(data)
+
+        def jsonify_filters(self, filters_):
+            return self.delegate.jsonify_filters(filters_)
+
+        def make_order(self, data):
+            return self.delegate.make_order(data)
+
+        def jsonify_order(self, order):
+            return self.delegate.jsonify_order(order)
+
+        def make_field(self, data):
+            return self.delegate.make_field(data)
+
+        def jsonify_field(self, field):
+            return self.delegate.jsonify_field(field)
+
+        def make_event(self, data):
+            return self.delegate.make_event(data)
+
+        def jsonify_event(self, event):
+            return self.delegate.jsonify_event(event)
+
+        def make_argument(self, data):
+            return self.variables.make_argument(data)
+
+        def jsonify_argument(self, argument):
+            return self.variables.jsonify_argument(argument)
+
     class Variables:
-        Case = TypeVar('Case')
         ALIAS_REGEX = re.compile(r'^\$(?P<alias>\$\d+)$')
         VALUE_REGEX = re.compile(r'^\$(?P<alias>\$\d+)(?:\[(?P<index>\d+)])?$')
 
         def __init__(self):
-            self.argument_to_argument_name_map: Mapping[Type[arguments.Argument], str] = {
+            self.argument_to_argument_name_map: Mapping[Type[Argument], str] = {
                 arguments.Value: '$',
                 arguments.Empty: '$none',
                 arguments.Any: '$any',
@@ -285,15 +315,15 @@ class Factory:
             self.argument_name_to_argument_map = invert_dict(self.argument_to_argument_name_map)
 
         def make_cases(self, data, make_case):
-            return map_dict(data, map_key_func=self._make_argument, map_value_func=make_case)
+            return map_dict(data, map_key_func=self.make_argument, map_value_func=make_case)
 
         def jsonify_cases(self, cases, jsonify_case):
-            return map_dict(cases, map_key_func=self._jsonify_argument, map_value_func=jsonify_case)
+            return map_dict(cases, map_key_func=self.jsonify_argument, map_value_func=jsonify_case)
 
-        def _make_argument(self, data):
+        def make_argument(self, data):
             return self.argument_name_to_argument_map[data]
 
-        def _jsonify_argument(self, argument):
+        def jsonify_argument(self, argument):
             return self.argument_to_argument_name_map[argument]
 
         def make_reference(self, data):

@@ -21,7 +21,7 @@ class TestServerProtocol:
         assert filters_ == self.FILTERS
 
     def test_it_should_jsonify_filters(self, protocol_: taxonomy_protocols.IProtocol):
-        data = tuple(protocol_.jsonify_filters(filters=self.FILTERS))
+        data = tuple(protocol_.jsonify_filters(filters_=self.FILTERS))
         assert data == self.FILTERS_DATA
 
     FILTERS = tuple([

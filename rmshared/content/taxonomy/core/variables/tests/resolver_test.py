@@ -12,6 +12,7 @@ from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import fields
 
 from rmshared.content.taxonomy.core.variables import arguments
+from rmshared.content.taxonomy.core.variables.abc import Argument
 from rmshared.content.taxonomy.core.variables.resolver import Resolver
 from rmshared.content.taxonomy.core.variables.tests import fixtures
 
@@ -84,10 +85,10 @@ class TestServerResolver:
         )
 
     class Arguments(Resolver.IArguments):
-        def __init__(self, alias_to_argument_map: Mapping[str, arguments.Argument]):
+        def __init__(self, alias_to_argument_map: Mapping[str, Argument]):
             self.alias_to_argument_map = alias_to_argument_map
 
-        def get_argument(self, alias: str) -> arguments.Argument:
+        def get_argument(self, alias: str) -> Argument:
             return self.alias_to_argument_map[alias]
 
         def get_value(self, alias: str, index: int) -> Scalar:

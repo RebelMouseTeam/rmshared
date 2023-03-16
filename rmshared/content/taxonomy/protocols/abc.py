@@ -17,6 +17,7 @@ Label = TypeVar('Label')
 Range = TypeVar('Range')
 Field = TypeVar('Field')
 Value = TypeVar('Value')
+Event = TypeVar('Event')
 
 
 class IFilters(Generic[Filter], metaclass=ABCMeta):
@@ -117,7 +118,7 @@ class IProtocol(Generic[Filter, Order, Label, Range, Field, Value], metaclass=AB
         pass
 
     @abstractmethod
-    def jsonify_filters(self, filters: Iterable[Filter]) -> Iterator[Mapping[str, Any]]:
+    def jsonify_filters(self, filters_: Iterable[Filter]) -> Iterator[Mapping[str, Any]]:
         pass
 
     @abstractmethod
@@ -126,4 +127,20 @@ class IProtocol(Generic[Filter, Order, Label, Range, Field, Value], metaclass=AB
 
     @abstractmethod
     def jsonify_order(self, order: Order) -> Mapping[str, Any]:
+        pass
+
+    @abstractmethod
+    def make_field(self, data: Mapping[str, Any]) -> Field:
+        pass
+
+    @abstractmethod
+    def jsonify_field(self, field: Field) -> Mapping[str, Any]:
+        pass
+
+    @abstractmethod
+    def make_event(self, data: Mapping[str, Any]) -> Event:
+        pass
+
+    @abstractmethod
+    def jsonify_event(self, event: Event) -> Mapping[str, Any]:
         pass
