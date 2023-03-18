@@ -12,6 +12,8 @@ from rmshared.content.taxonomy.core import protocols
 
 from rmshared.content.taxonomy.core import variables
 
+from rmshared.content.taxonomy.core.fakes import Fakes
+
 
 __all__ = (
     'filters',
@@ -27,5 +29,6 @@ __all__ = (
     'protocols',
 
     'variables',
-)
 
+    'Fakes',
+)
