@@ -40,7 +40,7 @@ class TestServerProtocol:
             '$cases': {
                 '$any': [],
                 '$none': [{'no_labels': [
-                    {'badge': {'field': {'private-post': {}}}},
+                    {'empty': {'field': {'private-post': {}}}},
                 ]}],
                 '$': [{'any_label': [
                     {'badge': {'field': {'private-post': {}}}},

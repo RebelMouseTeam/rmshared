@@ -43,7 +43,7 @@ FILTERS = tuple([
             arguments.Empty: operators.Return[filters.Filter](cases=(
                 filters.NoLabels(labels=(
                     operators.Return[labels.Label](cases=(
-                        labels.Badge(field=fields.System('private-post')),
+                        labels.Empty(field=fields.System('private-post')),
                     )),
                 )),
             )),
