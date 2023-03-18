@@ -86,12 +86,13 @@ class Matcher(IMatcher):
 
     def _does_entity_match_any_range(self, entity: IEntity, ranges_: Iterable[ranges.Range]) -> bool:
         for range_ in ranges_:
-            if self._does_entity_match_range(entity, range_):
-                return True
+            for value in entity.get_values(range_.field):
+                if self._does_value_match_range(value, range_):
+                    return True
         else:
             return False
 
-    def _does_entity_match_range(self, entity: IEntity, range_: ranges.Range) -> bool:
+    def _does_value_match_range(self, entity: IEntity, range_: ranges.Range) -> bool:
         return self.range_to_matcher_map[type(range_)](entity, range_)
 
     @staticmethod
