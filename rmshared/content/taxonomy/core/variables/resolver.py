@@ -46,28 +46,28 @@ class Resolver(IResolver[Operator[filters.Filter], filters.Filter]):
             instance = taxonomy_visitors.composites.Filters()
             instance.add_filter(operators.Switch[filters.Filter], self.SwitchFilters(instance, self.operators))
             instance.add_filter(operators.Return[filters.Filter], self.ReturnFilters(delegate, self.operators))
-            return taxonomy_visitors.fallbacks.Filters(instance, delegate)
+            return taxonomy_visitors.fallbacks.Filters(instance, delegate, exceptions=(LookupError, ))
 
         def _make_labels(self, fields_: taxonomy_visitors.IFields, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.ILabels:
             delegate = self.delegate.make_labels(fields_, values_)
             instance = taxonomy_visitors.composites.Labels()
             instance.add_label(operators.Switch[labels.Label], self.SwitchLabels(instance, self.operators))
             instance.add_label(operators.Return[labels.Label], self.ReturnLabels(delegate, self.operators))
-            return taxonomy_visitors.fallbacks.Labels(instance, delegate)
+            return taxonomy_visitors.fallbacks.Labels(instance, delegate, exceptions=(LookupError, ))
 
         def _make_ranges(self, fields_: taxonomy_visitors.IFields, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.IRanges:
             delegate = self.delegate.make_ranges(fields_, values_)
             instance = taxonomy_visitors.composites.Ranges()
             instance.add_range(operators.Switch[ranges.Range], self.SwitchRanges(instance, self.operators))
             instance.add_range(operators.Return[ranges.Range], self.ReturnRanges(delegate, self.operators))
-            return taxonomy_visitors.fallbacks.Ranges(instance, delegate)
+            return taxonomy_visitors.fallbacks.Ranges(instance, delegate, exceptions=(LookupError, ))
 
         def _make_values(self) -> taxonomy_visitors.IValues:
             delegate = self.delegate.make_values()
             instance = taxonomy_visitors.composites.Values()
             instance.add_value(values.Variable, self.ResolveVariable(self.arguments))
             instance.add_value(values.Constant, self.ResolveConstant())
-            return taxonomy_visitors.fallbacks.Values(instance, delegate)
+            return taxonomy_visitors.fallbacks.Values(instance, delegate, exceptions=(LookupError, ))
 
         class SwitchFilters(taxonomy_visitors.IFilters[operators.Switch[filters.Filter], Iterator[filters.Filter]]):
             def __init__(self, delegate: taxonomy_visitors.IFilters[Operator, Iterator[filters.Filter]], operators_: 'Resolver.Factory.Operators'):

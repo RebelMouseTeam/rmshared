@@ -5,7 +5,7 @@ from rmshared.content.taxonomy.protocols.abc import IFields
 
 
 class Fields(IFields):
-    def __init__(self, delegate: IFields, fallback: IFields, exceptions: Iterable[Type[Exception]] = (LookupError, ValueError, TypeError)):
+    def __init__(self, delegate: IFields, fallback: IFields, exceptions: Iterable[Type[Exception]]):
         self.delegate = delegate
         self.fallback = fallback
         self.exceptions = tuple(exceptions)

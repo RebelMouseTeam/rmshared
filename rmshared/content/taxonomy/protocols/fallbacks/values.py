@@ -5,7 +5,7 @@ from rmshared.content.taxonomy.protocols.abc import IValues
 
 
 class Values(IValues):
-    def __init__(self, delegate: IValues, fallback: IValues, exceptions: Iterable[Type[Exception]] = (LookupError, ValueError, TypeError)):
+    def __init__(self, delegate: IValues, fallback: IValues, exceptions: Iterable[Type[Exception]]):
         self.delegate = delegate
         self.fallback = fallback
         self.exceptions = tuple(exceptions)

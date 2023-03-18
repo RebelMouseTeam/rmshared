@@ -5,7 +5,7 @@ from rmshared.content.taxonomy.protocols.abc import IFilters
 
 
 class Filters(IFilters):
-    def __init__(self, delegate: IFilters, fallback: IFilters, exceptions: Iterable[Type[Exception]] = (LookupError, ValueError, TypeError)):
+    def __init__(self, delegate: IFilters, fallback: IFilters, exceptions: Iterable[Type[Exception]]):
         self.delegate = delegate
         self.fallback = fallback
         self.exceptions = tuple(exceptions)
