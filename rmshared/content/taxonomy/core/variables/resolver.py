@@ -9,7 +9,7 @@ from rmshared.content.taxonomy import visitors as taxonomy_visitors
 from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
-from rmshared.content.taxonomy.core import visitor
+from rmshared.content.taxonomy.core import expander
 from rmshared.content.taxonomy.core.variables import values
 from rmshared.content.taxonomy.core.variables import operators
 from rmshared.content.taxonomy.core.variables.abc import Operator
@@ -27,7 +27,7 @@ class Resolver(IResolver[Operator[filters.Filter], filters.Filter]):
 
     class Factory:
         def __init__(self, arguments_: IResolver.IArguments):
-            self.delegate = visitor.Factory()
+            self.delegate = expander.Factory()
             self.arguments = arguments_
             self.operators = self.Operators(arguments_)
 

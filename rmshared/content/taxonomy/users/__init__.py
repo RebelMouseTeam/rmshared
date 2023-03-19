@@ -5,6 +5,7 @@ from rmshared.content.taxonomy.users import texts
 from rmshared.content.taxonomy.users import fields
 from rmshared.content.taxonomy.users import labels
 from rmshared.content.taxonomy.users import mappers
+from rmshared.content.taxonomy.users.fakes import Fakes
 
 
 __all__ = [
@@ -16,4 +17,6 @@ __all__ = [
     'fields',
     'labels',
     'mappers',
+
+    'Fakes',
 ]

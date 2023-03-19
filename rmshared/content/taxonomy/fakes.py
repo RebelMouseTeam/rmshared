@@ -1,12 +1,9 @@
-from collections import OrderedDict
 from dataclasses import replace
-from itertools import filterfalse
 from typing import AbstractSet
 from typing import FrozenSet
 from typing import Iterable
 from typing import Iterator
 from typing import Optional
-from typing import Tuple
 from typing import Type
 
 from faker import Faker
@@ -49,6 +46,8 @@ class Fakes:
         self.faker.add_provider(faker_ext.Provider)
         self.faker.seed_instance(seed)
         self.core = core.Fakes(seed)
+        self.posts = posts.Fakes(now, seed)
+        self.users = users.Fakes(now, seed)
         self.guid_to_entity_factory_map = ensure_map_is_complete(Guid, {
             None: self._pick_entity,
             posts.guids.Post: self.make_post,
@@ -201,52 +200,23 @@ class Fakes:
             posts.fields.PublishedAt()
         })
 
-    def make_post_status_other_than(self, status_type: Type[posts.statuses.Status]) -> posts.statuses.Status:
-        return self.faker.random_element(elements=tuple(self._stream_post_statuses_other_than(status_type)))
-
-    def _stream_post_statuses_other_than(self, status_type: Type[posts.statuses.Status]) -> Iterator[posts.statuses.Status]:
-        return filterfalse(lambda status: isinstance(status, status_type), self._stream_post_statuses())
-
     def make_post_status(self) -> posts.statuses.Status:
-        return self.faker.random_element(elements=tuple(self._stream_post_statuses()))
+        return self.posts.make_status()
 
-    def _stream_post_statuses(self) -> Iterator[posts.statuses.Status]:
-        yield posts.statuses.Draft(stage=self.make_draft_post_stage())
-        yield posts.statuses.Published(scope=self.make_published_post_scope())
-        yield posts.statuses.Removed()
+    def make_post_status_other_than(self, status_type: Type[posts.statuses.Status]) -> posts.statuses.Status:
+        return self.posts.make_status_other_than(status_types={status_type})
 
     def make_draft_post_stage(self) -> posts.drafts.stages.Stage:
-        return self.faker.random_element(elements=(
-            posts.drafts.stages.Created(is_imported=True),
-            posts.drafts.stages.Created(is_imported=False),
-            posts.drafts.stages.InProgress(is_rejected=True),
-            posts.drafts.stages.InProgress(is_rejected=False),
-            posts.drafts.stages.InReview(),
-            posts.drafts.stages.Ready(),
-        ))
+        return self.posts.make_draft_stage()
 
     def make_published_post_scope(self) -> posts.published.scopes.Scope:
-        return self.faker.random_element(elements=(
-            posts.published.scopes.Site(is_promoted=True),
-            posts.published.scopes.Site(is_promoted=False),
-            posts.published.scopes.Community(is_demoted=True),
-            posts.published.scopes.Community(is_demoted=False),
-        ))
+        return self.posts.make_published_scope()
 
     def make_user_status(self):
-        return self.faker.random_element(elements=users.consts.USER.STATUS.ALL)
+        return self.users.make_status()
 
     def make_user_profile_status(self):
-        return self.faker.random_element(
-            elements=OrderedDict(self._stream_user_profile_statuses_with_probabilities())
-        )
-
-    @staticmethod
-    def _stream_user_profile_statuses_with_probabilities() -> Iterator[Tuple[users.statuses.Status, float]]:
-        yield users.statuses.Pending(), 0.10
-        yield users.statuses.Active(), 0.70,
-        yield users.statuses.Inactive(is_banned=True), 0.10
-        yield users.statuses.Inactive(is_banned=False), 0.10
+        return self.users.make_profile_status()
 
     def stream_core_variable_filters(self) -> Iterator[core.variables.Operator[core.filters.Filter]]:
         return self.core.stream_variable_filters()

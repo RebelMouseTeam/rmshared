@@ -9,6 +9,7 @@ from rmshared.content.taxonomy.posts import labels
 from rmshared.content.taxonomy.posts import events
 from rmshared.content.taxonomy.posts import conditions
 from rmshared.content.taxonomy.posts import mappers
+from rmshared.content.taxonomy.posts.fakes import Fakes
 
 __all__ = [
     'consts',
@@ -23,4 +24,6 @@ __all__ = [
     'events',
     'conditions',
     'mappers',
+
+    'Fakes',
 ]

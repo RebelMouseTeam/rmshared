@@ -10,6 +10,40 @@ InValue = TypeVar('InValue')
 OutValue = TypeVar('OutValue')
 
 
+class MapBetween(visitors.IRanges[ranges.Between[InField, InValue], ranges.Between[OutField, OutValue]]):
+    def __init__(self, fields: visitors.IFields[InField, OutField], values: visitors.IValues[InValue, OutValue]):
+        self.fields = fields
+        self.values = values
+
+    def visit_range(self, range_: ranges.Between[InField, InValue]) -> ranges.Between[OutField, OutValue]:
+        field = self.fields.visit_field(range_.field)
+        min_value = self.values.visit_value(range_.min_value)
+        max_value = self.values.visit_value(range_.max_value)
+        return ranges.Between(field, min_value, max_value)
+
+
+class MapLessThan(visitors.IRanges[ranges.LessThan[InField, InValue], ranges.LessThan[OutField, OutValue]]):
+    def __init__(self, fields: visitors.IFields[InField, OutField], values: visitors.IValues[InValue, OutValue]):
+        self.fields = fields
+        self.values = values
+
+    def visit_range(self, range_: ranges.LessThan[InField, InValue]) -> ranges.LessThan[OutField, OutValue]:
+        field = self.fields.visit_field(range_.field)
+        value = self.values.visit_value(range_.value)
+        return ranges.LessThan(field, value)
+
+
+class MapMoreThan(visitors.IRanges[ranges.MoreThan[InField, InValue], ranges.MoreThan[OutField, OutValue]]):
+    def __init__(self, fields: visitors.IFields[InField, OutField], values: visitors.IValues[InValue, OutValue]):
+        self.fields = fields
+        self.values = values
+
+    def visit_range(self, range_: ranges.MoreThan[InField, InValue]) -> ranges.MoreThan[OutField, OutValue]:
+        field = self.fields.visit_field(range_.field)
+        value = self.values.visit_value(range_.value)
+        return ranges.MoreThan(field, value)
+
+
 class ExpandBetween(visitors.IRanges[ranges.Between[InField, InValue], Iterator[ranges.Between[OutField, OutValue]]]):
     def __init__(self, fields: visitors.IFields[InField, OutField], values: visitors.IValues[InValue, OutValue]):
         self.fields = fields

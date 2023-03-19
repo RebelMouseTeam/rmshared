@@ -4,7 +4,8 @@ from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import fields
 
-from rmshared.content.taxonomy.core import visitor
+from rmshared.content.taxonomy.core import mapper
+from rmshared.content.taxonomy.core import expander
 from rmshared.content.taxonomy.core import visitors
 
 from rmshared.content.taxonomy.core import protocol
@@ -25,7 +26,8 @@ __all__ = (
     'ranges',
     'fields',
 
-    'visitor',
+    'mapper',
+    'expander',
     'visitors'
 
     'protocol',

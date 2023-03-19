@@ -13,5 +13,5 @@ class System(Field):
 
 
 @dataclass(frozen=True)
-class Custom(Field):
+class Custom(Field):  # TODO: consider Custom(name='extras', path='path.to.field') --> Field(name='extras:path.to.field')
     path: str

@@ -1,4 +1,3 @@
-from pprint import pprint
 from typing import Mapping
 from typing import NoReturn
 from typing import Type
