@@ -5,7 +5,7 @@ from rmshared.tools import ensure_map_is_complete
 from rmshared.tools import invert_dict
 from rmshared.tools import parse_name_and_info
 
-from rmshared.content.taxonomy import core0
+from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import mappers
 from rmshared.content.taxonomy.abc import Text
 from rmshared.content.taxonomy.abc import Condition
@@ -31,8 +31,8 @@ class Labels(mappers.ILabels[labels.Base]):
             labels.Id: self._map_post_id,
             labels.Type: self._map_post_type,
             labels.Status: self._map_post_status,
-            labels.Private: lambda _: core0.labels.Badge(field=core0.fields.System('private-post')),
-            labels.Suspicious: lambda _: core0.labels.Badge(field=core0.fields.System('suspicious-post')),
+            labels.Private: lambda _: core.labels.Badge(field=core.fields.System('private-post')),
+            labels.Suspicious: lambda _: core.labels.Badge(field=core.fields.System('suspicious-post')),
             labels.PrimaryTag: self._map_primary_post_tag,
             labels.RegularTag: self._map_regular_post_tag,
             labels.PrimarySection: self._map_primary_post_section,
@@ -40,18 +40,18 @@ class Labels(mappers.ILabels[labels.Base]):
             labels.Community: self._map_post_community,
             labels.Author: self._map_post_author,
             labels.Stage: self._map_post_stage,
-            labels.NoPrimaryTags: lambda _: core0.labels.Empty(field=core0.fields.System('post-primary-tag')),
-            labels.NoRegularTags: lambda _: core0.labels.Empty(field=core0.fields.System('post-regular-tag')),
-            labels.NoPrimarySections: lambda _: core0.labels.Empty(field=core0.fields.System('post-primary-section')),
-            labels.NoRegularSections: lambda _: core0.labels.Empty(field=core0.fields.System('post-regular-section')),
-            labels.NoCommunities: lambda _: core0.labels.Empty(field=core0.fields.System('post-community')),
-            labels.NoAuthors: lambda _: core0.labels.Empty(field=core0.fields.System('post-author')),
-            labels.NoStages: lambda _: core0.labels.Empty(field=core0.fields.System('post-stage')),
+            labels.NoPrimaryTags: lambda _: core.labels.Empty(field=core.fields.System('post-primary-tag')),
+            labels.NoRegularTags: lambda _: core.labels.Empty(field=core.fields.System('post-regular-tag')),
+            labels.NoPrimarySections: lambda _: core.labels.Empty(field=core.fields.System('post-primary-section')),
+            labels.NoRegularSections: lambda _: core.labels.Empty(field=core.fields.System('post-regular-section')),
+            labels.NoCommunities: lambda _: core.labels.Empty(field=core.fields.System('post-community')),
+            labels.NoAuthors: lambda _: core.labels.Empty(field=core.fields.System('post-author')),
+            labels.NoStages: lambda _: core.labels.Empty(field=core.fields.System('post-stage')),
             labels.CustomField: self._map_custom_post_field,
             labels.NoCustomField: self._map_no_custom_post_field,
-            labels.DefaultPageLayout: lambda _: core0.labels.Empty(field=core0.fields.System('post-page-layout')),
+            labels.DefaultPageLayout: lambda _: core.labels.Empty(field=core.fields.System('post-page-layout')),
             labels.SpecialPageLayout: self._map_special_post_page_layout,
-            labels.DefaultEditorLayout: lambda _: core0.labels.Empty(field=core0.fields.System('post-editor-layout')),
+            labels.DefaultEditorLayout: lambda _: core.labels.Empty(field=core.fields.System('post-editor-layout')),
             labels.SpecialEditorLayout: self._map_special_post_editor_layout,
         })
 
@@ -59,58 +59,58 @@ class Labels(mappers.ILabels[labels.Base]):
         return self.label_to_factory_func_map[type(label)](label)
 
     @staticmethod
-    def _map_post_id(label: labels.Id) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-id'), value=label.value)
+    def _map_post_id(label: labels.Id) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-id'), value=label.value)
 
-    def _map_post_type(self, label: labels.Type) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-type'), value=self.aspects.map_post_type(label.type))
+    def _map_post_type(self, label: labels.Type) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-type'), value=self.aspects.map_post_type(label.type))
 
-    def _map_post_status(self, label: labels.Status) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-status'), value=self.aspects.map_post_status(label.status))
-
-    @staticmethod
-    def _map_primary_post_tag(label: labels.PrimaryTag) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-primary-tag'), value=label.slug)
+    def _map_post_status(self, label: labels.Status) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-status'), value=self.aspects.map_post_status(label.status))
 
     @staticmethod
-    def _map_regular_post_tag(label: labels.RegularTag) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-regular-tag'), value=label.slug)
+    def _map_primary_post_tag(label: labels.PrimaryTag) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-primary-tag'), value=label.slug)
 
     @staticmethod
-    def _map_primary_post_section(label: labels.PrimarySection) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-primary-section'), value=label.id)
+    def _map_regular_post_tag(label: labels.RegularTag) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-regular-tag'), value=label.slug)
 
     @staticmethod
-    def _map_regular_post_section(label: labels.RegularSection) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-regular-section'), value=label.id)
+    def _map_primary_post_section(label: labels.PrimarySection) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-primary-section'), value=label.id)
 
     @staticmethod
-    def _map_post_community(label: labels.Community) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-community'), value=label.id)
+    def _map_regular_post_section(label: labels.RegularSection) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-regular-section'), value=label.id)
 
     @staticmethod
-    def _map_post_author(label: labels.Author) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-author'), value=label.id)
+    def _map_post_community(label: labels.Community) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-community'), value=label.id)
 
     @staticmethod
-    def _map_post_stage(label: labels.Stage) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-stage'), value=label.id)
+    def _map_post_author(label: labels.Author) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-author'), value=label.id)
 
     @staticmethod
-    def _map_custom_post_field(label: labels.CustomField) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.Custom('custom-post-field', path=label.path), value=label.value)
+    def _map_post_stage(label: labels.Stage) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-stage'), value=label.id)
 
     @staticmethod
-    def _map_no_custom_post_field(label: labels.NoCustomField) -> core0.labels.Empty:
-        return core0.labels.Empty(field=core0.fields.Custom('custom-post-field', path=label.path))
+    def _map_custom_post_field(label: labels.CustomField) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.Custom('custom-post-field', path=label.path), value=label.value)
 
     @staticmethod
-    def _map_special_post_page_layout(label: labels.SpecialPageLayout) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-page-layout'), value=label.slug)
+    def _map_no_custom_post_field(label: labels.NoCustomField) -> core.labels.Empty:
+        return core.labels.Empty(field=core.fields.Custom('custom-post-field', path=label.path))
 
     @staticmethod
-    def _map_special_post_editor_layout(label: labels.SpecialEditorLayout) -> core0.labels.Value:
-        return core0.labels.Value(field=core0.fields.System('post-editor-layout'), value=label.slug)
+    def _map_special_post_page_layout(label: labels.SpecialPageLayout) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-page-layout'), value=label.slug)
+
+    @staticmethod
+    def _map_special_post_editor_layout(label: labels.SpecialEditorLayout) -> core.labels.Value:
+        return core.labels.Value(field=core.fields.System('post-editor-layout'), value=label.slug)
 
 
 class Fields(mappers.IFields[fields.Base]):
@@ -120,15 +120,15 @@ class Fields(mappers.IFields[fields.Base]):
 
     def __init__(self):
         self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
-            fields.PrimaryTag: lambda _: core0.fields.System('post-primary-tag'),
-            fields.RegularTag: lambda _: core0.fields.System('post-regular-tag'),
-            fields.PrimarySection: lambda _: core0.fields.System('post-primary-section'),
-            fields.RegularSection: lambda _: core0.fields.System('post-regular-section'),
-            fields.ModifiedAt: lambda _: core0.fields.System('post-modified-at'),
-            fields.ScheduledAt: lambda _: core0.fields.System('post-scheduled-at'),
-            fields.PublishedAt: lambda _: core0.fields.System('post-published-at'),
+            fields.PrimaryTag: lambda _: core.fields.System('post-primary-tag'),
+            fields.RegularTag: lambda _: core.fields.System('post-regular-tag'),
+            fields.PrimarySection: lambda _: core.fields.System('post-primary-section'),
+            fields.RegularSection: lambda _: core.fields.System('post-regular-section'),
+            fields.ModifiedAt: lambda _: core.fields.System('post-modified-at'),
+            fields.ScheduledAt: lambda _: core.fields.System('post-scheduled-at'),
+            fields.PublishedAt: lambda _: core.fields.System('post-published-at'),
             fields.Metric: NotImplemented,
-            fields.LifetimePageViews: lambda _: core0.fields.System('lifetime-post-page-views'),
+            fields.LifetimePageViews: lambda _: core.fields.System('lifetime-post-page-views'),
             fields.CustomField: self._map_custom_post_field,
         })
 
@@ -136,8 +136,8 @@ class Fields(mappers.IFields[fields.Base]):
         return self.field_to_factory_func_map[type(field)](field)
 
     @staticmethod
-    def _map_custom_post_field(field: fields.CustomField) -> core0.Field:
-        return core0.fields.Custom('custom-post-field', path=field.path)
+    def _map_custom_post_field(field: fields.CustomField) -> core.fields.Custom:
+        return core.fields.Custom('custom-post-field', path=field.path)
 
 
 class Aspects:

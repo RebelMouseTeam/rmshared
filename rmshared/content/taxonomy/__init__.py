@@ -1,5 +1,4 @@
 from rmshared.content.taxonomy import core
-from rmshared.content.taxonomy import core0
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
 from rmshared.content.taxonomy import filters
@@ -25,7 +24,6 @@ from rmshared.content.taxonomy.fakes import Fakes
 
 __all__ = [
     'core',
-    'core0',
 
     'Guid',
     'Entity',
