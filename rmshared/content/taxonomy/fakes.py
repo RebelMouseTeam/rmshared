@@ -218,6 +218,9 @@ class Fakes:
     def make_user_profile_status(self):
         return self.users.make_profile_status()
 
+    def stream_core_filters(self) -> Iterator[core.filters.Filter]:
+        return self.core.stream_filters()
+
     def stream_core_variable_filters(self) -> Iterator[core.variables.Operator[core.filters.Filter]]:
         return self.core.stream_variable_filters()
 

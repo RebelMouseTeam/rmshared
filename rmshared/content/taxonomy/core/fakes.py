@@ -40,7 +40,7 @@ class Fakes:
     def make_filter(self) -> filters.Filter:
         return self.faker.random_element(elements=frozenset(self._stream_filters()))
 
-    def _stream_filters(self) -> Iterator[filters.Filter]:
+    def stream_filters(self) -> Iterator[filters.Filter]:
         yield filters.AnyLabel(labels=tuple(self._stream_random_labels()))
         yield filters.NoLabels(labels=tuple(self._stream_random_labels()))
         yield filters.AnyRange(ranges=tuple(self._stream_random_ranges()))
