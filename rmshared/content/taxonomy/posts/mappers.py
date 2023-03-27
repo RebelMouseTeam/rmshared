@@ -141,7 +141,7 @@ class Factory:
         @staticmethod
         def _map_custom_post_field(field: fields.CustomField) -> taxonomy_core.fields.Custom:
             return taxonomy_core.fields.Custom('post-custom-field', path=field.path)
-    
+
     class Aspects:
         def __init__(self):
             self.post_status_to_factory_func_map = ensure_map_is_complete(statuses.Status, {
