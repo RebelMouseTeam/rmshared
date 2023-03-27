@@ -44,7 +44,11 @@ class Builder(IBuilder):
     def make_visitor(self):
         filters = self._make_visitor(IFilters)
         orders = self._make_visitor(IOrders)
-        return Visitor(filters=filters, orders=orders)
+        labels = self._make_visitor(ILabels)
+        ranges = self._make_visitor(IRanges)
+        fields = self._make_visitor(IFields)
+        values = self._make_visitor(IValues)
+        return Visitor(filters, orders, labels, ranges, fields, values)
 
     @lru_cache(maxsize=None, typed=True)
     def _make_visitor(self, interface: IBuilder.Dependency):

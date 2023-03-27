@@ -99,3 +99,19 @@ class IVisitor(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange
     @abstractmethod
     def visit_order(self, order: InOrder) -> OutOrder:
         pass
+
+    @abstractmethod
+    def visit_label(self, label: InLabel) -> OutLabel:
+        pass
+
+    @abstractmethod
+    def visit_range(self, range_: InRange) -> OutRange:
+        pass
+
+    @abstractmethod
+    def visit_field(self, field: InField) -> OutField:
+        pass
+
+    @abstractmethod
+    def visit_value(self, value: InValue) -> OutValue:
+        pass
