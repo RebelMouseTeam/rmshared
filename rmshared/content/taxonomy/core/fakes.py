@@ -24,6 +24,8 @@ from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core import variables
 
 FakerWithProviders = Faker | BaseProvider | lorem.Provider | python.Provider | faker_ext.Provider
+Label = TypeVar('Label')
+Range = TypeVar('Range')
 
 
 class Fakes:
@@ -41,13 +43,17 @@ class Fakes:
         return self.faker.random_element(elements=frozenset(self.stream_filters()))
 
     def stream_filters(self) -> Iterator[filters.Filter]:
-        yield filters.AnyLabel(labels=tuple(self._stream_random_labels()))
-        yield filters.NoLabels(labels=tuple(self._stream_random_labels()))
-        yield filters.AnyRange(ranges=tuple(self._stream_random_ranges()))
-        yield filters.NoRanges(ranges=tuple(self._stream_random_ranges()))
+        return self._stream_filters(self._stream_random_labels, self._stream_random_ranges)
 
-    def _stream_random_labels(self) -> Iterator[labels.Label]:
-        return self.faker.stream_random_items(self.make_label, min_size=1, max_size=3)
+    @staticmethod
+    def _stream_filters(stream_labels: Callable[[], Iterator[Label]], stream_ranges: Callable[[], Iterator[Range]]) -> Iterator[filters.Filter]:
+        yield filters.AnyLabel(labels=tuple(stream_labels()))
+        yield filters.NoLabels(labels=tuple(stream_labels()))
+        yield filters.AnyRange(ranges=tuple(stream_ranges()))
+        yield filters.NoRanges(ranges=tuple(stream_ranges()))
+
+    def _stream_random_labels(self) -> Iterator[Label]:
+        return self.faker.stream_random_items(factory_func=self.make_label, min_size=1, max_size=3)
 
     def make_label(self) -> labels.Label:
         return self.faker.random_element(elements=frozenset(self._stream_labels()))
@@ -57,7 +63,7 @@ class Fakes:
         yield labels.Badge(field=self.make_field())
         yield labels.Empty(field=self.make_field())
 
-    def _stream_random_ranges(self) -> Iterator[ranges.Range]:
+    def _stream_random_ranges(self) -> Iterator[Range]:
         return self.faker.stream_random_items(factory_func=self.make_range, min_size=1, max_size=3)
 
     def make_range(self) -> ranges.Range:
@@ -84,7 +90,7 @@ class Fakes:
         yield self.faker.pyfloat()
 
     def stream_variable_filters(self) -> Iterator[variables.Operator[filters.Filter]]:
-        return self.variables.stream_filters()
+        return self.variables.stream_filter_operators()
 
     def sample_variable_argument_types(self, size: Optional[int] = None) -> Iterable[Type[variables.Argument]]:
         return self.variables.sample_argument_types(size)
@@ -106,14 +112,21 @@ class Fakes:
                 ranges.MoreThan: self._replace_more_than_range_value_with_variable_value,
             })
 
-        def stream_filters(self) -> Iterator[variables.Operator[filters.Filter]]:
+        def stream_filter_operators(self) -> Iterator[variables.Operator[filters.Filter]]:
             yield self._make_switch_operator(make_case=self._make_filter)
             yield self._make_return_operator(make_case=self._make_filter)
 
         def _make_filter(self) -> filters.Filter:
-            return self.fakes.make_filter()
+            filters_ = self.fakes._stream_filters(self._stream_random_label_operators, self._stream_random_range_operators)
+            return self.faker.random_element(elements=frozenset(filters_))
 
-        def stream_labels(self) -> Iterator[variables.Operator[labels.Label]]:
+        def _stream_random_label_operators(self) -> Iterator[variables.Operator[labels.Label]]:
+            return self.faker.stream_random_items(factory_func=self._make_label_operator, min_size=1, max_size=3)
+
+        def _make_label_operator(self) -> variables.Operator[labels.Label]:
+            return self.faker.random_element(elements=frozenset(self._stream_label_operators()))
+
+        def _stream_label_operators(self) -> Iterator[variables.Operator[labels.Label]]:
             yield self._make_switch_operator(make_case=self._make_label)
             yield self._make_return_operator(make_case=self._make_label)
 
@@ -128,7 +141,13 @@ class Fakes:
         def _replace_value_label_value_with_variable_value(self, label: labels.Value) -> labels.Value:
             return replace(label, value=self._make_variable_value())
 
-        def stream_ranges(self) -> Iterator[variables.Operator[ranges.Range]]:
+        def _stream_random_range_operators(self) -> Iterator[variables.Operator[ranges.Range]]:
+            return self.faker.stream_random_items(factory_func=self._make_range_operator, min_size=1, max_size=3)
+
+        def _make_range_operator(self) -> variables.Operator[ranges.Range]:
+            return self.faker.random_element(elements=frozenset(self._stream_range_operators()))
+
+        def _stream_range_operators(self) -> Iterator[variables.Operator[ranges.Range]]:
             yield self._make_switch_operator(make_case=self._make_range)
             yield self._make_return_operator(make_case=self._make_range)
 
