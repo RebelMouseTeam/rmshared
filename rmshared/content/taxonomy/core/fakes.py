@@ -122,10 +122,20 @@ class Fakes:
             return self.faker.random_element(elements=frozenset(self._stream_filter_operators()))
 
         def _stream_filter_operators(self) -> Iterator[variables.Operator[filters.Filter]]:
-            yield self._make_switch_operator(make_case=self._make_filter)
-            yield self._make_return_operator(make_case=self._make_filter)
+            yield self._make_switch_operator(make_case=self._make_filter_with_returns)
+            yield self._make_return_operator(make_case=self._make_filter_with_switches)
 
-        def _make_filter(self) -> filters.Filter:
+        def _make_filter_with_returns(self) -> filters.Filter:
+            def sample_label_operators():
+                yield self._make_return_operator(make_case=self._make_label)
+
+            def sample_range_operators():
+                yield self._make_return_operator(make_case=self._make_range)
+
+            filters_ = self.fakes._stream_filters(sample_label_operators, sample_range_operators)
+            return self.fakes.faker.random_element(elements=frozenset(filters_))
+
+        def _make_filter_with_switches(self) -> filters.Filter:
             filters_ = self.fakes._stream_filters(self._sample_label_operators, self._sample_range_operators)
             return self.faker.random_element(elements=frozenset(filters_))
 
