@@ -17,5 +17,5 @@ __all__ = (
     'Reference',
 
     'IResolver', 'Resolver',
-    'IProtocol', 'protocol',
+    'IProtocol', 'protocol', 'data',
 )
