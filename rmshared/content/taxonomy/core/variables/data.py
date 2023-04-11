@@ -46,7 +46,7 @@ class Factory:
     def make_filters(self, labels_: base_protocols.ILabels, ranges_: base_protocols.IRanges) -> base_protocols.IFilters[Operator[filters.Filter]]:
         delegate = self.delegate.make_filters(labels_, ranges_)
         instance = base_protocols.Filters()
-        # TODO: consider `fallback = base_protocols.fallbacks.Filters(delegate=delegate, fallback=instance)` for {'$switch': {...: {'$<operator>': ...}}}
+        # TODO: consider `fallback = base_protocols.fallbacks.Filters(delegate=delegate, fallback=instance)` for {'@switch': {...: {'@<operator>': ...}}}
         instance.add_filter(operators.Switch[filters.Filter], self.SwitchFiltersProtocol(delegate, self.operators))
         instance.add_filter(operators.Return[filters.Filter], self.ReturnFiltersProtocol(delegate, self.operators))
         return instance
@@ -57,7 +57,7 @@ class Factory:
     def make_labels(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.ILabels[Operator[labels.Label]]:
         delegate = self.delegate.make_labels(fields_, values_)
         instance = base_protocols.Labels()
-        # TODO: consider `fallback = base_protocols.fallbacks.Labels(delegate=delegate, fallback=instance)` for {'$switch': {...: {'$<operator>': ...}}}
+        # TODO: consider `fallback = base_protocols.fallbacks.Labels(delegate=delegate, fallback=instance)` for {'@switch': {...: {'@<operator>': ...}}}
         instance.add_label(operators.Switch[labels.Label], self.SwitchLabelsProtocol(delegate, self.operators))
         instance.add_label(operators.Return[labels.Label], self.ReturnLabelsProtocol(delegate, self.operators))
         return instance
@@ -65,7 +65,7 @@ class Factory:
     def make_ranges(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.IRanges[Operator[ranges.Range]]:
         delegate = self.delegate.make_ranges(fields_, values_)
         instance = base_protocols.Ranges()
-        # TODO: consider `fallback = base_protocols.fallbacks.Ranges(delegate=delegate, fallback=instance)` for {'$switch': {...: {'$<operator>': ...}}}
+        # TODO: consider `fallback = base_protocols.fallbacks.Ranges(delegate=delegate, fallback=instance)` for {'@switch': {...: {'@<operator>': ...}}}
         instance.add_range(operators.Switch[ranges.Range], self.SwitchRangesProtocol(delegate, self.operators))
         instance.add_range(operators.Return[ranges.Range], self.ReturnRangesProtocol(delegate, self.operators))
         return instance
@@ -172,7 +172,7 @@ class Factory:
 
         def make_value(self, data: Mapping[str, Any]) -> values.Variable:
             try:
-                data = data['$variable']
+                data = data['@variable']
             except LookupError as e:
                 raise ValueError() from e
             else:
@@ -184,7 +184,7 @@ class Factory:
             return values.Variable(ref, index)
 
         def jsonify_value(self, value: values.Variable) -> Mapping[str, Any]:
-            return {'$variable': {'ref': self.variables.jsonify_reference(value.ref), 'index': value.index}}
+            return {'@variable': {'ref': self.variables.jsonify_reference(value.ref), 'index': value.index}}
 
     class ConstantValueProtocol(base_protocols.composites.IValues.IProtocol[values.Constant]):
         def __init__(self, delegate: base_protocols.IValues[ranges.Range]):
@@ -195,14 +195,14 @@ class Factory:
 
         def make_value(self, data) -> values.Constant:
             try:
-                data = data['$constant']
+                data = data['@constant']
             except LookupError as e:
                 raise ValueError() from e
             else:
                 return values.Constant(value=self.delegate.make_value(data))
 
         def jsonify_value(self, value: values.Constant):
-            return {'$constant': self.delegate.jsonify_value(value.value)}
+            return {'@constant': self.delegate.jsonify_value(value.value)}
 
     class Operators:
         def __init__(self, variables: 'Factory.Variables'):
@@ -210,24 +210,24 @@ class Factory:
 
         @staticmethod
         def get_switch_keys():
-            return {'$switch'}
+            return {'@switch'}
 
         def make_switch(self, data: Mapping[str, Any], make_case: Callable[[Any], T]) -> operators.Switch[T]:
             def make_return(operator_data: Mapping[str, Any]) -> operators.Return[T]:
                 return self.make_return(operator_data, make_case)
 
             return operators.Switch[T](
-                ref=self.variables.make_reference(data['$switch']['$ref']),
-                cases=self._make_cases(data['$switch']['$cases'], make_return),
+                ref=self.variables.make_reference(data['@switch']['@ref']),
+                cases=self._make_cases(data['@switch']['@cases'], make_return),
             )
 
         def jsonify_switch(self, operator: operators.Switch[T], jsonify_case: Callable[[T], Any]) -> Mapping[str, Any]:
             def jsonify_return(operator_: operators.Return[T]) -> Mapping[str, Any]:
                 return self.jsonify_return(operator_, jsonify_case)
 
-            return {'$switch': {
-                '$ref': self.variables.jsonify_reference(operator.ref),
-                '$cases': self._jsonify_cases(operator.cases, jsonify_return),
+            return {'@switch': {
+                '@ref': self.variables.jsonify_reference(operator.ref),
+                '@cases': self._jsonify_cases(operator.cases, jsonify_return),
             }}
 
         def _make_cases(self, data, make_case):
@@ -238,17 +238,17 @@ class Factory:
 
         @staticmethod
         def get_return_keys():
-            return {'$return'}
+            return {'@return'}
 
         @staticmethod
         def make_return(data: Mapping[str, Any], make_case: Callable[[Any], T]) -> operators.Return[T]:
             return operators.Return[T](
-                cases=tuple(map(make_case, data['$return']['$cases']))
+                cases=tuple(map(make_case, data['@return']['@cases']))
             )
 
         @staticmethod
         def jsonify_return(operator: operators.Return[T], jsonify_case: Callable[[T], Any]) -> Mapping[str, Any]:
-            return {'$return': {'$cases': list(map(jsonify_case, operator.cases))}}
+            return {'@return': {'@cases': list(map(jsonify_case, operator.cases))}}
 
     class Protocol(IProtocol):
         def __init__(self, delegate: base_protocols.IProtocol, variables: 'Factory.Variables'):
@@ -288,9 +288,9 @@ class Factory:
     class Variables:
         def __init__(self):
             self.argument_to_argument_name_map: Mapping[Type[Argument], str] = {
-                arguments.Value: '$value',
-                arguments.Empty: '$empty',
-                arguments.Any: '$any',
+                arguments.Value: '@value',
+                arguments.Empty: '@empty',
+                arguments.Any: '@any',
             }
             self.argument_name_to_argument_map = invert_dict(self.argument_to_argument_name_map)
 

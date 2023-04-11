@@ -21,95 +21,95 @@ class TestData:
         assert data == self.FILTERS_DATA
 
     FILTERS_DATA = (
-        {'$return': {'$cases': [
+        {'@return': {'@cases': [
             {'any_label': [
-                {'$return': {'$cases': [
-                    {'value': {'field': {'post-id': {}}, 'value': {'$constant': 123}}},
+                {'@return': {'@cases': [
+                    {'value': {'field': {'post-id': {}}, 'value': {'@constant': 123}}},
                 ]}},
             ]},
         ]}},
-        {'$switch': {
-            '$ref': {'alias': '$1'},
-            '$cases': {
-                '$empty': {'$return': {'$cases': [
+        {'@switch': {
+            '@ref': {'alias': '$1'},
+            '@cases': {
+                '@empty': {'@return': {'@cases': [
                     {'any_label': [
-                        {'$return': {'$cases': [
+                        {'@return': {'@cases': [
                             {'empty': {'field': {'post-regular-section': {}}}},
                         ]}},
                     ]},
                 ]}},
-                '$value': {'$return': {'$cases': [
+                '@value': {'@return': {'@cases': [
                     {'any_label': [
-                        {'$return': {'$cases': [
-                            {'value': {'field': {'post-regular-section': {}}, 'value': {'$variable': {'ref': {'alias': '$1'}, 'index': 1}}}},
+                        {'@return': {'@cases': [
+                            {'value': {'field': {'post-regular-section': {}}, 'value': {'@variable': {'ref': {'alias': '$1'}, 'index': 1}}}},
                         ]}},
                     ]},
                 ]}},
             },
         }},
-        {'$switch': {
-            '$ref': {'alias': '$2'},
-            '$cases': {
-                '$any': {'$return': {'$cases': []}},
-                '$empty': {'$return': {'$cases': [
+        {'@switch': {
+            '@ref': {'alias': '$2'},
+            '@cases': {
+                '@any': {'@return': {'@cases': []}},
+                '@empty': {'@return': {'@cases': [
                     {'no_labels': [
-                        {'$return': {'$cases': [
+                        {'@return': {'@cases': [
                             {'empty': {'field': {'private-post': {}}}},
                         ]}},
                     ]},
                 ]}},
-                '$value': {'$return': {'$cases': [
+                '@value': {'@return': {'@cases': [
                     {'any_label': [
-                        {'$return': {'$cases': [
+                        {'@return': {'@cases': [
                             {'badge': {'field': {'private-post': {}}}},
                         ]}},
                     ]},
                 ]}},
             },
         }},
-        {'$return': {'$cases': [
+        {'@return': {'@cases': [
             {'any_label': [
-                {'$return': {'$cases': [
-                    {'value': {'field': {'post-id': {}}, 'value': {'$constant': 123}}}
+                {'@return': {'@cases': [
+                    {'value': {'field': {'post-id': {}}, 'value': {'@constant': 123}}}
                 ]}},
-                {'$switch': {
-                    '$ref': {'alias': '$3'},
-                    '$cases': {
-                        '$empty': {'$return': {'$cases': [
+                {'@switch': {
+                    '@ref': {'alias': '$3'},
+                    '@cases': {
+                        '@empty': {'@return': {'@cases': [
                             {'empty': {'field': {'post-primary-tag': {}}}},
                         ]}},
-                        '$value': {'$return': {'$cases': [
-                            {'value': {'field': {'post-primary-tag': {}}, 'value': {'$variable': {'ref': {'alias': '$3'}, 'index': 1}}}},
-                            {'value': {'field': {'post-primary-tag': {}}, 'value': {'$variable': {'ref': {'alias': '$3'}, 'index': 2}}}},
+                        '@value': {'@return': {'@cases': [
+                            {'value': {'field': {'post-primary-tag': {}}, 'value': {'@variable': {'ref': {'alias': '$3'}, 'index': 1}}}},
+                            {'value': {'field': {'post-primary-tag': {}}, 'value': {'@variable': {'ref': {'alias': '$3'}, 'index': 2}}}},
                         ]}},
                     },
                 }},
             ]},
         ]}},
-        {'$switch': {
-            '$ref': {'alias': '$4'},
-            '$cases': {
-                '$value': {'$return': {'$cases': [
+        {'@switch': {
+            '@ref': {'alias': '$4'},
+            '@cases': {
+                '@value': {'@return': {'@cases': [
                     {'any_range': [
-                        {'$return': {'$cases': [
+                        {'@return': {'@cases': [
                             {
                                 'field': {'post-modified-at': {}},
-                                'min': {'$variable': {'ref': {'alias': '$4'}, 'index': 2}},
-                                'max': {'$variable': {'ref': {'alias': '$5'}, 'index': 1}},
+                                'min': {'@variable': {'ref': {'alias': '$4'}, 'index': 2}},
+                                'max': {'@variable': {'ref': {'alias': '$5'}, 'index': 1}},
                             },
                         ]}},
                     ]},
                 ]}},
             },
         }},
-        {'$return': {'$cases': [
+        {'@return': {'@cases': [
             {'no_ranges': [
-                {'$switch': {
-                    '$ref': {'alias': '$5'},
-                    '$cases': {
-                        '$value': {'$return': {'$cases': [
-                            {'field': {'post-modified-at': {}}, 'min': {'$variable': {'ref': {'alias': '$4'}, 'index': 1}}},
-                            {'field': {'post-published-at': {}}, 'min': {'$constant': 100}, 'max': {'$variable': {'ref': {'alias': '$5'}, 'index': 2}}},
+                {'@switch': {
+                    '@ref': {'alias': '$5'},
+                    '@cases': {
+                        '@value': {'@return': {'@cases': [
+                            {'field': {'post-modified-at': {}}, 'min': {'@variable': {'ref': {'alias': '$4'}, 'index': 1}}},
+                            {'field': {'post-published-at': {}}, 'min': {'@constant': 100}, 'max': {'@variable': {'ref': {'alias': '$5'}, 'index': 2}}},
                         ]}},
                     },
                 }},
