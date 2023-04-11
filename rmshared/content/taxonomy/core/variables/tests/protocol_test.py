@@ -5,7 +5,7 @@ from rmshared.content.taxonomy.core.variables.abc import IProtocol
 from rmshared.content.taxonomy.core.variables.tests import fixtures
 
 
-class TestServerProtocol:
+class TestProtocol:
     NOW = 1440000000
 
     @fixture

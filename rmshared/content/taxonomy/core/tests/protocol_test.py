@@ -9,7 +9,7 @@ from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import protocol
 
 
-class TestServerProtocol:
+class TestProtocol:
     NOW = 1440000000
 
     @fixture
