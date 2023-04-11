@@ -9,6 +9,7 @@ from typing import TypeVar
 from rmshared.tools import invert_dict
 from rmshared.tools import map_dict
 from rmshared.tools import unless_none
+from rmshared.typings import read_only
 
 from rmshared.content.taxonomy import protocols as base_protocols
 from rmshared.content.taxonomy.core import filters
@@ -243,7 +244,7 @@ class Factory:
 
             return operators.Switch[T](
                 ref=self.variables.make_reference(data['$switch']['$ref']),
-                cases=self._make_cases(data['$switch']['$cases'], make_return),
+                cases=read_only(self._make_cases(data['$switch']['$cases'], make_return)),
             )
 
         def jsonify_switch(self, operator: operators.Switch[T], jsonify_case: Callable[[T], Any]) -> Mapping[str, Any]:
