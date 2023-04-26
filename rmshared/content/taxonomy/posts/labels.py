@@ -32,6 +32,11 @@ class Suspicious(Label):
 
 
 @dataclass(frozen=True)
+class ExcludedFromSearch(Label):
+    pass
+
+
+@dataclass(frozen=True)
 class PrimaryTag(Label):
     slug: str
 

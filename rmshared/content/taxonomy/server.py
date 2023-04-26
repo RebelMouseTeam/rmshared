@@ -260,6 +260,7 @@ class Protocol:
                 posts.labels.SpecialPageLayout: 'special-post-page-layout',
                 posts.labels.DefaultEditorLayout: 'default-post-editor-layout',
                 posts.labels.SpecialEditorLayout: 'special-post-editor-layout',
+                posts.labels.ExcludedFromSearch: 'excluded-from-search-post',
 
                 users.labels.Id: 'user-id',
                 users.labels.Slug: 'user-profile-slug',
@@ -303,6 +304,7 @@ class Protocol:
                 posts.labels.SpecialPageLayout: self._make_special_post_page_layout,
                 posts.labels.DefaultEditorLayout: lambda _: posts.labels.DefaultEditorLayout(),
                 posts.labels.SpecialEditorLayout: self._make_special_post_editor_layout,
+                posts.labels.ExcludedFromSearch: lambda _: posts.labels.ExcludedFromSearch(),
 
                 users.labels.Id: self._make_user_profile_id,
                 users.labels.Slug: self._make_user_profile_slug,
