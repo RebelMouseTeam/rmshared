@@ -58,6 +58,7 @@ class TestMappers:
             labels.NoCustomField(path='path.to.field_2'),
             labels.SpecialPageLayout(slug='layout-2'),
             labels.DefaultEditorLayout(),
+            labels.ExcludedFromSearch(),
         )),
         core.filters.AnyRange[core.ranges.Range[fields.Base]](ranges=(
             core.ranges.Between(field=fields.ModifiedAt(), min_value=100, max_value=500),
@@ -107,6 +108,7 @@ class TestMappers:
             core.labels.Empty(field=core.fields.Custom(name='post-custom-field', path='path.to.field_2')),
             core.labels.Value(field=core.fields.System(name='post-page-layout'), value='layout-2'),
             core.labels.Empty(field=core.fields.System(name='post-editor-layout')),
+            core.labels.Badge(field=core.fields.System(name='post-is-excluded-from-search')),
         )),
         core.filters.AnyRange[core.ranges.Range](ranges=(
             core.ranges.Between(field=core.fields.System(name='post-modified-at'), min_value=100, max_value=500),

@@ -61,6 +61,7 @@ class Factory:
                 labels.SpecialPageLayout: self._map_special_post_page_layout,
                 labels.DefaultEditorLayout: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-editor-layout')),
                 labels.SpecialEditorLayout: self._map_special_post_editor_layout,
+                labels.ExcludedFromSearch: lambda _: taxonomy_core.labels.Badge(field=taxonomy_core.fields.System('post-is-excluded-from-search')),
             })
 
         def visit_label(self, label):
