@@ -131,8 +131,6 @@ class Factory:
                 fields.ModifiedAt: lambda _: taxonomy_core.fields.System('post-modified-at'),
                 fields.ScheduledAt: lambda _: taxonomy_core.fields.System('post-scheduled-at'),
                 fields.PublishedAt: lambda _: taxonomy_core.fields.System('post-published-at'),
-                fields.Metric: NotImplemented,
-                fields.LifetimePageViews: lambda _: taxonomy_core.fields.System('lifetime-post-page-views'),
                 fields.CustomField: self._map_custom_post_field,
             })
 

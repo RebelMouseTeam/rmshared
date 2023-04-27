@@ -19,10 +19,5 @@ class LastLoggedInAt(Base):
 
 
 @dataclass(frozen=True)
-class LifetimePosts(Base):
-    pass
-
-
-@dataclass(frozen=True)
 class CustomField(Base):
     path: str

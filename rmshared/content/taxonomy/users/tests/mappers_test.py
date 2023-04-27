@@ -44,7 +44,7 @@ class TestMappers:
             core.ranges.LessThan(field=fields.LastLoggedInAt(), value=600),
         )),
         core.filters.NoRanges[core.ranges.Range[fields.Base]](ranges=(
-            core.ranges.MoreThan(field=fields.LifetimePosts(), value=50),
+            core.ranges.MoreThan(field=fields.LastLoggedInAt(), value=50),
             core.ranges.Between(field=fields.CustomField(path='path.to.field.3'), min_value=0.01, max_value=0.99),
         )),
     ]
@@ -76,7 +76,7 @@ class TestMappers:
             core.ranges.LessThan(field=core.fields.System(name='user-last-logged-in-at'), value=600),
         )),
         core.filters.NoRanges[core.ranges.Range](ranges=(
-            core.ranges.MoreThan(field=core.fields.System(name='user-lifetime-posts'), value=50),
+            core.ranges.MoreThan(field=core.fields.System(name='user-last-logged-in-at'), value=50),
             core.ranges.Between(field=core.fields.Custom(name='user-custom-field', path='path.to.field.3'), min_value=0.01, max_value=0.99),
         )),
     ]

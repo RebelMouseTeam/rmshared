@@ -44,15 +44,5 @@ class PublishedAt(Base):
 
 
 @dataclass(frozen=True)
-class LifetimePageViews(Base):  # TODO: == Metric(event='lifetime_page_views') ???
-    pass
-
-
-@dataclass(frozen=True)
-class Metric(Base):
-    event: str
-
-
-@dataclass(frozen=True)
 class CustomField(Base):
     path: str

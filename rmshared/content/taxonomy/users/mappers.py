@@ -102,7 +102,6 @@ class Factory:
             self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
                 fields.Title: lambda _: taxonomy_core.fields.System('user-profile-title'),
                 fields.LastLoggedInAt: lambda _: taxonomy_core.fields.System('user-last-logged-in-at'),
-                fields.LifetimePosts: lambda _: taxonomy_core.fields.System('user-lifetime-posts'),
                 fields.CustomField: self._map_custom_user_field,
             })
 
