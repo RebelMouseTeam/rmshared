@@ -18,6 +18,7 @@ class Post:
     stage_id: Optional[int]
     is_private: bool
     is_suspicious: bool
+    is_excluded_from_search: bool
     modified_ts: int
     scheduled_ts: Optional[int]
     published_ts: Optional[int]

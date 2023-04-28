@@ -1,6 +1,8 @@
 from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
+from rmshared.content.taxonomy import graph
+from rmshared.content.taxonomy import extractors
 from rmshared.content.taxonomy import filters
 from rmshared.content.taxonomy import orders
 from rmshared.content.taxonomy import groupings
@@ -49,6 +51,9 @@ __all__ = [
     'core',
     'posts',
     'users',
+
+    'graph',
+    'extractors',
 
     'visitors',
     'protocols',

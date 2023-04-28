@@ -9,7 +9,7 @@ class Base(Field, metaclass=ABCMeta):
 
 
 @dataclass(frozen=True)
-class PrimaryTag(Base):
+class PrimaryTag(Base):  # TODO: taxonomy.aliases.posts.fields.PrimaryTag ???
     pass
 
 
