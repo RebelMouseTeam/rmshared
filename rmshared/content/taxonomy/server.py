@@ -171,6 +171,7 @@ class Protocol:
                 posts.texts.Bodies: 'post-bodies',
                 posts.texts.CustomField: 'custom-post-field',
 
+                users.texts.Slugs: 'user-slugs',
                 users.texts.Titles: 'user-titles',
                 users.texts.Emails: 'user-emails',
                 users.texts.AboutHtml: 'user-about-html',
@@ -185,6 +186,7 @@ class Protocol:
                 posts.texts.Bodies: lambda _: dict(),
                 posts.texts.CustomField: self._jsonify_custom_post_field,
 
+                users.texts.Slugs: lambda _: dict(),
                 users.texts.Titles: lambda _: dict(),
                 users.texts.Emails: lambda _: dict(),
                 users.texts.AboutHtml: lambda _: dict(),
@@ -198,6 +200,7 @@ class Protocol:
                 posts.texts.Bodies: lambda _: posts.texts.Bodies(),
                 posts.texts.CustomField: self._make_custom_post_field,
 
+                users.texts.Slugs: lambda _: users.texts.Slugs(),
                 users.texts.Titles: lambda _: users.texts.Titles(),
                 users.texts.Emails: lambda _: users.texts.Emails(),
                 users.texts.AboutHtml: lambda _: users.texts.AboutHtml(),
