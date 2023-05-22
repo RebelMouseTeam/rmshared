@@ -9,6 +9,16 @@ class Base(Field, metaclass=ABCMeta):
 
 
 @dataclass(frozen=True)
+class Author(Base):
+    pass
+
+
+@dataclass(frozen=True)
+class Community(Base):
+    pass
+
+
+@dataclass(frozen=True)
 class PrimaryTag(Base):  # TODO: taxonomy.aliases.posts.fields.PrimaryTag ???
     pass
 

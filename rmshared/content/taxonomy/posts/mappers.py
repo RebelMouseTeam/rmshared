@@ -124,6 +124,8 @@ class Factory:
     class Fields(taxonomy_visitors.IFields[fields.Base, taxonomy_core.fields.Field]):
         def __init__(self):
             self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
+                fields.Author: lambda _: taxonomy_core.fields.System('post-author'),
+                fields.Community: lambda _: taxonomy_core.fields.System('post-community'),
                 fields.PrimaryTag: lambda _: taxonomy_core.fields.System('post-primary-tag'),
                 fields.RegularTag: lambda _: taxonomy_core.fields.System('post-regular-tag'),
                 fields.PrimarySection: lambda _: taxonomy_core.fields.System('post-primary-section'),
