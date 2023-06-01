@@ -1,5 +1,6 @@
 import dataclasses
 import functools
+import operator
 
 
 def total_ordering(cls):
@@ -7,11 +8,15 @@ def total_ordering(cls):
         if other is None:
             return False
         elif dataclasses.is_dataclass(other):
-            self_tuple = (self.__class__.__module__, self.__class__.__qualname__) + dataclasses.astuple(self)
-            other_tuple = (other.__class__.__module__, self.__class__.__qualname__) + dataclasses.astuple(other)
+            self_tuple = get_dataclass_key(self)
+            other_tuple = get_dataclass_key(other)
             return self_tuple < other_tuple
         else:
             return self.__class__ < other.__class__
+
+    def get_dataclass_key(dc: dataclasses.dataclass) -> tuple:
+        attrs = zip(map(operator.attrgetter('name'), dataclasses.fields(dc)), dataclasses.astuple(dc))
+        return (dc.__class__.__module__, dc.__class__.__qualname__) + tuple(attrs)
 
     setattr(cls, '__lt__', __lt__)
     return functools.total_ordering(cls)
