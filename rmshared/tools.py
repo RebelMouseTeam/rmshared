@@ -181,10 +181,15 @@ def unique_sequence(sequence):
     return type(sequence)([x for x in sequence if x not in seen and not seen_add(x)])
 
 
-def align_iterable(iterable: Iterable[T], alignment: Sequence[V], key_func: Union[Type, Callable[[T], V]] = None) -> Iterator[T]:
-    source_dict = dict_from_list(iterable, key_func=key_func)
-    target_list = filter(bool, map(source_dict.get, alignment))
-    return target_list
+def align_iterable(iterable: Iterable[T], alignment: Sequence[V], key_func: Union[Type, Callable[[T], V]] = as_is) -> Iterator[T]:
+    """
+    >>> list(align_iterable([1, 2, 3, 4, 1], [5, 3, 2, 4, 1, 4, 2, 3]))
+    [3, 2, 4, 1, 1]
+    >>> list(align_iterable([('a', 1), ('b', 1), ('c', 2), ('d', 3), ('e', 3), ('f', 4)], [5, 3, 2, 4, 1, 4, 2, 3], lambda letter_number: letter_number[1]))
+    [('d', 3), ('e', 3), ('c', 2), ('f', 4), ('a', 1), ('b', 1)]
+    """
+    key_to_items_map = group_to_mapping(iterable, key_func=key_func)
+    return chain.from_iterable(filter(bool, map(key_to_items_map.get, unique_sequence(alignment))))
 
 
 def dict_from_list(
