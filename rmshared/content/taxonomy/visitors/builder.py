@@ -50,7 +50,7 @@ class Builder(IBuilder):
         values = self._make_visitor(IValues)
         return Visitor(filters, orders, labels, ranges, fields, values)
 
-    @lru_cache(maxsize=None, typed=True)
+    @lru_cache(maxsize=16, typed=True)
     def _make_visitor(self, interface: IBuilder.Dependency):
         factory = self.interface_to_factory_map[interface]
         dependencies = tuple(map(self._make_visitor, factory.dependencies))

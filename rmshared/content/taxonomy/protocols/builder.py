@@ -47,7 +47,7 @@ class Builder(IBuilder):
         fields = self._make_protocol(IFields)
         return Protocol(filters=filters, orders=orders, fields=fields)
 
-    @lru_cache(maxsize=None, typed=True)
+    @lru_cache(maxsize=16, typed=True)
     def _make_protocol(self, interface: IBuilder.Dependency):
         factory = self.interface_to_factory_map[interface]
         dependencies = tuple(map(self._make_protocol, factory.dependencies))

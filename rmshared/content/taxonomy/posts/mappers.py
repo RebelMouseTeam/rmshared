@@ -33,7 +33,7 @@ class Factory:
         return self.Fields()
 
     class Labels(taxonomy_visitors.ILabels[labels.Base, taxonomy_core.labels.Label]):
-        def __init__(self, aspects: 'Factory.Aspects'):
+        def __init__(self, aspects: 'Aspects'):
             self.aspects = aspects
             self.label_to_factory_func_map = ensure_map_is_complete(labels.Base, {
                 labels.Id: self._map_post_id,
