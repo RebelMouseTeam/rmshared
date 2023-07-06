@@ -6,9 +6,10 @@ from rmshared.content.taxonomy.users import fields
 from rmshared.content.taxonomy.users import labels
 from rmshared.content.taxonomy.users import mappers
 from rmshared.content.taxonomy.users.fakes import Fakes
+from rmshared.content.taxonomy.users.protocol import Protocol
 
 
-__all__ = [
+__all__ = (
     'consts',
     'statuses',
 
@@ -19,4 +20,5 @@ __all__ = [
     'mappers',
 
     'Fakes',
-]
+    'Protocol',
+)

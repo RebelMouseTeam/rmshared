@@ -10,8 +10,10 @@ from rmshared.content.taxonomy.posts import events
 from rmshared.content.taxonomy.posts import conditions
 from rmshared.content.taxonomy.posts import mappers
 from rmshared.content.taxonomy.posts.fakes import Fakes
+from rmshared.content.taxonomy.posts.protocol import Protocol
 
-__all__ = [
+
+__all__ = (
     'consts',
     'statuses',
     'drafts',
@@ -26,4 +28,5 @@ __all__ = [
     'mappers',
 
     'Fakes',
-]
+    'Protocol',
+)

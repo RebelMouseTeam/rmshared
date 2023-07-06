@@ -34,3 +34,4 @@ class Post:
     page_layout: Optional[others.Layout]
     editor_layout: Optional[others.Layout]
     site_specific_info: Mapping[str, Any]
+    lifetime_page_views_count: int

@@ -1,4 +1,7 @@
 from dataclasses import dataclass
+from typing import Any
+from typing import Mapping
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -18,6 +21,13 @@ class Community:
     title: str
     about_html: str
     description: str
+    details: Optional['CommunityDetails']
+
+
+@dataclass(frozen=True)
+class CommunityDetails:
+    site_specific_info: Mapping[str, Any]
+    lifetime_posts_count: int
 
 
 @dataclass(frozen=True)

@@ -27,7 +27,7 @@ class TestPostValuesExtractor:
             regular_tags=frozenset({graph.others.Tag(slug='cake'), graph.others.Tag(slug='dessert')}),
             primary_section=graph.others.Section(id=345),
             regular_sections=frozenset({graph.others.Section(id=456), graph.others.Section(id=567)}),
-            community=graph.others.Community(id=678, slug='food', title='Food', about_html='About food', description='Food is good'),
+            community=graph.others.Community(id=678, slug='food', title='Food', about_html='About food', description='Food is good', details=None),
             authors=(
                 graph.users.UserProfile(
                     id=789, user=graph.users.User(id=890, details=None), slug='jane-doe', title='Jane Doe', about_html='', description='', details=None
@@ -39,6 +39,7 @@ class TestPostValuesExtractor:
             page_layout=graph.others.Layout(slug='How_To'),
             editor_layout=graph.others.Layout(slug='EE_How_To'),
             site_specific_info=read_only({'foo': {'bar': 'baz', 'qux': [123, 456], 'qxa': None}}),
+            lifetime_page_views_count=123456,
         ))
 
         assert list(extractor_1.extract_values(core.fields.System('post-id'))) == [123]
@@ -65,6 +66,7 @@ class TestPostValuesExtractor:
         assert list(extractor_1.extract_values(core.fields.Custom('post-site-specific-info', path='foo.bar'))) == ['baz']
         assert list(extractor_1.extract_values(core.fields.Custom('post-site-specific-info', path='foo.qux'))) == [123, 456]
         assert list(extractor_1.extract_values(core.fields.Custom('post-site-specific-info', path='foo.qxa'))) == []
+        assert list(extractor_1.extract_values(core.fields.System('post-page-views-count'))) == [123456]
 
         extractor_2 = PostValuesExtractor(graph.posts.Post(
             id=2345,
@@ -89,6 +91,7 @@ class TestPostValuesExtractor:
             page_layout=None,
             editor_layout=None,
             site_specific_info=read_only(dict()),
+            lifetime_page_views_count=0,
         ))
 
         assert list(extractor_2.extract_values(core.fields.System('post-id'))) == [2345]
@@ -115,3 +118,4 @@ class TestPostValuesExtractor:
         assert list(extractor_2.extract_values(core.fields.Custom('post-site-specific-info', path='foo.bar'))) == []
         assert list(extractor_2.extract_values(core.fields.Custom('post-site-specific-info', path='foo.qux'))) == []
         assert list(extractor_2.extract_values(core.fields.Custom('post-site-specific-info', path='foo.qxa'))) == []
+        assert list(extractor_2.extract_values(core.fields.System('post-page-views-count'))) == [0]

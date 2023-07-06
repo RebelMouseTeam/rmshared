@@ -48,6 +48,7 @@ class PostValuesExtractor(IValuesExtractor):
             'post-author': lambda: map(attrgetter('id'), self.post.authors),
             'post-page-layout': lambda: map(attrgetter('slug'), filter(None, [self.post.page_layout])),
             'post-editor-layout': lambda: map(attrgetter('slug'), filter(None, [self.post.editor_layout])),
+            'post-page-views-count': lambda: [self.post.lifetime_page_views_count],
         }
         self.core_field_name_to_custom_values_getter_map: Mapping[str, Callable[[], Mapping[str, Any]]] = {
             'post-site-specific-info': lambda: self.post.site_specific_info,
