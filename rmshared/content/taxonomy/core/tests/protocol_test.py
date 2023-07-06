@@ -1,6 +1,6 @@
 from pytest import fixture
 
-from rmshared.content.taxonomy import protocols as taxonomy_protocols
+from rmshared.content.taxonomy import protocols as base_protocols
 from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import orders
@@ -13,14 +13,14 @@ class TestProtocol:
     NOW = 1440000000
 
     @fixture
-    def protocol_(self) -> taxonomy_protocols.IProtocol:
+    def protocol_(self) -> base_protocols.IProtocol:
         return protocol.Factory().make_protocol()
 
-    def test_it_should_make_filters(self, protocol_: taxonomy_protocols.IProtocol):
+    def test_it_should_make_filters(self, protocol_: base_protocols.IProtocol):
         filters_ = tuple(protocol_.make_filters(data=self.FILTERS_DATA))
         assert filters_ == self.FILTERS
 
-    def test_it_should_jsonify_filters(self, protocol_: taxonomy_protocols.IProtocol):
+    def test_it_should_jsonify_filters(self, protocol_: base_protocols.IProtocol):
         data = tuple(protocol_.jsonify_filters(filters_=self.FILTERS))
         assert data == self.FILTERS_DATA
 
@@ -62,7 +62,7 @@ class TestProtocol:
         ]},
     ])
 
-    def test_it_should_make_order(self, protocol_: taxonomy_protocols.IProtocol):
+    def test_it_should_make_order(self, protocol_: base_protocols.IProtocol):
         order = protocol_.make_order(data={'value': {
             'field': {'post-modified-at': {}},
             'reverse': False,
