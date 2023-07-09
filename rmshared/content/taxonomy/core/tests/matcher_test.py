@@ -18,7 +18,7 @@ class TestMatcher:
     def matcher(self) -> Matcher:
         return Matcher()
 
-    def test_it_should_check_id_post_aspects_match_filters(self, matcher: Matcher):
+    def test_it_should_check_if_entity_matches_filters(self, matcher: Matcher):
         entity = self.Entity()
         week_ago: int = self.NOW - Days(7)
 

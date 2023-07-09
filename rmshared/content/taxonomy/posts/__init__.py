@@ -7,7 +7,6 @@ from rmshared.content.taxonomy.posts import texts
 from rmshared.content.taxonomy.posts import fields
 from rmshared.content.taxonomy.posts import labels
 from rmshared.content.taxonomy.posts import events
-from rmshared.content.taxonomy.posts import conditions
 from rmshared.content.taxonomy.posts import mappers
 from rmshared.content.taxonomy.posts.fakes import Fakes
 from rmshared.content.taxonomy.posts.protocol import Protocol
@@ -24,7 +23,6 @@ __all__ = (
     'fields',
     'labels',
     'events',
-    'conditions',
     'mappers',
 
     'Fakes',
