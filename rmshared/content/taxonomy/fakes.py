@@ -16,7 +16,6 @@ from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
 from rmshared.content.taxonomy import filters
 from rmshared.content.taxonomy.abc import Guid
-from rmshared.content.taxonomy.abc import Text
 from rmshared.content.taxonomy.abc import Label
 from rmshared.content.taxonomy.abc import Field
 from rmshared.content.taxonomy.abc import Filter
@@ -67,11 +66,6 @@ class Fakes:
     def _make_filter(self):  # TODO: add other filters
         return self.faker.random_element(elements={
             filters.Phrase(phrase=self.faker.sentence(), syntax=None, weights=None),
-        })
-
-    def make_text(self) -> Text:  # TODO: add more texts
-        return self.faker.random_element(elements={
-            posts.texts.Titles(),
         })
 
     def make_label(self) -> Label:  # TODO: add more labels

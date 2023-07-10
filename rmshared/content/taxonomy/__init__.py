@@ -7,7 +7,6 @@ from rmshared.content.taxonomy import filters
 from rmshared.content.taxonomy import protocols
 from rmshared.content.taxonomy import visitors
 from rmshared.content.taxonomy.abc import Guid
-from rmshared.content.taxonomy.abc import Text
 from rmshared.content.taxonomy.abc import Label
 from rmshared.content.taxonomy.abc import Field
 from rmshared.content.taxonomy.abc import Range
@@ -18,7 +17,6 @@ from rmshared.content.taxonomy.fakes import Fakes
 __all__ = [
     'Guid',
 
-    'Text',
     'Label',
     'Field',
     'Range',
