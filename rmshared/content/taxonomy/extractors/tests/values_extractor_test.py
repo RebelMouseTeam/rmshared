@@ -3,13 +3,14 @@ from rmshared.typings import read_only
 from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import graph
 from rmshared.content.taxonomy import posts
+from rmshared.content.taxonomy import users
 
-from rmshared.content.taxonomy.extractors.values import PostValuesExtractor
+from rmshared.content.taxonomy.extractors.factory import Factory
 
 
 class TestPostValuesExtractor:
-    def test_it_should_extract_values(self):
-        extractor_1 = PostValuesExtractor(graph.posts.Post(
+    def test_it_should_extract_values_from_post(self):
+        extractor_1 = Factory.make_values_extractor_for_post(graph.posts.Post(
             id=123,
             type=posts.consts.POST.TYPE.HOW_TO,
             status=posts.statuses.Published(scope=posts.published.scopes.Site(is_promoted=False)),
@@ -63,12 +64,12 @@ class TestPostValuesExtractor:
         assert list(extractor_1.extract_values(core.fields.System('post-author'))) == [789, 901]
         assert list(extractor_1.extract_values(core.fields.System('post-page-layout'))) == ['How_To']
         assert list(extractor_1.extract_values(core.fields.System('post-editor-layout'))) == ['EE_How_To']
-        assert list(extractor_1.extract_values(core.fields.Custom('post-site-specific-info', path='foo.bar'))) == ['baz']
-        assert list(extractor_1.extract_values(core.fields.Custom('post-site-specific-info', path='foo.qux'))) == [123, 456]
-        assert list(extractor_1.extract_values(core.fields.Custom('post-site-specific-info', path='foo.qxa'))) == []
+        assert list(extractor_1.extract_values(core.fields.Custom('post-custom-field', path='foo.bar'))) == ['baz']
+        assert list(extractor_1.extract_values(core.fields.Custom('post-custom-field', path='foo.qux'))) == [123, 456]
+        assert list(extractor_1.extract_values(core.fields.Custom('post-custom-field', path='foo.qxa'))) == []
         assert list(extractor_1.extract_values(core.fields.System('post-page-views-count'))) == [123456]
 
-        extractor_2 = PostValuesExtractor(graph.posts.Post(
+        extractor_2 = Factory.make_values_extractor_for_post(graph.posts.Post(
             id=2345,
             type=posts.consts.POST.TYPE.PRODUCT,
             status=posts.statuses.Draft(stage=posts.drafts.stages.InProgress(is_rejected=True)),
@@ -115,7 +116,72 @@ class TestPostValuesExtractor:
         assert list(extractor_2.extract_values(core.fields.System('post-author'))) == []
         assert list(extractor_2.extract_values(core.fields.System('post-page-layout'))) == []
         assert list(extractor_2.extract_values(core.fields.System('post-editor-layout'))) == []
-        assert list(extractor_2.extract_values(core.fields.Custom('post-site-specific-info', path='foo.bar'))) == []
-        assert list(extractor_2.extract_values(core.fields.Custom('post-site-specific-info', path='foo.qux'))) == []
-        assert list(extractor_2.extract_values(core.fields.Custom('post-site-specific-info', path='foo.qxa'))) == []
+        assert list(extractor_2.extract_values(core.fields.Custom('post-custom-field', path='foo.bar'))) == []
+        assert list(extractor_2.extract_values(core.fields.Custom('post-custom-field', path='foo.qux'))) == []
+        assert list(extractor_2.extract_values(core.fields.Custom('post-custom-field', path='foo.qxa'))) == []
         assert list(extractor_2.extract_values(core.fields.System('post-page-views-count'))) == [0]
+
+    def test_it_should_extract_values_from_user_profiles(self):
+        extractor_1 = Factory.make_values_extractor_for_user_profile(graph.users.UserProfile(
+            id=777,
+            user=graph.users.User(
+                id=8765,
+                details=graph.users.UserDetails(
+                    status=users.consts.USER.STATUS.ACTIVE,
+                    emails=frozenset({'email_1@example.org', 'email_2@example.org'}),
+                    groups=frozenset({
+                        graph.users.UserGroup(slug='user-group-1'),
+                        graph.users.UserGroup(slug='user-group-2'),
+                    }),
+                    communities=frozenset({
+                        graph.others.Community(
+                            id=987,
+                            slug='community-1',
+                            title='Community #1',
+                            about_html='About community #1',
+                            description='Description of community #1',
+                            details=None,
+                        ),
+                        graph.others.Community(
+                            id=876,
+                            slug='community-2',
+                            title='Community #2',
+                            about_html='About community #2',
+                            description='Description of community #2',
+                            details=None,
+                        ),
+                    }),
+                    access_roles=frozenset({
+                        graph.users.AccessRole(id=12345),
+                        graph.users.AccessRole(id=54321),
+                    }),
+                    last_login_ts=1440000000,
+                ),
+            ),
+            slug='user-1',
+            title='User #1',
+            about_html='About user #1',
+            description='Description of user #1',
+            details=graph.users.UserProfileDetails(
+                status=users.statuses.Inactive(is_banned=True),
+                site_specific_info=read_only({'foo': {'bar': 'baz', 'qux': [123, 456], 'qxa': None}}),
+                lifetime_posts_count=54321,
+            )
+        ))
+
+        assert list(extractor_1.extract_values(core.fields.System('user-id'))) == [777]
+        assert list(extractor_1.extract_values(core.fields.System('user-profile-slug'))) == ['user-1']
+        assert list(extractor_1.extract_values(core.fields.System('user-profile-title'))) == ['User #1']
+        assert list(extractor_1.extract_values(core.fields.System('user-profile-owner'))) == [8765]
+        assert list(extractor_1.extract_values(core.fields.System('user-profile-status'))) == ['inactive(banned=true)']
+        assert list(extractor_1.extract_values(core.fields.System('user-profile-about-html'))) == ['About user #1']
+        assert list(extractor_1.extract_values(core.fields.System('user-profile-description'))) == ['Description of user #1']
+        assert frozenset(extractor_1.extract_values(core.fields.System('user-email'))) == frozenset({'email_1@example.org', 'email_2@example.org'})
+        assert frozenset(extractor_1.extract_values(core.fields.System('user-group'))) == frozenset({'user-group-1', 'user-group-2'})
+        assert frozenset(extractor_1.extract_values(core.fields.System('user-community'))) == frozenset({987, 876})
+        assert frozenset(extractor_1.extract_values(core.fields.System('user-access-role'))) == frozenset({12345, 54321})
+        assert list(extractor_1.extract_values(core.fields.System('user-last-logged-in-at'))) == [1440000000]
+        assert list(extractor_1.extract_values(core.fields.Custom('user-custom-field', path='foo.bar'))) == ['baz']
+        assert list(extractor_1.extract_values(core.fields.Custom('user-custom-field', path='foo.qux'))) == [123, 456]
+        assert list(extractor_1.extract_values(core.fields.Custom('user-custom-field', path='foo.qxa'))) == []
+        assert list(extractor_1.extract_values(core.fields.System('user-posts-count'))) == [54321]

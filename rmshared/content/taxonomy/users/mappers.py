@@ -12,7 +12,7 @@ from rmshared.content.taxonomy.users import statuses
 class Factory:
     def __init__(self):
         self.delegate = taxonomy_core.mapper.Factory()
-        self.aspects = self.Aspects()
+        self.aspects = Aspects()
 
     def make_visitor(self) -> taxonomy_visitors.IVisitor:
         builder = taxonomy_visitors.Builder()
@@ -31,7 +31,7 @@ class Factory:
         return self.Fields()
 
     class Labels(taxonomy_visitors.ILabels[labels.Base, taxonomy_core.labels.Label]):
-        def __init__(self, aspects: 'Factory.Aspects'):
+        def __init__(self, aspects: 'Aspects'):
             self.aspects = aspects
             self.label_to_factory_func_map = ensure_map_is_complete(labels.Base, {
                 labels.Id: self._map_user_profile_id,
@@ -112,26 +112,27 @@ class Factory:
         def _map_custom_user_field(field: fields.CustomField) -> taxonomy_core.fields.Field:
             return taxonomy_core.fields.Custom('user-custom-field', path=field.path)
 
-    class Aspects:
-        def __init__(self):
-            self.user_status_to_factory_func_map = ensure_map_is_complete(statuses.Status, {
-                statuses.Active: lambda _: 'active',
-                statuses.Pending: lambda _: 'pending',
-                statuses.Inactive: self._map_inactive_user_profile_status,
-            })
 
-        def map_user_profile_status(self, status: statuses.Status) -> str:
-            return self.user_status_to_factory_func_map[type(status)](status)
+class Aspects:
+    def __init__(self):
+        self.user_status_to_factory_func_map = ensure_map_is_complete(statuses.Status, {
+            statuses.Active: lambda _: 'active',
+            statuses.Pending: lambda _: 'pending',
+            statuses.Inactive: self._map_inactive_user_profile_status,
+        })
 
-        @staticmethod
-        def _map_inactive_user_profile_status(status: statuses.Inactive) -> str:
-            return f'inactive(banned={str(status.is_banned).lower()})'
+    def map_user_profile_status(self, status: statuses.Status) -> str:
+        return self.user_status_to_factory_func_map[type(status)](status)
 
-        def map_user_status(self, status: consts.USER.STATUS) -> str:
-            return self.USER_STATUS_TO_ID_MAP[status]
+    @staticmethod
+    def _map_inactive_user_profile_status(status: statuses.Inactive) -> str:
+        return f'inactive(banned={str(status.is_banned).lower()})'
 
-        USER_STATUS_TO_ID_MAP = {
-            consts.USER.STATUS.ACTIVE: 'active',
-            consts.USER.STATUS.INACTIVE: 'inactive',
-        }
-        assert set(USER_STATUS_TO_ID_MAP.keys()) == consts.USER.STATUS.ALL
+    def map_user_status(self, status: consts.USER.STATUS) -> str:
+        return self.USER_STATUS_TO_ID_MAP[status]
+
+    USER_STATUS_TO_ID_MAP = {
+        consts.USER.STATUS.ACTIVE: 'active',
+        consts.USER.STATUS.INACTIVE: 'inactive',
+    }
+    assert set(USER_STATUS_TO_ID_MAP.keys()) == consts.USER.STATUS.ALL
