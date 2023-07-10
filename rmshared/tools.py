@@ -85,7 +85,7 @@ def ensure_map_is_complete(type_class: Type[K], instance_class_to_any_map: Mappi
     """
     subtypes = set(type_class.__subclasses__())
     different_instance_classes = set(instance_class_to_any_map.keys()).symmetric_difference(subtypes)
-    different_instance_classes -= {None}
+    different_instance_classes -= {None, type(None)}
     assert not different_instance_classes, different_instance_classes
     return instance_class_to_any_map
 
@@ -95,7 +95,7 @@ def ensure_map_is_likely_complete(type_class: Type[K], any_to_any_map: Mapping[T
     :raise: AssertionError
     """
     subtypes_count = len(set(type_class.__subclasses__()))
-    keys_count = len(set(any_to_any_map.keys()))
+    keys_count = len(set(any_to_any_map.keys()) - {None, type(None)})
     assert subtypes_count == keys_count, any_to_any_map
     return any_to_any_map
 
