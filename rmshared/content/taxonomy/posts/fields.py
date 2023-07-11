@@ -1,10 +1,8 @@
 from abc import ABCMeta
 from dataclasses import dataclass
 
-from rmshared.content.taxonomy.abc import Field
 
-
-class Base(Field, metaclass=ABCMeta):
+class Base(metaclass=ABCMeta):
     pass
 
 

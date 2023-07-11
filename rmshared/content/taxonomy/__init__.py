@@ -18,7 +18,6 @@ __all__ = [
     'Guid',
 
     'Label',
-    'Field',
     'Range',
     'Event',
 

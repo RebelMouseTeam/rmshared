@@ -8,6 +8,7 @@ from rmshared.content.taxonomy.core import mapper
 from rmshared.content.taxonomy.core import expander
 from rmshared.content.taxonomy.core import visitors
 
+from rmshared.content.taxonomy.core import data
 from rmshared.content.taxonomy.core import protocol
 from rmshared.content.taxonomy.core import protocols
 
@@ -28,8 +29,9 @@ __all__ = (
 
     'mapper',
     'expander',
-    'visitors'
+    'visitors',
 
+    'data',
     'protocol',
     'protocols',
 
