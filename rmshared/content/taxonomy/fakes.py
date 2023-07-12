@@ -66,11 +66,14 @@ class Fakes:
             filters.Phrase(phrase=self.faker.sentence(), syntax=None, weights=None),
         })
 
-    def make_post(self) -> graph.posts.Post:
-        return self.graph.make_post()
+    def make_post(self, post_id: Optional[int] = None) -> graph.posts.Post:
+        return self.graph.make_post(post_id)
 
-    def make_user_profile(self) -> graph.users.UserProfile:
-        return self.graph.make_user_profile()
+    def make_section(self, section_id: Optional[int] = None) -> graph.others.Section:
+        return self.graph.make_section(section_id)
+
+    def make_user_profile(self, profile_id: Optional[int] = None) -> graph.users.UserProfile:
+        return self.graph.make_user_profile(profile_id)
 
     def stream_core_filters(self) -> Iterator[core.filters.Filter]:
         return self.core.stream_filters()

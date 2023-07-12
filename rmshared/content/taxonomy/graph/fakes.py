@@ -35,7 +35,7 @@ class Fakes:
         self.posts = posts.Fakes(now, seed)
         self.users = users.Fakes(now, seed)
 
-    def make_post(self) -> graph.posts.Post:
+    def make_post(self, post_id: Optional[int] = None) -> graph.posts.Post:
         status = self.make_post_status_other_than(posts.statuses.Removed)
         primary_tag_or_none = self.faker.random_element(elements=(None, self.make_tag()))
         primary_section_or_none = self.faker.random_element(elements=(None, self.make_section()))
@@ -51,7 +51,7 @@ class Fakes:
             scheduled_ts_or_none = None
 
         return graph.posts.Post(
-            id=self.faker.random_int(max=99999999),
+            id=post_id or self.faker.random_int(max=99999999),
             type=self.faker.random_element(elements=posts.consts.POST.TYPE.ALL),
             status=status,
             stage_id=self.faker.random_element(elements=(None, self.faker.random_int(max=20))),
@@ -97,18 +97,18 @@ class Fakes:
     def _stream_sections(self, primary_section: Optional[graph.others.Section] = None) -> Iterator[graph.others.Section]:
         return chain(filter(None, [primary_section]), self.faker.stream_random_items(self.make_section, max_size=5))
 
-    def make_section(self) -> graph.others.Section:
-        return graph.others.Section(id=self.faker.random_int(max=999999))
+    def make_section(self, section_id: Optional[int] = None) -> graph.others.Section:
+        return graph.others.Section(id=section_id or self.faker.random_int(max=999999))
 
-    def make_user_profile(self) -> graph.users.UserProfile:
-        user_profile = self._make_user_profile_without_details()
+    def make_user_profile(self, profile_id: Optional[int] = None) -> graph.users.UserProfile:
+        user_profile = self._make_user_profile_without_details(profile_id)
         user_profile = replace(user_profile, details=self._make_user_profile_details())
         user_profile = replace(user_profile, user=replace(user_profile.user, details=self._make_user_details()))
         return user_profile
 
-    def _make_user_profile_without_details(self) -> graph.users.UserProfile:
+    def _make_user_profile_without_details(self, profile_id: Optional[int] = None) -> graph.users.UserProfile:
         return graph.users.UserProfile(
-            id=self.faker.random_int(max=99999),
+            id=profile_id or self.faker.random_int(max=99999),
             user=graph.users.User(
                 id=self.faker.random_int(max=99999),
                 details=None,
