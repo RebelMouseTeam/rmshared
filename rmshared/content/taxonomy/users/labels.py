@@ -2,11 +2,10 @@ from abc import ABCMeta
 from dataclasses import dataclass
 from typing import Any
 
-from rmshared.content.taxonomy.abc import Label
 from rmshared.content.taxonomy.users import statuses
 
 
-class Base(Label, metaclass=ABCMeta):
+class Base(metaclass=ABCMeta):
     pass
 
 

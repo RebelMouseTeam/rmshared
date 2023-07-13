@@ -1,4 +1,3 @@
-from typing import FrozenSet
 from typing import Iterable
 from typing import Iterator
 from typing import Optional
@@ -15,9 +14,7 @@ from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import graph
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
-from rmshared.content.taxonomy import filters
 from rmshared.content.taxonomy.abc import Guid
-from rmshared.content.taxonomy.abc import Filter
 
 FakerWithProviders = Faker | BaseProvider | python.Provider | lorem.Provider | faker_ext.Provider
 
@@ -57,14 +54,6 @@ class Fakes:
     def _stream_guid_types() -> Iterator[Type[Guid]]:
         yield posts.guids.Post
         yield users.guids.UserProfile
-
-    def make_filters(self) -> FrozenSet[Filter]:
-        return frozenset(self.faker.stream_random_items(self._make_filter, max_size=5))
-
-    def _make_filter(self):  # TODO: add other filters
-        return self.faker.random_element(elements={
-            filters.Phrase(phrase=self.faker.sentence(), syntax=None, weights=None),
-        })
 
     def make_post(self, post_id: Optional[int] = None) -> graph.posts.Post:
         return self.graph.make_post(post_id)
