@@ -33,8 +33,10 @@ class Protocol:
             statuses.Inactive: self._jsonify_inactive_user_profile_status_info,
         })
 
-    def make_user_status(self, data: Any) -> consts.USER.STATUS:
-        return self.USER_STATUS_FROM_ID_MAP[str(data)]
+    def make_user_status(self, data: Mapping[str, Any]) -> consts.USER.STATUS:
+        name, info = parse_name_and_info(data)
+        assert not info
+        return self.USER_STATUS_FROM_ID_MAP[name]
 
     def jsonify_user_status(self, status: consts.USER.STATUS) -> Mapping[str, Any]:
         return {self.USER_STATUS_TO_ID_MAP[status]: {}}
