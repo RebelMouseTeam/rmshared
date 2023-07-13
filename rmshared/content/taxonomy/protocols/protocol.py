@@ -16,6 +16,12 @@ class Protocol(IProtocol):
     def jsonify_filters(self, filters_):
         return list(map(self.filters.jsonify_filter, filters_))
 
+    def make_filter(self, data):
+        return self.filters.make_filter(data)
+
+    def jsonify_filter(self, filter_):
+        return self.filters.jsonify_filter(filter_)
+
     def make_order(self, data):
         return self.orders.make_order(data)
 

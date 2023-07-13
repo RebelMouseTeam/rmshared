@@ -262,6 +262,12 @@ class Factory:
         def jsonify_filters(self, filters_):
             return self.delegate.jsonify_filters(filters_)
 
+        def make_filter(self, data):
+            return self.delegate.make_filter(data)
+
+        def jsonify_filter(self, filter_):
+            return self.delegate.jsonify_filter(filter_)
+
         def make_order(self, data):
             return self.delegate.make_order(data)
 
