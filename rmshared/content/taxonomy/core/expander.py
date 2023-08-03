@@ -16,19 +16,19 @@ class Factory:
         return instance
 
     @staticmethod
-    def make_labels(fields_: taxonomy_visitors.IFields, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.ILabels:
+    def make_labels(values_: taxonomy_visitors.IValues) -> taxonomy_visitors.ILabels:
         instance = taxonomy_visitors.composites.Labels()
-        instance.add_label(labels.Value, visitors.labels.ExpandValue(fields_, values_))
-        instance.add_label(labels.Badge, visitors.labels.ExpandBadge(fields_))
-        instance.add_label(labels.Empty, visitors.labels.ExpandEmpty(fields_))
+        instance.add_label(labels.Value, visitors.labels.ExpandValue(values_))
+        instance.add_label(labels.Badge, visitors.labels.ExpandAsIs())
+        instance.add_label(labels.Empty, visitors.labels.ExpandAsIs())
         return instance
 
     @staticmethod
-    def make_ranges(fields_: taxonomy_visitors.IFields, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.IRanges:
+    def make_ranges(values_: taxonomy_visitors.IValues) -> taxonomy_visitors.IRanges:
         instance = taxonomy_visitors.composites.Ranges()
-        instance.add_range(ranges.Between, visitors.ranges.ExpandBetween(fields_, values_))
-        instance.add_range(ranges.LessThan, visitors.ranges.ExpandLessThan(fields_, values_))
-        instance.add_range(ranges.MoreThan, visitors.ranges.ExpandMoreThan(fields_, values_))
+        instance.add_range(ranges.Between, visitors.ranges.ExpandBetween(values_))
+        instance.add_range(ranges.LessThan, visitors.ranges.ExpandLessThan(values_))
+        instance.add_range(ranges.MoreThan, visitors.ranges.ExpandMoreThan(values_))
         return instance
 
     @staticmethod
@@ -39,7 +39,3 @@ class Factory:
         instance.add_value(float, visitors.values.AsIs())
         instance.add_value(bool, visitors.values.AsIs())
         return instance
-
-    @staticmethod
-    def make_fields():
-        return visitors.fields.AsIs()

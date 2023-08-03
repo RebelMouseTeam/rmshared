@@ -1,56 +1,117 @@
-from abc import ABCMeta
 from dataclasses import dataclass
 
+from rmshared.content.taxonomy import core
 
-class Base(metaclass=ABCMeta):
+
+@core.aliases.system_field('post-id')
+@dataclass(frozen=True)
+class Id:
     pass
 
 
+@core.aliases.system_field('post-type')
 @dataclass(frozen=True)
-class Author(Base):
+class Type:
     pass
 
 
+@core.aliases.system_field('post-status')
 @dataclass(frozen=True)
-class Community(Base):
+class Status:
     pass
 
 
+@core.aliases.system_field('post-is-private')
 @dataclass(frozen=True)
-class PrimaryTag(Base):  # TODO: taxonomy.aliases.posts.fields.PrimaryTag ???
+class IsPrivate:
     pass
 
 
+@core.aliases.system_field('post-is-suspicious')
 @dataclass(frozen=True)
-class RegularTag(Base):
+class IsSuspicious:
     pass
 
 
+@core.aliases.system_field('post-is-excluded-from-search')
 @dataclass(frozen=True)
-class PrimarySection(Base):
+class IsExcludedFromSearch:
     pass
 
 
+@core.aliases.system_field('post-primary-tag')
 @dataclass(frozen=True)
-class RegularSection(Base):
+class PrimaryTag:
     pass
 
 
+@core.aliases.system_field('post-regular-tag')
 @dataclass(frozen=True)
-class ModifiedAt(Base):
+class RegularTag:
     pass
 
 
+@core.aliases.system_field('post-primary-section')
 @dataclass(frozen=True)
-class ScheduledAt(Base):
+class PrimarySection:
     pass
 
 
+@core.aliases.system_field('post-regular-section')
 @dataclass(frozen=True)
-class PublishedAt(Base):
+class RegularSection:
     pass
 
 
+@core.aliases.system_field('post-community')
 @dataclass(frozen=True)
-class CustomField(Base):
+class Community:
+    pass
+
+
+@core.aliases.system_field('post-author')
+@dataclass(frozen=True)
+class Author:
+    pass
+
+
+@core.aliases.system_field('post-stage')
+@dataclass(frozen=True)
+class Stage:
+    pass
+
+
+@core.aliases.system_field('post-page-layout')
+@dataclass(frozen=True)
+class PageLayout:
+    pass
+
+
+@core.aliases.system_field('post-editor-layout')
+@dataclass(frozen=True)
+class EditorLayout:
+    pass
+
+
+@core.aliases.system_field('post-modified-at')
+@dataclass(frozen=True)
+class ModifiedAt:
+    pass
+
+
+@core.aliases.system_field('post-scheduled-at')
+@dataclass(frozen=True)
+class ScheduledAt:
+    pass
+
+
+@core.aliases.system_field('post-published-at')
+@dataclass(frozen=True)
+class PublishedAt:
+    pass
+
+
+@core.aliases.custom_field('post-custom-field')
+@dataclass(frozen=True)
+class CustomField:
     path: str

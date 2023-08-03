@@ -10,7 +10,6 @@ from typing import TypeVar
 from rmshared.content.taxonomy.visitors.abc import IFilters
 from rmshared.content.taxonomy.visitors.abc import ILabels
 from rmshared.content.taxonomy.visitors.abc import IRanges
-from rmshared.content.taxonomy.visitors.abc import IFields
 from rmshared.content.taxonomy.visitors.abc import IValues
 from rmshared.content.taxonomy.visitors.abc import IBuilder
 from rmshared.content.taxonomy.visitors.visitor import Visitor
@@ -31,9 +30,6 @@ class Builder(IBuilder):
     def customize_ranges(self, factory, dependencies):
         self.interface_to_factory_map[IRanges] = self.Factory(factory, dependencies)
 
-    def customize_fields(self, factory, dependencies):
-        self.interface_to_factory_map[IFields] = self.Factory(factory, dependencies)
-
     def customize_values(self, factory, dependencies):
         self.interface_to_factory_map[IValues] = self.Factory(factory, dependencies)
 
@@ -41,9 +37,8 @@ class Builder(IBuilder):
         filters = self._make_visitor(IFilters)
         labels = self._make_visitor(ILabels)
         ranges = self._make_visitor(IRanges)
-        fields = self._make_visitor(IFields)
         values = self._make_visitor(IValues)
-        return Visitor(filters, labels, ranges, fields, values)
+        return Visitor(filters, labels, ranges, values)
 
     @lru_cache(maxsize=16, typed=True)
     def _make_visitor(self, interface: IBuilder.Dependency):

@@ -39,11 +39,11 @@ class TestMappers:
             labels.NoAccessRoles(),
             labels.CustomField(path='path.to.field_2', value='value-1'),
         )),
-        core.filters.AnyRange[core.ranges.Range[fields.Base]](ranges=(
+        core.filters.AnyRange[core.ranges.Range[core.fields.Field]](ranges=(
             core.ranges.Between(field=fields.Title(), min_value='A', max_value='Z'),
             core.ranges.LessThan(field=fields.LastLoggedInAt(), value=600),
         )),
-        core.filters.NoRanges[core.ranges.Range[fields.Base]](ranges=(
+        core.filters.NoRanges[core.ranges.Range[core.fields.Field]](ranges=(
             core.ranges.MoreThan(field=fields.LastLoggedInAt(), value=50),
             core.ranges.Between(field=fields.CustomField(path='path.to.field.3'), min_value=0.01, max_value=0.99),
         )),

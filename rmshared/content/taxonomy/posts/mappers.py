@@ -18,19 +18,14 @@ class Factory:
 
     def make_visitor(self) -> taxonomy_visitors.IVisitor:
         builder = taxonomy_visitors.Builder()
-        builder.customize_labels(self._make_labels, dependencies=())
-        builder.customize_fields(self._make_fields, dependencies=())
         builder.customize_filters(self.delegate.make_filters, dependencies=(taxonomy_visitors.ILabels, taxonomy_visitors.IRanges))
-        builder.customize_orders(self.delegate.make_orders, dependencies=())
-        builder.customize_ranges(self.delegate.make_ranges, dependencies=(taxonomy_visitors.IFields, taxonomy_visitors.IValues))
+        builder.customize_labels(self._make_labels, dependencies=())
+        builder.customize_ranges(self.delegate.make_ranges, dependencies=(taxonomy_visitors.IValues, ))
         builder.customize_values(self.delegate.make_values, dependencies=())
         return builder.make_visitor()
 
     def _make_labels(self) -> taxonomy_visitors.ILabels:
         return self.Labels(self.aspects)
-
-    def _make_fields(self) -> taxonomy_visitors.IFields:
-        return self.Fields()
 
     class Labels(taxonomy_visitors.ILabels[labels.Base, taxonomy_core.labels.Label]):
         def __init__(self, aspects: 'Aspects'):
@@ -120,28 +115,6 @@ class Factory:
         @staticmethod
         def _map_special_post_editor_layout(label: labels.SpecialEditorLayout) -> taxonomy_core.labels.Value:
             return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-editor-layout'), value=label.slug)
-
-    class Fields(taxonomy_visitors.IFields[fields.Base, taxonomy_core.fields.Field]):
-        def __init__(self):
-            self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
-                fields.Author: lambda _: taxonomy_core.fields.System('post-author'),
-                fields.Community: lambda _: taxonomy_core.fields.System('post-community'),
-                fields.PrimaryTag: lambda _: taxonomy_core.fields.System('post-primary-tag'),
-                fields.RegularTag: lambda _: taxonomy_core.fields.System('post-regular-tag'),
-                fields.PrimarySection: lambda _: taxonomy_core.fields.System('post-primary-section'),
-                fields.RegularSection: lambda _: taxonomy_core.fields.System('post-regular-section'),
-                fields.ModifiedAt: lambda _: taxonomy_core.fields.System('post-modified-at'),
-                fields.ScheduledAt: lambda _: taxonomy_core.fields.System('post-scheduled-at'),
-                fields.PublishedAt: lambda _: taxonomy_core.fields.System('post-published-at'),
-                fields.CustomField: self._map_custom_post_field,
-            })
-
-        def visit_field(self, field):
-            return self.field_to_factory_func_map[type(field)](field)
-
-        @staticmethod
-        def _map_custom_post_field(field: fields.CustomField) -> taxonomy_core.fields.Custom:
-            return taxonomy_core.fields.Custom('post-custom-field', path=field.path)
 
 
 class Aspects:

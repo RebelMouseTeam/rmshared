@@ -15,8 +15,6 @@ InLabel = TypeVar('InLabel')
 OutLabel = TypeVar('OutLabel')
 InRange = TypeVar('InRange')
 OutRange = TypeVar('OutRange')
-InField = TypeVar('InField')
-OutField = TypeVar('OutField')
 InValue = TypeVar('InValue')
 OutValue = TypeVar('OutValue')
 
@@ -39,20 +37,14 @@ class IRanges(Generic[InRange, OutRange], metaclass=ABCMeta):
         pass
 
 
-class IFields(Generic[InField, OutField], metaclass=ABCMeta):
-    @abstractmethod
-    def visit_field(self, field: InField) -> OutField:
-        pass
-
-
 class IValues(Generic[InValue, OutValue], metaclass=ABCMeta):
     @abstractmethod
     def visit_value(self, value: InValue) -> OutValue:
         pass
 
 
-class IBuilder(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange, InField, OutField, InValue, OutValue], metaclass=ABCMeta):
-    Dependency = IFilters | ILabels | IRanges | IFields | IValues
+class IBuilder(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange, InValue, OutValue], metaclass=ABCMeta):
+    Dependency = IFilters | ILabels | IRanges | IValues
 
     @abstractmethod
     def customize_filters(self, factory: Callable[..., 'IFilters[InFilter, OutFilter]'], dependencies: Sequence[Type['IBuilder.Dependency']]) -> NoReturn:
@@ -67,19 +59,15 @@ class IBuilder(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange
         pass
 
     @abstractmethod
-    def customize_fields(self, factory: Callable[..., 'IFields[InField, OutField]'], dependencies: Sequence[Type['IBuilder.Dependency']]) -> NoReturn:
-        pass
-
-    @abstractmethod
     def customize_values(self, factory: Callable[..., 'IValues[InValue, OutValue]'], dependencies: Sequence[Type['IBuilder.Dependency']]) -> NoReturn:
         pass
 
     @abstractmethod
-    def make_visitor(self) -> 'IVisitor[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange, InField, OutField, InValue, OutValue]':
+    def make_visitor(self) -> 'IVisitor[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange, InValue, OutValue]':
         pass
 
 
-class IVisitor(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange, InField, OutField, InValue, OutValue], metaclass=ABCMeta):
+class IVisitor(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange, InValue, OutValue], metaclass=ABCMeta):
     @abstractmethod
     def visit_filters(self, filters: Iterable[InFilter]) -> Iterator[OutFilter]:
         pass
@@ -90,10 +78,6 @@ class IVisitor(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange
 
     @abstractmethod
     def visit_range(self, range_: InRange) -> OutRange:
-        pass
-
-    @abstractmethod
-    def visit_field(self, field: InField) -> OutField:
         pass
 
     @abstractmethod

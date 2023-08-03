@@ -34,10 +34,9 @@ class Resolver(IResolver[Operator[filters.Filter], filters.Filter]):
         def make_visitor(self) -> taxonomy_visitors.IVisitor:
             builder = taxonomy_visitors.Builder()
             builder.customize_filters(self._make_filters, dependencies=(taxonomy_visitors.ILabels, taxonomy_visitors.IRanges))
-            builder.customize_labels(self._make_labels, dependencies=(taxonomy_visitors.IFields, taxonomy_visitors.IValues))
-            builder.customize_ranges(self._make_ranges, dependencies=(taxonomy_visitors.IFields, taxonomy_visitors.IValues))
+            builder.customize_labels(self._make_labels, dependencies=(taxonomy_visitors.IValues, ))
+            builder.customize_ranges(self._make_ranges, dependencies=(taxonomy_visitors.IValues, ))
             builder.customize_values(self._make_values, dependencies=())
-            builder.customize_fields(self.delegate.make_fields, dependencies=())
             return builder.make_visitor()
 
         def _make_filters(self, labels_: taxonomy_visitors.ILabels, ranges_: taxonomy_visitors.IRanges) -> taxonomy_visitors.IFilters:
@@ -47,15 +46,15 @@ class Resolver(IResolver[Operator[filters.Filter], filters.Filter]):
             instance.add_filter(operators.Return[filters.Filter], self.ReturnFilters(delegate, self.operators))
             return taxonomy_visitors.fallbacks.Filters(instance, delegate, exceptions=(LookupError, ))
 
-        def _make_labels(self, fields_: taxonomy_visitors.IFields, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.ILabels:
-            delegate = self.delegate.make_labels(fields_, values_)
+        def _make_labels(self, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.ILabels:
+            delegate = self.delegate.make_labels(values_)
             instance = taxonomy_visitors.composites.Labels()
             instance.add_label(operators.Switch[labels.Label], self.SwitchLabels(instance, self.operators))
             instance.add_label(operators.Return[labels.Label], self.ReturnLabels(delegate, self.operators))
             return taxonomy_visitors.fallbacks.Labels(instance, delegate, exceptions=(LookupError, ))
 
-        def _make_ranges(self, fields_: taxonomy_visitors.IFields, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.IRanges:
-            delegate = self.delegate.make_ranges(fields_, values_)
+        def _make_ranges(self, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.IRanges:
+            delegate = self.delegate.make_ranges(values_)
             instance = taxonomy_visitors.composites.Ranges()
             instance.add_range(operators.Switch[ranges.Range], self.SwitchRanges(instance, self.operators))
             instance.add_range(operators.Return[ranges.Range], self.ReturnRanges(delegate, self.operators))

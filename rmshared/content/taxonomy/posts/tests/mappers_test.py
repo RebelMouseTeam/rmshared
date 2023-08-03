@@ -60,11 +60,11 @@ class TestMappers:
             labels.DefaultEditorLayout(),
             labels.ExcludedFromSearch(),
         )),
-        core.filters.AnyRange[core.ranges.Range[fields.Base]](ranges=(
+        core.filters.AnyRange[core.ranges.Range[core.fields.Field]](ranges=(
             core.ranges.Between(field=fields.ModifiedAt(), min_value=100, max_value=500),
             core.ranges.LessThan(field=fields.ScheduledAt(), value=300),
         )),
-        core.filters.NoRanges[core.ranges.Range[fields.Base]](ranges=(
+        core.filters.NoRanges[core.ranges.Range[core.fields.Field]](ranges=(
             core.ranges.MoreThan(field=fields.PublishedAt(), value=400),
             core.ranges.Between(field=fields.CustomField(path='path.to.field_3'), min_value=600, max_value=700),
         )),

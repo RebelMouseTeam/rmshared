@@ -18,16 +18,12 @@ class Factory:
         builder = taxonomy_visitors.Builder()
         builder.customize_filters(self.delegate.make_filters, dependencies=(taxonomy_visitors.ILabels, taxonomy_visitors.IRanges))
         builder.customize_labels(self._make_labels, dependencies=())
-        builder.customize_ranges(self.delegate.make_ranges, dependencies=(taxonomy_visitors.IFields, taxonomy_visitors.IValues))
-        builder.customize_fields(self._make_fields, dependencies=())
+        builder.customize_ranges(self.delegate.make_ranges, dependencies=(taxonomy_visitors.IValues, ))
         builder.customize_values(self.delegate.make_values, dependencies=())
         return builder.make_visitor()
 
     def _make_labels(self) -> taxonomy_visitors.ILabels:
         return self.Labels(self.aspects)
-
-    def _make_fields(self) -> taxonomy_visitors.IFields:
-        return self.Fields()
 
     class Labels(taxonomy_visitors.ILabels[labels.Base, taxonomy_core.labels.Label]):
         def __init__(self, aspects: 'Aspects'):
@@ -95,21 +91,6 @@ class Factory:
         @staticmethod
         def _map_no_custom_user_profile_field(label: labels.NoCustomField) -> taxonomy_core.labels.Empty:
             return taxonomy_core.labels.Empty(field=taxonomy_core.fields.Custom('user-custom-field', path=label.path))
-
-    class Fields(taxonomy_visitors.IFields[fields.Base, taxonomy_core.fields.Field]):
-        def __init__(self):
-            self.field_to_factory_func_map = ensure_map_is_complete(fields.Base, {
-                fields.Title: lambda _: taxonomy_core.fields.System('user-profile-title'),
-                fields.LastLoggedInAt: lambda _: taxonomy_core.fields.System('user-last-logged-in-at'),
-                fields.CustomField: self._map_custom_user_field,
-            })
-
-        def visit_field(self, field):
-            return self.field_to_factory_func_map[type(field)](field)
-
-        @staticmethod
-        def _map_custom_user_field(field: fields.CustomField) -> taxonomy_core.fields.Field:
-            return taxonomy_core.fields.Custom('user-custom-field', path=field.path)
 
 
 class Aspects:
