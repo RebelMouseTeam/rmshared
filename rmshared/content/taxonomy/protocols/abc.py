@@ -12,7 +12,6 @@ from typing import Type
 from typing import TypeVar
 
 Filter = TypeVar('Filter')
-Order = TypeVar('Order')
 Label = TypeVar('Label')
 Range = TypeVar('Range')
 Field = TypeVar('Field')
@@ -27,16 +26,6 @@ class IFilters(Generic[Filter], metaclass=ABCMeta):
 
     @abstractmethod
     def jsonify_filter(self, filter_: Filter) -> Mapping[str, Any]:
-        pass
-
-
-class IOrders(Generic[Order], metaclass=ABCMeta):
-    @abstractmethod
-    def make_order(self, data: Mapping[str, Any]) -> Order:
-        pass
-
-    @abstractmethod
-    def jsonify_order(self, order: Order) -> Mapping[str, Any]:
         pass
 
 
@@ -80,15 +69,11 @@ class IValues(Generic[Value], metaclass=ABCMeta):
         pass
 
 
-class IBuilder(Generic[Filter, Order, Label, Range, Field, Value], metaclass=ABCMeta):
-    Dependency = IFilters | IOrders | ILabels | IRanges | IFields | IValues
+class IBuilder(Generic[Filter, Label, Range, Field, Value], metaclass=ABCMeta):
+    Dependency = IFilters | ILabels | IRanges | IFields | IValues
 
     @abstractmethod
     def customize_filters(self, factory: Callable[..., 'IFilters[Filter]'], dependencies: Sequence[Type['IBuilder.Dependency']]) -> NoReturn:
-        pass
-
-    @abstractmethod
-    def customize_orders(self, factory: Callable[..., 'IOrders[Order]'], dependencies: Sequence[Type['IBuilder.Dependency']]) -> NoReturn:
         pass
 
     @abstractmethod
@@ -108,11 +93,11 @@ class IBuilder(Generic[Filter, Order, Label, Range, Field, Value], metaclass=ABC
         pass
 
     @abstractmethod
-    def make_protocol(self) -> 'IProtocol[Filter, Order, Label, Range, Field, Value]':
+    def make_protocol(self) -> 'IProtocol[Filter, Label, Range, Field, Value]':
         pass
 
 
-class IProtocol(Generic[Filter, Order, Label, Range, Field, Value], metaclass=ABCMeta):
+class IProtocol(Generic[Filter, Label, Range, Field, Value], metaclass=ABCMeta):
     @abstractmethod
     def make_filters(self, data: Iterable[Mapping[str, Any]]) -> Iterator[Filter]:
         pass
@@ -127,14 +112,6 @@ class IProtocol(Generic[Filter, Order, Label, Range, Field, Value], metaclass=AB
 
     @abstractmethod
     def jsonify_filter(self, filter_: Filter) -> Mapping[str, Any]:
-        pass
-
-    @abstractmethod
-    def make_order(self, data: Mapping[str, Any]) -> Order:
-        pass
-
-    @abstractmethod
-    def jsonify_order(self, order: Order) -> Mapping[str, Any]:
         pass
 
     @abstractmethod

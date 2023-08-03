@@ -73,8 +73,5 @@ class Fakes:
     def sample_core_variable_argument_types(self, size: Optional[int] = None) -> Iterable[Type[core.variables.Argument]]:
         return self.core.sample_variable_argument_types(size)
 
-    def make_core_order(self) -> core.orders.Order:
-        return self.core.make_order()
-
     def make_core_field(self) -> core.fields.Field:
         return self.core.make_field()

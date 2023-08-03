@@ -10,7 +10,6 @@ from typing import Type
 from typing import TypeVar
 
 Filter = TypeVar('Filter')
-Order = TypeVar('Order')
 Label = TypeVar('Label')
 Range = TypeVar('Range')
 Field = TypeVar('Field')
@@ -33,25 +32,6 @@ class IFilters(Generic[Filter], metaclass=ABCMeta):
 
         @abstractmethod
         def jsonify_filter(self, filter_: Filter) -> Mapping[str, Any]:
-            pass
-
-
-class IOrders(Generic[Order], metaclass=ABCMeta):
-    @abstractmethod
-    def add_order(self, order_type: Type[Order], protocol: 'IOrders.IProtocol') -> NoReturn:
-        pass
-
-    class IProtocol(Generic[Order], metaclass=ABCMeta):
-        @abstractmethod
-        def get_keys(self) -> Iterable[str]:
-            pass
-
-        @abstractmethod
-        def make_order(self, data: Mapping[str, Any]) -> Order:
-            pass
-
-        @abstractmethod
-        def jsonify_order(self, order: Order) -> Mapping[str, Any]:
             pass
 
 

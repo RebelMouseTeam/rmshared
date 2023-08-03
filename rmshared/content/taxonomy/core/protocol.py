@@ -3,7 +3,6 @@ from typing import TypeVar
 from rmshared.content.taxonomy import protocols as base_protocols
 
 from rmshared.content.taxonomy.core import filters
-from rmshared.content.taxonomy.core import orders
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import fields
@@ -13,10 +12,9 @@ Scalar = TypeVar('Scalar', str, int, float)
 
 
 class Factory:
-    def make_protocol(self) -> base_protocols.IProtocol[filters.Filter, orders.Order, labels.Label, ranges.Range, fields.Field, Scalar]:
+    def make_protocol(self) -> base_protocols.IProtocol[filters.Filter, labels.Label, ranges.Range, fields.Field, Scalar]:
         builder = base_protocols.Builder()
         builder.customize_filters(self.make_filters, dependencies=(base_protocols.ILabels, base_protocols.IRanges))
-        builder.customize_orders(self.make_orders, dependencies=(base_protocols.IFields,))
         builder.customize_labels(self.make_labels, dependencies=(base_protocols.IFields, base_protocols.IValues))
         builder.customize_ranges(self.make_ranges, dependencies=(base_protocols.IFields, base_protocols.IValues))
         builder.customize_fields(self.make_fields, dependencies=())
@@ -30,12 +28,6 @@ class Factory:
         protocol.add_filter(filters.NoLabels, protocols.filters.NoLabels(labels_))
         protocol.add_filter(filters.AnyRange, protocols.filters.AnyRange(ranges_))
         protocol.add_filter(filters.NoRanges, protocols.filters.NoRanges(ranges_))
-        return protocol
-
-    @staticmethod
-    def make_orders(fields_: base_protocols.IFields) -> base_protocols.IOrders:
-        protocol = base_protocols.Orders()
-        protocol.add_order(orders.Value, protocols.orders.Value(fields_))
         return protocol
 
     @staticmethod

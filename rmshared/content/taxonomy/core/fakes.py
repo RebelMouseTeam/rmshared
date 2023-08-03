@@ -20,7 +20,6 @@ from rmshared.typings import read_only
 from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
-from rmshared.content.taxonomy.core import orders
 from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core import variables
 
@@ -39,12 +38,6 @@ class Fakes:
         self.faker.add_provider(faker_ext.Provider)
         self.faker.seed_instance(seed)
         self.variables = self.Variables(self)
-
-    def make_order(self) -> orders.Order:
-        return self.faker.random_element(elements=frozenset(self.stream_orders()))
-
-    def stream_orders(self) -> Iterator[orders.Order]:
-        yield orders.Value(field=self.make_field(), reverse=self.faker.pybool())
 
     def sample_filters(self) -> Iterator[filters.Filter]:
         return self.faker.stream_random_items(factory_func=self.make_filter, min_size=3, max_size=5)

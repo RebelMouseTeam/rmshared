@@ -11,8 +11,6 @@ from typing import TypeVar
 
 InFilter = TypeVar('InFilter')
 OutFilter = TypeVar('OutFilter')
-InOrder = TypeVar('InOrder')
-OutOrder = TypeVar('OutOrder')
 InLabel = TypeVar('InLabel')
 OutLabel = TypeVar('OutLabel')
 InRange = TypeVar('InRange')
@@ -26,12 +24,6 @@ OutValue = TypeVar('OutValue')
 class IFilters(Generic[InFilter, OutFilter], metaclass=ABCMeta):
     @abstractmethod
     def visit_filter(self, filter_: InFilter) -> OutFilter:
-        pass
-
-
-class IOrders(Generic[InOrder, OutOrder], metaclass=ABCMeta):
-    @abstractmethod
-    def visit_order(self, order: InOrder) -> OutOrder:
         pass
 
 
@@ -60,14 +52,10 @@ class IValues(Generic[InValue, OutValue], metaclass=ABCMeta):
 
 
 class IBuilder(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange, InField, OutField, InValue, OutValue], metaclass=ABCMeta):
-    Dependency = IFilters | IOrders | ILabels | IRanges | IFields | IValues
+    Dependency = IFilters | ILabels | IRanges | IFields | IValues
 
     @abstractmethod
     def customize_filters(self, factory: Callable[..., 'IFilters[InFilter, OutFilter]'], dependencies: Sequence[Type['IBuilder.Dependency']]) -> NoReturn:
-        pass
-
-    @abstractmethod
-    def customize_orders(self, factory: Callable[..., 'IOrders[InOrder, OutOrder]'], dependencies: Sequence[Type['IBuilder.Dependency']]) -> NoReturn:
         pass
 
     @abstractmethod
@@ -94,10 +82,6 @@ class IBuilder(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange
 class IVisitor(Generic[InFilter, OutFilter, InLabel, OutLabel, InRange, OutRange, InField, OutField, InValue, OutValue], metaclass=ABCMeta):
     @abstractmethod
     def visit_filters(self, filters: Iterable[InFilter]) -> Iterator[OutFilter]:
-        pass
-
-    @abstractmethod
-    def visit_order(self, order: InOrder) -> OutOrder:
         pass
 
     @abstractmethod

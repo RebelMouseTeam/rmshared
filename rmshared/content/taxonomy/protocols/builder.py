@@ -8,7 +8,6 @@ from typing import Type
 from typing import TypeVar
 
 from rmshared.content.taxonomy.protocols.abc import IFilters
-from rmshared.content.taxonomy.protocols.abc import IOrders
 from rmshared.content.taxonomy.protocols.abc import ILabels
 from rmshared.content.taxonomy.protocols.abc import IRanges
 from rmshared.content.taxonomy.protocols.abc import IFields
@@ -26,9 +25,6 @@ class Builder(IBuilder):
     def customize_filters(self, factory, dependencies):
         self.interface_to_factory_map[IFilters] = self.Factory(factory, dependencies)
 
-    def customize_orders(self, factory, dependencies):
-        self.interface_to_factory_map[IOrders] = self.Factory(factory, dependencies)
-
     def customize_labels(self, factory, dependencies):
         self.interface_to_factory_map[ILabels] = self.Factory(factory, dependencies)
 
@@ -43,9 +39,8 @@ class Builder(IBuilder):
 
     def make_protocol(self):
         filters = self._make_protocol(IFilters)
-        orders = self._make_protocol(IOrders)
         fields = self._make_protocol(IFields)
-        return Protocol(filters=filters, orders=orders, fields=fields)
+        return Protocol(filters=filters, fields=fields)
 
     @lru_cache(maxsize=16, typed=True)
     def _make_protocol(self, interface: IBuilder.Dependency):

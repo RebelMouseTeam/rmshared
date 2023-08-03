@@ -1,5 +1,4 @@
 from rmshared.content.taxonomy.visitors.abc import IFilters
-from rmshared.content.taxonomy.visitors.abc import IOrders
 from rmshared.content.taxonomy.visitors.abc import ILabels
 from rmshared.content.taxonomy.visitors.abc import IRanges
 from rmshared.content.taxonomy.visitors.abc import IFields
@@ -8,9 +7,8 @@ from rmshared.content.taxonomy.visitors.abc import IVisitor
 
 
 class Visitor(IVisitor):
-    def __init__(self, filters: IFilters, orders: IOrders, labels: ILabels, ranges: IRanges, fields: IFields, values: IValues):
+    def __init__(self, filters: IFilters, labels: ILabels, ranges: IRanges, fields: IFields, values: IValues):
         self.filters = filters
-        self.orders = orders
         self.labels = labels
         self.ranges = ranges
         self.fields = fields
@@ -18,9 +16,6 @@ class Visitor(IVisitor):
 
     def visit_filters(self, filters):
         return map(self.filters.visit_filter, filters)
-
-    def visit_order(self, order):
-        return self.orders.visit_order(order)
 
     def visit_label(self, label):
         return self.labels.visit_label(label)

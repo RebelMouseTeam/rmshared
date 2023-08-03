@@ -37,7 +37,6 @@ class Resolver(IResolver[Operator[filters.Filter], filters.Filter]):
             builder.customize_labels(self._make_labels, dependencies=(taxonomy_visitors.IFields, taxonomy_visitors.IValues))
             builder.customize_ranges(self._make_ranges, dependencies=(taxonomy_visitors.IFields, taxonomy_visitors.IValues))
             builder.customize_values(self._make_values, dependencies=())
-            builder.customize_orders(self.delegate.make_orders, dependencies=())
             builder.customize_fields(self.delegate.make_fields, dependencies=())
             return builder.make_visitor()
 

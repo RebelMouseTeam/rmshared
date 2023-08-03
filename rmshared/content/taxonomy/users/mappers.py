@@ -16,11 +16,10 @@ class Factory:
 
     def make_visitor(self) -> taxonomy_visitors.IVisitor:
         builder = taxonomy_visitors.Builder()
-        builder.customize_labels(self._make_labels, dependencies=())
-        builder.customize_fields(self._make_fields, dependencies=())
         builder.customize_filters(self.delegate.make_filters, dependencies=(taxonomy_visitors.ILabels, taxonomy_visitors.IRanges))
-        builder.customize_orders(self.delegate.make_orders, dependencies=())
+        builder.customize_labels(self._make_labels, dependencies=())
         builder.customize_ranges(self.delegate.make_ranges, dependencies=(taxonomy_visitors.IFields, taxonomy_visitors.IValues))
+        builder.customize_fields(self._make_fields, dependencies=())
         builder.customize_values(self.delegate.make_values, dependencies=())
         return builder.make_visitor()
 

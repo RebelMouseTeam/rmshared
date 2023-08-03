@@ -3,7 +3,6 @@ from pytest import fixture
 from rmshared.content.taxonomy import protocols as base_protocols
 from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core import labels
-from rmshared.content.taxonomy.core import orders
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import protocol
@@ -61,10 +60,3 @@ class TestProtocol:
             {'field': {'post-published-at': {}}, 'max': NOW + 300},
         ]},
     ])
-
-    def test_it_should_make_order(self, protocol_: base_protocols.IProtocol):
-        order = protocol_.make_order(data={'value': {
-            'field': {'post-modified-at': {}},
-            'reverse': False,
-        }})
-        assert order == orders.Value(field=fields.System('post-modified-at'), reverse=False)

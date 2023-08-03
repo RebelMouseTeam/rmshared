@@ -16,10 +16,6 @@ class Factory:
         return instance
 
     @staticmethod
-    def make_orders():
-        return visitors.orders.AsIs()
-
-    @staticmethod
     def make_labels(fields_: taxonomy_visitors.IFields, values_: taxonomy_visitors.IValues) -> taxonomy_visitors.ILabels:
         instance = taxonomy_visitors.composites.Labels()
         instance.add_label(labels.Value, visitors.labels.ExpandValue(fields_, values_))

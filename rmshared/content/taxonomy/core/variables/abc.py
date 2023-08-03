@@ -15,7 +15,6 @@ InFilter = TypeVar('InFilter')
 OutFilter = TypeVar('OutFilter')
 
 Filter = TypeVar('Filter')
-Order = TypeVar('Order')
 Label = TypeVar('Label')
 Range = TypeVar('Range')
 Field = TypeVar('Field')
@@ -51,7 +50,7 @@ class IResolver(Generic[InFilter, OutFilter], metaclass=ABCMeta):
             pass
 
 
-class IProtocol(base_protocols.IProtocol[Operator[Filter], Operator[Order], Operator[Label], Operator[Range], Field, Scalar], metaclass=ABCMeta):
+class IProtocol(base_protocols.IProtocol[Operator[Filter], Operator[Label], Operator[Range], Field, Scalar], metaclass=ABCMeta):
     @abstractmethod
     def make_argument(self, data: str) -> Type[Argument]:
         pass

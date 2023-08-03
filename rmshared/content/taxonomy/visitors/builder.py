@@ -8,7 +8,6 @@ from typing import Type
 from typing import TypeVar
 
 from rmshared.content.taxonomy.visitors.abc import IFilters
-from rmshared.content.taxonomy.visitors.abc import IOrders
 from rmshared.content.taxonomy.visitors.abc import ILabels
 from rmshared.content.taxonomy.visitors.abc import IRanges
 from rmshared.content.taxonomy.visitors.abc import IFields
@@ -26,9 +25,6 @@ class Builder(IBuilder):
     def customize_filters(self, factory, dependencies):
         self.interface_to_factory_map[IFilters] = self.Factory(factory, dependencies)
 
-    def customize_orders(self, factory, dependencies):
-        self.interface_to_factory_map[IOrders] = self.Factory(factory, dependencies)
-
     def customize_labels(self, factory, dependencies):
         self.interface_to_factory_map[ILabels] = self.Factory(factory, dependencies)
 
@@ -43,12 +39,11 @@ class Builder(IBuilder):
 
     def make_visitor(self):
         filters = self._make_visitor(IFilters)
-        orders = self._make_visitor(IOrders)
         labels = self._make_visitor(ILabels)
         ranges = self._make_visitor(IRanges)
         fields = self._make_visitor(IFields)
         values = self._make_visitor(IValues)
-        return Visitor(filters, orders, labels, ranges, fields, values)
+        return Visitor(filters, labels, ranges, fields, values)
 
     @lru_cache(maxsize=16, typed=True)
     def _make_visitor(self, interface: IBuilder.Dependency):

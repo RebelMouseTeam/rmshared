@@ -1,13 +1,11 @@
 from rmshared.content.taxonomy.protocols.abc import IFilters
-from rmshared.content.taxonomy.protocols.abc import IOrders
 from rmshared.content.taxonomy.protocols.abc import IFields
 from rmshared.content.taxonomy.protocols.abc import IProtocol
 
 
 class Protocol(IProtocol):
-    def __init__(self, filters: IFilters, orders: IOrders, fields: IFields):
+    def __init__(self, filters: IFilters, fields: IFields):
         self.filters = filters
-        self.orders = orders
         self.fields = fields
 
     def make_filters(self, data):
@@ -21,12 +19,6 @@ class Protocol(IProtocol):
 
     def jsonify_filter(self, filter_):
         return self.filters.jsonify_filter(filter_)
-
-    def make_order(self, data):
-        return self.orders.make_order(data)
-
-    def jsonify_order(self, order):
-        return self.orders.jsonify_order(order)
 
     def make_field(self, data):
         return self.fields.make_field(data)
