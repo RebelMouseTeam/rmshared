@@ -67,10 +67,11 @@ class Factory:
 
         @staticmethod
         def _map_user_profile_owner(label: labels.Owner) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-owner'), value=label.user_id)
+            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-profile-owner'), value=label.user_id)
 
         def _map_user_profile_status(self, label: labels.Status) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-status'), value=self.aspects.map_user_profile_status(label.status))
+            value = self.aspects.map_user_profile_status(label.status)
+            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-profile-status'), value=value)
 
         @staticmethod
         def _map_user_group(label: labels.UserGroup) -> taxonomy_core.labels.Value:

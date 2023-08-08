@@ -21,9 +21,15 @@ class Title:
     pass
 
 
-@core.aliases.system_field('user-owner')
+@core.aliases.system_field('user-profile-owner')
 @dataclass(frozen=True)
 class Owner:
+    pass
+
+
+@core.aliases.system_field('user-profile-status')
+@dataclass(frozen=True)
+class Status:
     pass
 
 
@@ -48,12 +54,6 @@ class Community:
 @core.aliases.system_field('user-access-role')
 @dataclass(frozen=True)
 class AccessRole:
-    pass
-
-
-@core.aliases.system_field('user-status')
-@dataclass(frozen=True)
-class Status:
     pass
 
 
