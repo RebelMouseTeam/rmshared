@@ -9,6 +9,12 @@ class Id:
     pass
 
 
+@core.aliases.system_field('user-email')
+@dataclass(frozen=True)
+class Email:
+    pass
+
+
 @core.aliases.system_field('user-profile-slug')
 @dataclass(frozen=True)
 class Slug:
@@ -33,9 +39,15 @@ class Status:
     pass
 
 
-@core.aliases.system_field('user-email')
+@core.aliases.system_field('user-profile-about-html')
 @dataclass(frozen=True)
-class Email:
+class AboutHtml:
+    pass
+
+
+@core.aliases.system_field('user-profile-description')
+@dataclass(frozen=True)
+class Description:
     pass
 
 

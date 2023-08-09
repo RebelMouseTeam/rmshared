@@ -39,6 +39,42 @@ class IsExcludedFromSearch:
     pass
 
 
+@core.aliases.system_field('post-modified-at')
+@dataclass(frozen=True)
+class ModifiedAt:
+    pass
+
+
+@core.aliases.system_field('post-scheduled-at')
+@dataclass(frozen=True)
+class ScheduledAt:
+    pass
+
+
+@core.aliases.system_field('post-published-at')
+@dataclass(frozen=True)
+class PublishedAt:
+    pass
+
+
+@core.aliases.system_field('post-title')
+@dataclass(frozen=True)
+class Title:
+    pass
+
+
+@core.aliases.system_field('post-subtitle')
+@dataclass(frozen=True)
+class Subtitle:
+    pass
+
+
+@core.aliases.system_field('post-body')
+@dataclass(frozen=True)
+class Body:
+    pass
+
+
 @core.aliases.system_field('post-primary-tag')
 @dataclass(frozen=True)
 class PrimaryTag:
@@ -90,24 +126,6 @@ class PageLayout:
 @core.aliases.system_field('post-editor-layout')
 @dataclass(frozen=True)
 class EditorLayout:
-    pass
-
-
-@core.aliases.system_field('post-modified-at')
-@dataclass(frozen=True)
-class ModifiedAt:
-    pass
-
-
-@core.aliases.system_field('post-scheduled-at')
-@dataclass(frozen=True)
-class ScheduledAt:
-    pass
-
-
-@core.aliases.system_field('post-published-at')
-@dataclass(frozen=True)
-class PublishedAt:
     pass
 
 
