@@ -25,7 +25,7 @@ class Fields(IFields):
             fields.Custom: self._make_custom_field_info,
         })
         self.field_to_factory_func_map: Mapping[Type[Field], Callable[[Any], Field]] = ensure_map_is_complete(fields.Field, {
-            fields.System: lambda _: dict(),
+            fields.System: self._make_system_field,
             fields.Custom: self._make_custom_field,
         })
 
