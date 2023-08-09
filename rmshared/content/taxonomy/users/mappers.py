@@ -38,10 +38,10 @@ class Factory:
                 labels.UserGroup: self._map_user_group,
                 labels.Community: self._map_user_community,
                 labels.AccessRole: self._map_user_access_role,
-                labels.NoEmails: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('user-email')),
-                labels.NoUserGroups: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('user-group')),
-                labels.NoCommunities: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('user-community')),
-                labels.NoAccessRoles: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('user-access-role')),
+                labels.NoEmails: lambda _: taxonomy_core.labels.Empty(field=fields.Email()),
+                labels.NoUserGroups: lambda _: taxonomy_core.labels.Empty(field=fields.Group()),
+                labels.NoCommunities: lambda _: taxonomy_core.labels.Empty(field=fields.Community()),
+                labels.NoAccessRoles: lambda _: taxonomy_core.labels.Empty(field=fields.AccessRole()),
                 labels.CustomField: self._map_custom_user_profile_field,
                 labels.NoCustomField: self._map_no_custom_user_profile_field,
             })
@@ -51,47 +51,47 @@ class Factory:
 
         @staticmethod
         def _map_user_profile_id(label: labels.Id) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-id'), value=label.value)
+            return taxonomy_core.labels.Value(field=fields.Id(), value=label.value)
 
         @staticmethod
         def _map_user_profile_slug(label: labels.Slug) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-profile-slug'), value=label.slug)
+            return taxonomy_core.labels.Value(field=fields.Slug(), value=label.slug)
 
         @staticmethod
         def _map_user_profile_title(label: labels.Title) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-profile-title'), value=label.title)
+            return taxonomy_core.labels.Value(field=fields.Title(), value=label.title)
 
         @staticmethod
         def _map_user_email(label: labels.Email) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-email'), value=label.email)
+            return taxonomy_core.labels.Value(field=fields.Email(), value=label.email)
 
         @staticmethod
         def _map_user_profile_owner(label: labels.Owner) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-profile-owner'), value=label.user_id)
+            return taxonomy_core.labels.Value(field=fields.Owner(), value=label.user_id)
 
         def _map_user_profile_status(self, label: labels.Status) -> taxonomy_core.labels.Value:
             value = self.aspects.map_user_profile_status(label.status)
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-profile-status'), value=value)
+            return taxonomy_core.labels.Value(field=fields.Status(), value=value)
 
         @staticmethod
         def _map_user_group(label: labels.UserGroup) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-group'), value=label.slug)
+            return taxonomy_core.labels.Value(field=fields.Group(), value=label.slug)
 
         @staticmethod
         def _map_user_community(label: labels.Community) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-community'), value=label.id)
+            return taxonomy_core.labels.Value(field=fields.Community(), value=label.id)
 
         @staticmethod
         def _map_user_access_role(label: labels.AccessRole) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('user-access-role'), value=label.id)
+            return taxonomy_core.labels.Value(field=fields.AccessRole(), value=label.id)
 
         @staticmethod
         def _map_custom_user_profile_field(label: labels.CustomField) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.Custom('user-custom-field', path=label.path), value=label.value)
+            return taxonomy_core.labels.Value(field=fields.CustomField(path=label.path), value=label.value)
 
         @staticmethod
         def _map_no_custom_user_profile_field(label: labels.NoCustomField) -> taxonomy_core.labels.Empty:
-            return taxonomy_core.labels.Empty(field=taxonomy_core.fields.Custom('user-custom-field', path=label.path))
+            return taxonomy_core.labels.Empty(field=fields.CustomField(path=label.path))
 
 
 class Aspects:

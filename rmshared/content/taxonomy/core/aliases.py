@@ -1,44 +1,33 @@
-import inspect
-from functools import partial
-
-from typing import Any
-from typing import Callable
-from typing import Generic
-from typing import Type
-
-from rmshared.typings import T
+from abc import ABCMeta
+from typing import Protocol
+from typing import TypeVar
 
 from rmshared.content.taxonomy.core import fields
 
-
-def system_field(name: str) -> Callable[[], 'Alias[fields.System]']:
-    def decorator(cls: Type[Any]) -> 'Alias[fields.System]':
-        assert inspect.isclass(cls)
-        assert inspect.signature(cls.__init__).parameters.keys() == {'self'}
-        return Alias(partial(fields.System, name))
-
-    return decorator
+F = TypeVar('F', bound=fields.Field)
 
 
-def custom_field(name: str) -> Callable[[Type[Any]], 'Alias[fields.Custom]']:
-    def decorator(cls: Type[Any]) -> 'Alias[fields.Custom]':
-        assert inspect.isclass(cls)
-        assert inspect.signature(cls.__init__).parameters.keys() == {'self', 'path'}
-        assert inspect.signature(cls.__init__).parameters['path'].annotation is str
-        return Alias(partial(fields.Custom, name))
-
-    return decorator
+def system_field(name: str) -> 'SystemFieldAlias':
+    return SystemFieldAlias(name)
 
 
-class Alias(Generic[T]):
-    def __init__(self, factory: partial):
-        self.factory = factory
+def custom_field(name: str) -> 'CustomFieldAlias':
+    return CustomFieldAlias(name)
 
-    def __call__(self, *args, **kwargs) -> T:
-        return self.factory(*args, **kwargs)
+
+class Field(Protocol[F], metaclass=ABCMeta):
+    def __init__(self, name: str):
+        self.name = name
 
     def __hash__(self):
-        return hash(self.factory)
+        return (self.__class__, self.name).__hash__()
 
-    def __eq__(self, other):
-        return self.factory == other.factory
+
+class SystemFieldAlias(Field[fields.System]):
+    def __call__(self) -> fields.System:
+        return fields.System(name=self.name)
+
+
+class CustomFieldAlias(Field[fields.Custom]):
+    def __call__(self, path: str) -> fields.Custom:
+        return fields.Custom(name=self.name, path=path)

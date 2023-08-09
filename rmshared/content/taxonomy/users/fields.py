@@ -1,81 +1,16 @@
-from dataclasses import dataclass
-
 from rmshared.content.taxonomy import core
 
-
-@core.aliases.system_field('user-id')
-@dataclass(frozen=True)
-class Id:
-    pass
-
-
-@core.aliases.system_field('user-email')
-@dataclass(frozen=True)
-class Email:
-    pass
-
-
-@core.aliases.system_field('user-profile-slug')
-@dataclass(frozen=True)
-class Slug:
-    pass
-
-
-@core.aliases.system_field('user-profile-title')
-@dataclass(frozen=True)
-class Title:
-    pass
-
-
-@core.aliases.system_field('user-profile-owner')
-@dataclass(frozen=True)
-class Owner:
-    pass
-
-
-@core.aliases.system_field('user-profile-status')
-@dataclass(frozen=True)
-class Status:
-    pass
-
-
-@core.aliases.system_field('user-profile-about-html')
-@dataclass(frozen=True)
-class AboutHtml:
-    pass
-
-
-@core.aliases.system_field('user-profile-description')
-@dataclass(frozen=True)
-class Description:
-    pass
-
-
-@core.aliases.system_field('user-group')
-@dataclass(frozen=True)
-class Group:
-    pass
-
-
-@core.aliases.system_field('user-community')
-@dataclass(frozen=True)
-class Community:
-    pass
-
-
-@core.aliases.system_field('user-access-role')
-@dataclass(frozen=True)
-class AccessRole:
-    pass
-
-
-@core.aliases.system_field('user-last-logged-in-at')
-@dataclass(frozen=True)
-class LastLoggedInAt:
-    pass
-
-
-@core.aliases.custom_field('user-custom-field')
-@dataclass(frozen=True)
-class CustomField:
-    path: str
+Id = core.aliases.system_field('user-id')
+Email = core.aliases.system_field('user-email')
+Slug = core.aliases.system_field('user-profile-slug')
+Title = core.aliases.system_field('user-profile-title')
+Owner = core.aliases.system_field('user-profile-owner')
+Status = core.aliases.system_field('user-profile-status')
+AboutHtml = core.aliases.system_field('user-profile-about-html')
+Description = core.aliases.system_field('user-profile-description')
+Group = core.aliases.system_field('user-group')
+Community = core.aliases.system_field('user-community')
+AccessRole = core.aliases.system_field('user-access-role')
+LastLoggedInAt = core.aliases.system_field('user-last-logged-in-at')
+CustomField = core.aliases.custom_field('user-custom-field')
+PostsCount = core.aliases.system_field('user-posts-count')  # TODO: Replace with events/metrics

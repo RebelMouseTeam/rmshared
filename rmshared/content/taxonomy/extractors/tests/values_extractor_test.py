@@ -1,6 +1,5 @@
 from rmshared.typings import read_only
 
-from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import graph
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
@@ -43,31 +42,31 @@ class TestPostValuesExtractor:
             lifetime_page_views_count=123456,
         ))
 
-        assert list(extractor_1.extract_values(core.fields.System('post-id'))) == [123]
-        assert list(extractor_1.extract_values(core.fields.System('post-type'))) == ['how-to']
-        assert list(extractor_1.extract_values(core.fields.System('post-status'))) == ['published-to-site(promoted=false)']
-        assert list(extractor_1.extract_values(core.fields.System('post-stage'))) == [234]
-        assert list(extractor_1.extract_values(core.fields.System('post-is-private'))) == [True]
-        assert list(extractor_1.extract_values(core.fields.System('post-is-suspicious'))) == [True]
-        assert list(extractor_1.extract_values(core.fields.System('post-is-excluded-from-search'))) == [True]
-        assert list(extractor_1.extract_values(core.fields.System('post-modified-at'))) == [1682679355]
-        assert list(extractor_1.extract_values(core.fields.System('post-scheduled-at'))) == []
-        assert list(extractor_1.extract_values(core.fields.System('post-published-at'))) == [1682679355]
-        assert list(extractor_1.extract_values(core.fields.System('post-title'))) == ['How to make a cake']
-        assert list(extractor_1.extract_values(core.fields.System('post-subtitle'))) == ['Ingredients', 'Instructions', 'Tips']
-        assert list(extractor_1.extract_values(core.fields.System('post-body'))) == ['1. Mix the ingredients', '2. Bake the cake', '3. Enjoy!']
-        assert list(extractor_1.extract_values(core.fields.System('post-primary-tag'))) == ['food']
-        assert list(extractor_1.extract_values(core.fields.System('post-regular-tag'))) == ['cake', 'dessert']
-        assert list(extractor_1.extract_values(core.fields.System('post-primary-section'))) == [345]
-        assert list(extractor_1.extract_values(core.fields.System('post-regular-section'))) == [456, 567]
-        assert list(extractor_1.extract_values(core.fields.System('post-community'))) == [678]
-        assert list(extractor_1.extract_values(core.fields.System('post-author'))) == [789, 901]
-        assert list(extractor_1.extract_values(core.fields.System('post-page-layout'))) == ['How_To']
-        assert list(extractor_1.extract_values(core.fields.System('post-editor-layout'))) == ['EE_How_To']
-        assert list(extractor_1.extract_values(core.fields.Custom('post-custom-field', path='foo.bar'))) == ['baz']
-        assert list(extractor_1.extract_values(core.fields.Custom('post-custom-field', path='foo.qux'))) == [123, 456]
-        assert list(extractor_1.extract_values(core.fields.Custom('post-custom-field', path='foo.qxa'))) == []
-        assert list(extractor_1.extract_values(core.fields.System('post-page-views-count'))) == [123456]
+        assert list(extractor_1.extract_values(posts.fields.Id())) == [123]
+        assert list(extractor_1.extract_values(posts.fields.Type())) == ['how-to']
+        assert list(extractor_1.extract_values(posts.fields.Status())) == ['published-to-site(promoted=false)']
+        assert list(extractor_1.extract_values(posts.fields.Stage())) == [234]
+        assert list(extractor_1.extract_values(posts.fields.IsPrivate())) == [True]
+        assert list(extractor_1.extract_values(posts.fields.IsSuspicious())) == [True]
+        assert list(extractor_1.extract_values(posts.fields.IsExcludedFromSearch())) == [True]
+        assert list(extractor_1.extract_values(posts.fields.ModifiedAt())) == [1682679355]
+        assert list(extractor_1.extract_values(posts.fields.ScheduledAt())) == []
+        assert list(extractor_1.extract_values(posts.fields.PublishedAt())) == [1682679355]
+        assert list(extractor_1.extract_values(posts.fields.Title())) == ['How to make a cake']
+        assert list(extractor_1.extract_values(posts.fields.Subtitle())) == ['Ingredients', 'Instructions', 'Tips']
+        assert list(extractor_1.extract_values(posts.fields.Body())) == ['1. Mix the ingredients', '2. Bake the cake', '3. Enjoy!']
+        assert list(extractor_1.extract_values(posts.fields.PrimaryTag())) == ['food']
+        assert list(extractor_1.extract_values(posts.fields.RegularTag())) == ['cake', 'dessert']
+        assert list(extractor_1.extract_values(posts.fields.PrimarySection())) == [345]
+        assert list(extractor_1.extract_values(posts.fields.RegularSection())) == [456, 567]
+        assert list(extractor_1.extract_values(posts.fields.Community())) == [678]
+        assert list(extractor_1.extract_values(posts.fields.Author())) == [789, 901]
+        assert list(extractor_1.extract_values(posts.fields.PageLayout())) == ['How_To']
+        assert list(extractor_1.extract_values(posts.fields.EditorLayout())) == ['EE_How_To']
+        assert list(extractor_1.extract_values(posts.fields.CustomField(path='foo.bar'))) == ['baz']
+        assert list(extractor_1.extract_values(posts.fields.CustomField(path='foo.qux'))) == [123, 456]
+        assert list(extractor_1.extract_values(posts.fields.CustomField(path='foo.qxa'))) == []
+        assert list(extractor_1.extract_values(posts.fields.PageViewsCount())) == [123456]
 
         extractor_2 = Factory.make_values_extractor_for_post(graph.posts.Post(
             id=2345,
@@ -95,31 +94,31 @@ class TestPostValuesExtractor:
             lifetime_page_views_count=0,
         ))
 
-        assert list(extractor_2.extract_values(core.fields.System('post-id'))) == [2345]
-        assert list(extractor_2.extract_values(core.fields.System('post-type'))) == ['product']
-        assert list(extractor_2.extract_values(core.fields.System('post-status'))) == ['draft-in-progress(rejected=true)']
-        assert list(extractor_2.extract_values(core.fields.System('post-stage'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-is-private'))) == [False]
-        assert list(extractor_2.extract_values(core.fields.System('post-is-suspicious'))) == [False]
-        assert list(extractor_2.extract_values(core.fields.System('post-is-excluded-from-search'))) == [False]
-        assert list(extractor_2.extract_values(core.fields.System('post-modified-at'))) == [1682679355]
-        assert list(extractor_2.extract_values(core.fields.System('post-scheduled-at'))) == [1682765755]
-        assert list(extractor_2.extract_values(core.fields.System('post-published-at'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-title'))) == ['']
-        assert list(extractor_2.extract_values(core.fields.System('post-subtitle'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-body'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-primary-tag'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-regular-tag'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-primary-section'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-regular-section'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-community'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-author'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-page-layout'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-editor-layout'))) == []
-        assert list(extractor_2.extract_values(core.fields.Custom('post-custom-field', path='foo.bar'))) == []
-        assert list(extractor_2.extract_values(core.fields.Custom('post-custom-field', path='foo.qux'))) == []
-        assert list(extractor_2.extract_values(core.fields.Custom('post-custom-field', path='foo.qxa'))) == []
-        assert list(extractor_2.extract_values(core.fields.System('post-page-views-count'))) == [0]
+        assert list(extractor_2.extract_values(posts.fields.Id())) == [2345]
+        assert list(extractor_2.extract_values(posts.fields.Type())) == ['product']
+        assert list(extractor_2.extract_values(posts.fields.Status())) == ['draft-in-progress(rejected=true)']
+        assert list(extractor_2.extract_values(posts.fields.Stage())) == []
+        assert list(extractor_2.extract_values(posts.fields.IsPrivate())) == [False]
+        assert list(extractor_2.extract_values(posts.fields.IsSuspicious())) == [False]
+        assert list(extractor_2.extract_values(posts.fields.IsExcludedFromSearch())) == [False]
+        assert list(extractor_2.extract_values(posts.fields.ModifiedAt())) == [1682679355]
+        assert list(extractor_2.extract_values(posts.fields.ScheduledAt())) == [1682765755]
+        assert list(extractor_2.extract_values(posts.fields.PublishedAt())) == []
+        assert list(extractor_2.extract_values(posts.fields.Title())) == ['']
+        assert list(extractor_2.extract_values(posts.fields.Subtitle())) == []
+        assert list(extractor_2.extract_values(posts.fields.Body())) == []
+        assert list(extractor_2.extract_values(posts.fields.PrimaryTag())) == []
+        assert list(extractor_2.extract_values(posts.fields.RegularTag())) == []
+        assert list(extractor_2.extract_values(posts.fields.PrimarySection())) == []
+        assert list(extractor_2.extract_values(posts.fields.RegularSection())) == []
+        assert list(extractor_2.extract_values(posts.fields.Community())) == []
+        assert list(extractor_2.extract_values(posts.fields.Author())) == []
+        assert list(extractor_2.extract_values(posts.fields.PageLayout())) == []
+        assert list(extractor_2.extract_values(posts.fields.EditorLayout())) == []
+        assert list(extractor_2.extract_values(posts.fields.CustomField(path='foo.bar'))) == []
+        assert list(extractor_2.extract_values(posts.fields.CustomField(path='foo.qux'))) == []
+        assert list(extractor_2.extract_values(posts.fields.CustomField(path='foo.qxa'))) == []
+        assert list(extractor_2.extract_values(posts.fields.PageViewsCount())) == [0]
 
     def test_it_should_extract_values_from_user_profiles(self):
         extractor_1 = Factory.make_values_extractor_for_user_profile(graph.users.UserProfile(
@@ -169,19 +168,19 @@ class TestPostValuesExtractor:
             )
         ))
 
-        assert list(extractor_1.extract_values(core.fields.System('user-id'))) == [777]
-        assert list(extractor_1.extract_values(core.fields.System('user-profile-slug'))) == ['user-1']
-        assert list(extractor_1.extract_values(core.fields.System('user-profile-title'))) == ['User #1']
-        assert list(extractor_1.extract_values(core.fields.System('user-profile-owner'))) == [8765]
-        assert list(extractor_1.extract_values(core.fields.System('user-profile-status'))) == ['inactive(banned=true)']
-        assert list(extractor_1.extract_values(core.fields.System('user-profile-about-html'))) == ['About user #1']
-        assert list(extractor_1.extract_values(core.fields.System('user-profile-description'))) == ['Description of user #1']
-        assert frozenset(extractor_1.extract_values(core.fields.System('user-email'))) == frozenset({'email_1@example.org', 'email_2@example.org'})
-        assert frozenset(extractor_1.extract_values(core.fields.System('user-group'))) == frozenset({'user-group-1', 'user-group-2'})
-        assert frozenset(extractor_1.extract_values(core.fields.System('user-community'))) == frozenset({987, 876})
-        assert frozenset(extractor_1.extract_values(core.fields.System('user-access-role'))) == frozenset({12345, 54321})
-        assert list(extractor_1.extract_values(core.fields.System('user-last-logged-in-at'))) == [1440000000]
-        assert list(extractor_1.extract_values(core.fields.Custom('user-custom-field', path='foo.bar'))) == ['baz']
-        assert list(extractor_1.extract_values(core.fields.Custom('user-custom-field', path='foo.qux'))) == [123, 456]
-        assert list(extractor_1.extract_values(core.fields.Custom('user-custom-field', path='foo.qxa'))) == []
-        assert list(extractor_1.extract_values(core.fields.System('user-posts-count'))) == [54321]
+        assert list(extractor_1.extract_values(users.fields.Id())) == [777]
+        assert list(extractor_1.extract_values(users.fields.Slug())) == ['user-1']
+        assert list(extractor_1.extract_values(users.fields.Title())) == ['User #1']
+        assert list(extractor_1.extract_values(users.fields.Owner())) == [8765]
+        assert list(extractor_1.extract_values(users.fields.Status())) == ['inactive(banned=true)']
+        assert list(extractor_1.extract_values(users.fields.AboutHtml())) == ['About user #1']
+        assert list(extractor_1.extract_values(users.fields.Description())) == ['Description of user #1']
+        assert frozenset(extractor_1.extract_values(users.fields.Email())) == frozenset({'email_1@example.org', 'email_2@example.org'})
+        assert frozenset(extractor_1.extract_values(users.fields.Group())) == frozenset({'user-group-1', 'user-group-2'})
+        assert frozenset(extractor_1.extract_values(users.fields.Community())) == frozenset({987, 876})
+        assert frozenset(extractor_1.extract_values(users.fields.AccessRole())) == frozenset({12345, 54321})
+        assert list(extractor_1.extract_values(users.fields.LastLoggedInAt())) == [1440000000]
+        assert list(extractor_1.extract_values(users.fields.CustomField(path='foo.bar'))) == ['baz']
+        assert list(extractor_1.extract_values(users.fields.CustomField(path='foo.qux'))) == [123, 456]
+        assert list(extractor_1.extract_values(users.fields.CustomField(path='foo.qxa'))) == []
+        assert list(extractor_1.extract_values(users.fields.PostsCount())) == [54321]

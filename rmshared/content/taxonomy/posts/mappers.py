@@ -34,8 +34,9 @@ class Factory:
                 labels.Id: self._map_post_id,
                 labels.Type: self._map_post_type,
                 labels.Status: self._map_post_status,
-                labels.Private: lambda _: taxonomy_core.labels.Badge(field=taxonomy_core.fields.System('post-is-private')),
-                labels.Suspicious: lambda _: taxonomy_core.labels.Badge(field=taxonomy_core.fields.System('post-is-suspicious')),
+                labels.Private: lambda _: taxonomy_core.labels.Badge(field=fields.IsPrivate()),
+                labels.Suspicious: lambda _: taxonomy_core.labels.Badge(field=fields.IsSuspicious()),
+                labels.ExcludedFromSearch: lambda _: taxonomy_core.labels.Badge(field=fields.IsExcludedFromSearch()),
                 labels.PrimaryTag: self._map_primary_post_tag,
                 labels.RegularTag: self._map_regular_post_tag,
                 labels.PrimarySection: self._map_primary_post_section,
@@ -43,20 +44,19 @@ class Factory:
                 labels.Community: self._map_post_community,
                 labels.Author: self._map_post_author,
                 labels.Stage: self._map_post_stage,
-                labels.NoPrimaryTags: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-primary-tag')),
-                labels.NoRegularTags: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-regular-tag')),
-                labels.NoPrimarySections: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-primary-section')),
-                labels.NoRegularSections: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-regular-section')),
-                labels.NoCommunities: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-community')),
-                labels.NoAuthors: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-author')),
-                labels.NoStages: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-stage')),
+                labels.NoPrimaryTags: lambda _: taxonomy_core.labels.Empty(field=fields.PrimaryTag()),
+                labels.NoRegularTags: lambda _: taxonomy_core.labels.Empty(field=fields.RegularTag()),
+                labels.NoPrimarySections: lambda _: taxonomy_core.labels.Empty(field=fields.PrimarySection()),
+                labels.NoRegularSections: lambda _: taxonomy_core.labels.Empty(field=fields.RegularSection()),
+                labels.NoCommunities: lambda _: taxonomy_core.labels.Empty(field=fields.Community()),
+                labels.NoAuthors: lambda _: taxonomy_core.labels.Empty(field=fields.Author()),
+                labels.NoStages: lambda _: taxonomy_core.labels.Empty(field=fields.Stage()),
                 labels.CustomField: self._map_custom_post_field,
                 labels.NoCustomField: self._map_no_custom_post_field,
-                labels.DefaultPageLayout: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-page-layout')),
+                labels.DefaultPageLayout: lambda _: taxonomy_core.labels.Empty(field=fields.PageLayout()),
                 labels.SpecialPageLayout: self._map_special_post_page_layout,
-                labels.DefaultEditorLayout: lambda _: taxonomy_core.labels.Empty(field=taxonomy_core.fields.System('post-editor-layout')),
+                labels.DefaultEditorLayout: lambda _: taxonomy_core.labels.Empty(field=fields.EditorLayout()),
                 labels.SpecialEditorLayout: self._map_special_post_editor_layout,
-                labels.ExcludedFromSearch: lambda _: taxonomy_core.labels.Badge(field=taxonomy_core.fields.System('post-is-excluded-from-search')),
             })
 
         def visit_label(self, label):
@@ -64,57 +64,57 @@ class Factory:
 
         @staticmethod
         def _map_post_id(label: labels.Id) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-id'), value=label.value)
+            return taxonomy_core.labels.Value(field=fields.Id(), value=label.value)
 
         def _map_post_type(self, label: labels.Type) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-type'), value=self.aspects.map_post_type(label.type))
+            return taxonomy_core.labels.Value(field=fields.Type(), value=self.aspects.map_post_type(label.type))
 
         def _map_post_status(self, label: labels.Status) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-status'), value=self.aspects.map_post_status(label.status))
+            return taxonomy_core.labels.Value(field=fields.Status(), value=self.aspects.map_post_status(label.status))
 
         @staticmethod
         def _map_primary_post_tag(label: labels.PrimaryTag) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-primary-tag'), value=label.slug)
+            return taxonomy_core.labels.Value(field=fields.PrimaryTag(), value=label.slug)
 
         @staticmethod
         def _map_regular_post_tag(label: labels.RegularTag) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-regular-tag'), value=label.slug)
+            return taxonomy_core.labels.Value(field=fields.RegularTag(), value=label.slug)
 
         @staticmethod
         def _map_primary_post_section(label: labels.PrimarySection) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-primary-section'), value=label.id)
+            return taxonomy_core.labels.Value(field=fields.PrimarySection(), value=label.id)
 
         @staticmethod
         def _map_regular_post_section(label: labels.RegularSection) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-regular-section'), value=label.id)
+            return taxonomy_core.labels.Value(field=fields.RegularSection(), value=label.id)
 
         @staticmethod
         def _map_post_community(label: labels.Community) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-community'), value=label.id)
+            return taxonomy_core.labels.Value(field=fields.Community(), value=label.id)
 
         @staticmethod
         def _map_post_author(label: labels.Author) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-author'), value=label.id)
+            return taxonomy_core.labels.Value(field=fields.Author(), value=label.id)
 
         @staticmethod
         def _map_post_stage(label: labels.Stage) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-stage'), value=label.id)
+            return taxonomy_core.labels.Value(field=fields.Stage(), value=label.id)
 
         @staticmethod
         def _map_custom_post_field(label: labels.CustomField) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.Custom('post-custom-field', path=label.path), value=label.value)
+            return taxonomy_core.labels.Value(field=fields.CustomField(path=label.path), value=label.value)
 
         @staticmethod
         def _map_no_custom_post_field(label: labels.NoCustomField) -> taxonomy_core.labels.Empty:
-            return taxonomy_core.labels.Empty(field=taxonomy_core.fields.Custom('post-custom-field', path=label.path))
+            return taxonomy_core.labels.Empty(field=fields.CustomField(path=label.path))
 
         @staticmethod
         def _map_special_post_page_layout(label: labels.SpecialPageLayout) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-page-layout'), value=label.slug)
+            return taxonomy_core.labels.Value(field=fields.PageLayout(), value=label.slug)
 
         @staticmethod
         def _map_special_post_editor_layout(label: labels.SpecialEditorLayout) -> taxonomy_core.labels.Value:
-            return taxonomy_core.labels.Value(field=taxonomy_core.fields.System('post-editor-layout'), value=label.slug)
+            return taxonomy_core.labels.Value(field=fields.EditorLayout(), value=label.slug)
 
 
 class Aspects:
