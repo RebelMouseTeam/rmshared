@@ -177,7 +177,7 @@ POST_2 = Post(
 POST_2_DATA = {
     'id': 888,
     'type': {'event': {}},
-    'status': {'draft': {'stage': {'in_progress': {'is_rejected': True}}}},
+    'status': {'draft': {'stage': {'in-progress': {'is_rejected': True}}}},
     'stage_id': None,
     'is_private': True,
     'is_suspicious': False,

@@ -12,8 +12,14 @@ class TestProtocol:
         return Protocol()
 
     def test_it_should_make_and_jsonify_posts(self, protocol: Protocol):
-        post = protocol.make_post(data=fixtures.POST_1_DATA)
-        assert post == fixtures.POST_1
+        post_1 = protocol.make_post(data=fixtures.POST_1_DATA)
+        assert post_1 == fixtures.POST_1
 
-        data = protocol.jsonify_post(post)
-        assert data == fixtures.POST_1_DATA
+        data_1 = protocol.jsonify_post(post_1)
+        assert data_1 == fixtures.POST_1_DATA
+
+        post_2 = protocol.make_post(data=fixtures.POST_2_DATA)
+        assert post_2 == fixtures.POST_2
+
+        data_2 = protocol.jsonify_post(post_2)
+        assert data_2 == fixtures.POST_2_DATA
