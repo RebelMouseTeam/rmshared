@@ -12,7 +12,7 @@ from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy.extractors.abc import Scalar
 from rmshared.content.taxonomy.extractors.abc import IValuesExtractor
 
-Field = TypeVar('Field', bound=core.aliases.Field)
+Field = TypeVar('Field', bound=core.fields.Field)
 
 
 class ValuesExtractor(IValuesExtractor):

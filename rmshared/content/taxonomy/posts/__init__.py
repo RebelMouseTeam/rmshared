@@ -6,9 +6,12 @@ from rmshared.content.taxonomy.posts import guids
 from rmshared.content.taxonomy.posts import fields
 from rmshared.content.taxonomy.posts import labels
 from rmshared.content.taxonomy.posts import events
-from rmshared.content.taxonomy.posts import mappers
-from rmshared.content.taxonomy.posts.fakes import Fakes
+from rmshared.content.taxonomy.posts import aspects
+from rmshared.content.taxonomy.posts.abc import IAspects
+from rmshared.content.taxonomy.posts.abc import IProtocol
+from rmshared.content.taxonomy.posts.aspects import Aspects
 from rmshared.content.taxonomy.posts.protocol import Protocol
+from rmshared.content.taxonomy.posts.fakes import Fakes
 
 
 __all__ = (
@@ -21,8 +24,9 @@ __all__ = (
     'fields',
     'labels',
     'events',
-    'mappers',
+
+    'IAspects', 'Aspects',
+    'IProtocol', 'Protocol',
 
     'Fakes',
-    'Protocol',
 )

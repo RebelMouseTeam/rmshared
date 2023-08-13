@@ -1,5 +1,3 @@
-from pytest import fixture
-
 from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy.posts import labels
 from rmshared.content.taxonomy.posts import fields
@@ -7,56 +5,50 @@ from rmshared.content.taxonomy.posts import consts
 from rmshared.content.taxonomy.posts import statuses
 from rmshared.content.taxonomy.posts import drafts
 from rmshared.content.taxonomy.posts import published
-from rmshared.content.taxonomy.posts import mappers
 
 
 class TestMappers:
-    @fixture
-    def factory(self) -> mappers.Factory:
-        return mappers.Factory()
-
-    def test_it_should_map_filters(self, factory: mappers.Factory):
-        visitor = factory.make_visitor()
-        assert tuple(visitor.visit_filters(self.POSTS_FILTERS)) == tuple(self.CORE_FILTERS)
+    def test_it_should_map_filters(self):
+        assert tuple(self.CORE_FILTERS) == tuple(self.POSTS_FILTERS)
 
     POSTS_FILTERS = [
-        core.filters.AnyLabel[labels.Base](labels=(
+        core.filters.AnyLabel(labels=(
             labels.Id(value=123),
-            labels.Status(status=statuses.Draft(stage=drafts.stages.Created(is_imported=True))),
-            labels.Status(status=statuses.Draft(stage=drafts.stages.Created(is_imported=False))),
-            labels.Status(status=statuses.Draft(stage=drafts.stages.InProgress(is_rejected=True))),
-            labels.Status(status=statuses.Draft(stage=drafts.stages.InProgress(is_rejected=False))),
-            labels.Status(status=statuses.Draft(stage=drafts.stages.InReview())),
-            labels.Status(status=statuses.Draft(stage=drafts.stages.Ready())),
+            labels.Status(value=statuses.Draft(stage=drafts.stages.Created(is_imported=True))),
+            labels.Status(value=statuses.Draft(stage=drafts.stages.Created(is_imported=False))),
+            labels.Status(value=statuses.Draft(stage=drafts.stages.InProgress(is_rejected=True))),
+            labels.Status(value=statuses.Draft(stage=drafts.stages.InProgress(is_rejected=False))),
+            labels.Status(value=statuses.Draft(stage=drafts.stages.InReview())),
+            labels.Status(value=statuses.Draft(stage=drafts.stages.Ready())),
             labels.Suspicious(),
             labels.NoPrimaryTags(),
             labels.NoRegularTags(),
-            labels.PrimarySection(id=234),
-            labels.RegularSection(id=345),
+            labels.PrimarySection(value=234),
+            labels.RegularSection(value=345),
             labels.NoCommunities(),
-            labels.Author(id=456),
+            labels.Author(value=456),
             labels.NoStages(),
             labels.CustomField(path='path.to.field_1', value='value-1'),
             labels.DefaultPageLayout(),
-            labels.SpecialEditorLayout(slug='layout-1'),
+            labels.SpecialEditorLayout(value='layout-1'),
         )),
-        core.filters.NoLabels[labels.Base](labels=(
-            labels.Type(type=consts.POST.TYPE.HOW_TO),
-            labels.Status(status=statuses.Published(scope=published.scopes.Site(is_promoted=True))),
-            labels.Status(status=statuses.Published(scope=published.scopes.Site(is_promoted=False))),
-            labels.Status(status=statuses.Published(scope=published.scopes.Community(is_demoted=True))),
-            labels.Status(status=statuses.Published(scope=published.scopes.Community(is_demoted=False))),
-            labels.Status(status=statuses.Removed()),
+        core.filters.NoLabels(labels=(
+            labels.Type(value=consts.POST.TYPE.HOW_TO),
+            labels.Status(value=statuses.Published(scope=published.scopes.Site(is_promoted=True))),
+            labels.Status(value=statuses.Published(scope=published.scopes.Site(is_promoted=False))),
+            labels.Status(value=statuses.Published(scope=published.scopes.Community(is_demoted=True))),
+            labels.Status(value=statuses.Published(scope=published.scopes.Community(is_demoted=False))),
+            labels.Status(value=statuses.Removed()),
             labels.Private(),
-            labels.PrimaryTag(slug='tag-1'),
-            labels.RegularTag(slug='tag-2'),
+            labels.PrimaryTag(value='tag-1'),
+            labels.RegularTag(value='tag-2'),
             labels.NoPrimarySections(),
             labels.NoRegularSections(),
-            labels.Community(id=567),
+            labels.Community(value=567),
             labels.NoAuthors(),
-            labels.Stage(id=678),
+            labels.Stage(value=678),
             labels.NoCustomField(path='path.to.field_2'),
-            labels.SpecialPageLayout(slug='layout-2'),
+            labels.SpecialPageLayout(value='layout-2'),
             labels.DefaultEditorLayout(),
             labels.ExcludedFromSearch(),
         )),

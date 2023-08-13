@@ -12,13 +12,14 @@ from rmshared.content.taxonomy.posts import consts
 from rmshared.content.taxonomy.posts import drafts
 from rmshared.content.taxonomy.posts import statuses
 from rmshared.content.taxonomy.posts import published
+from rmshared.content.taxonomy.posts.abc import IProtocol
 
 Status = TypeVar('Status', bound=statuses.Status)
 Stage = TypeVar('Stage', bound=drafts.stages.Stage)
 Scope = TypeVar('Scope', bound=published.scopes.Scope)
 
 
-class Protocol:
+class Protocol(IProtocol):
     def __init__(self):
         self.post_status_to_id_map: Mapping[Type[Status], str] = ensure_map_is_complete(statuses.Status, {
             statuses.Draft: 'draft',
@@ -69,12 +70,12 @@ class Protocol:
             published.scopes.Community: self._jsonify_community_published_scope_info,
         })
 
-    def make_post_type(self, data: Mapping[str, Any]) -> consts.POST.TYPE:
+    def make_post_type(self, data):
         name, info = parse_name_and_info(data)
         assert info == {}
         return self.POST_TYPE_FROM_ID_MAP[name]
 
-    def jsonify_post_type(self, post_type: consts.POST.TYPE) -> Mapping[str, Any]:
+    def jsonify_post_type(self, post_type):
         return {self.POST_TYPE_TO_ID_MAP[post_type]: {}}
 
     POST_TYPE_TO_ID_MAP = {
@@ -90,11 +91,11 @@ class Protocol:
     POST_TYPE_FROM_ID_MAP = invert_dict(POST_TYPE_TO_ID_MAP)
     assert frozenset(POST_TYPE_FROM_ID_MAP.values()) == consts.POST.TYPE.ALL
 
-    def make_post_status(self, data: Mapping[str, Any]) -> statuses.Status:
+    def make_post_status(self, data):
         name, info = parse_name_and_info(data)
         return self.post_status_to_make_func_map[self.post_status_from_id_map[name]](dict(info))
 
-    def jsonify_post_status(self, status: statuses.Status) -> Mapping[str, Any]:
+    def jsonify_post_status(self, status):
         name = self.post_status_to_id_map[type(status)]
         info = self.post_status_to_jsonify_info_func_map[type(status)](status)
         return {name: info}

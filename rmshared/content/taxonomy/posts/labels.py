@@ -1,141 +1,36 @@
-from abc import ABCMeta
-from dataclasses import dataclass
 from typing import Any
 
+from rmshared.content.taxonomy import core
+
 from rmshared.content.taxonomy.posts import consts
+from rmshared.content.taxonomy.posts import fields
 from rmshared.content.taxonomy.posts import statuses
+from rmshared.content.taxonomy.posts.aspects import Aspects
 
+Id = core.aliases.labels.SystemFieldValue[int, int](fields.Id)
+Type = core.aliases.labels.SystemFieldValue[consts.POST.TYPE, str](fields.Type, Aspects().map_post_type)
+Status = core.aliases.labels.SystemFieldValue[statuses.Status, str](fields.Status, Aspects().map_post_status)
+Private = core.aliases.labels.SystemFieldBadge(fields.IsPrivate)
+Suspicious = core.aliases.labels.SystemFieldBadge(fields.IsSuspicious)
+ExcludedFromSearch = core.aliases.labels.SystemFieldBadge(fields.IsExcludedFromSearch)
+PrimaryTag = core.aliases.labels.SystemFieldValue[str, str](fields.PrimaryTag)
+RegularTag = core.aliases.labels.SystemFieldValue[str, str](fields.RegularTag)
+PrimarySection = core.aliases.labels.SystemFieldValue[int, int](fields.PrimarySection)
+RegularSection = core.aliases.labels.SystemFieldValue[int, int](fields.RegularSection)
+Community = core.aliases.labels.SystemFieldValue[int, int](fields.Community)
+Author = core.aliases.labels.SystemFieldValue[int, int](fields.Author)
+Stage = core.aliases.labels.SystemFieldValue[int, int](fields.Stage)
+SpecialPageLayout = core.aliases.labels.SystemFieldValue[str, str](fields.PageLayout)
+SpecialEditorLayout = core.aliases.labels.SystemFieldValue[str, str](fields.EditorLayout)
+CustomField = core.aliases.labels.CustomFieldValue[Any, Any](fields.CustomField)
 
-class Base(metaclass=ABCMeta):
-    pass
-
-
-@dataclass(frozen=True)
-class Id(Base):
-    value: int
-
-
-@dataclass(frozen=True)
-class Type(Base):
-    type: consts.POST.TYPE
-
-
-@dataclass(frozen=True)
-class Status(Base):
-    status: statuses.Status  # TODO: Status(Published), Status(Published(scope=site)), Status(Published(scope=site(...)))
-
-
-@dataclass(frozen=True)
-class Private(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class Suspicious(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class ExcludedFromSearch(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class PrimaryTag(Base):
-    slug: str
-
-
-@dataclass(frozen=True)
-class NoPrimaryTags(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class RegularTag(Base):
-    slug: str
-
-
-@dataclass(frozen=True)
-class NoRegularTags(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class PrimarySection(Base):
-    id: int
-
-
-@dataclass(frozen=True)
-class NoPrimarySections(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class RegularSection(Base):
-    id: int
-
-
-@dataclass(frozen=True)
-class NoRegularSections(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class Community(Base):
-    id: int
-
-
-@dataclass(frozen=True)
-class NoCommunities(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class Author(Base):
-    id: int
-
-
-@dataclass(frozen=True)
-class NoAuthors(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class Stage(Base):
-    id: int
-
-
-@dataclass(frozen=True)
-class NoStages(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class CustomField(Base):
-    path: str
-    value: Any
-
-
-@dataclass(frozen=True)
-class NoCustomField(Base):
-    path: str
-
-
-@dataclass(frozen=True)
-class DefaultPageLayout(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class SpecialPageLayout(Base):
-    slug: str
-
-
-@dataclass(frozen=True)
-class DefaultEditorLayout(Base):
-    pass
-
-
-@dataclass(frozen=True)
-class SpecialEditorLayout(Base):
-    slug: str
+NoPrimaryTags = core.aliases.labels.SystemFieldEmpty(fields.PrimaryTag)
+NoRegularTags = core.aliases.labels.SystemFieldEmpty(fields.RegularTag)
+NoPrimarySections = core.aliases.labels.SystemFieldEmpty(fields.PrimarySection)
+NoRegularSections = core.aliases.labels.SystemFieldEmpty(fields.RegularSection)
+NoCommunities = core.aliases.labels.SystemFieldEmpty(fields.Community)
+NoAuthors = core.aliases.labels.SystemFieldEmpty(fields.Author)
+NoStages = core.aliases.labels.SystemFieldEmpty(fields.Stage)
+DefaultPageLayout = core.aliases.labels.SystemFieldEmpty(fields.PageLayout)
+DefaultEditorLayout = core.aliases.labels.SystemFieldEmpty(fields.EditorLayout)
+NoCustomField = core.aliases.labels.CustomFieldEmpty(fields.CustomField)

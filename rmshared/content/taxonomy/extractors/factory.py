@@ -14,8 +14,8 @@ from rmshared.content.taxonomy.extractors.values import ValuesExtractor
 
 
 class Factory:
-    post_aspects = posts.mappers.Aspects()
-    user_aspects = users.mappers.Aspects()
+    post_aspects = posts.Aspects()
+    user_aspects = users.Aspects()
 
     @classmethod
     def make_values_extractor_for_post(cls, post: graph.posts.Post) -> IValuesExtractor:

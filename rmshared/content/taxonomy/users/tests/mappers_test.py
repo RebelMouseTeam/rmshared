@@ -1,41 +1,33 @@
-from pytest import fixture
-
 from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy.users import labels
 from rmshared.content.taxonomy.users import fields
 from rmshared.content.taxonomy.users import statuses
-from rmshared.content.taxonomy.users import mappers
 
 
 class TestMappers:
-    @fixture
-    def factory(self) -> mappers.Factory:
-        return mappers.Factory()
-
-    def test_it_should_map_filters(self, factory: mappers.Factory):
-        visitor = factory.make_visitor()
-        assert tuple(visitor.visit_filters(self.USERS_FILTERS)) == tuple(self.CORE_FILTERS)
+    def test_it_should_map_filters(self):
+        assert tuple(self.CORE_FILTERS) == tuple(self.USERS_FILTERS)
 
     USERS_FILTERS = [
-        core.filters.AnyLabel[labels.Base](labels=(
+        core.filters.AnyLabel(labels=(
             labels.Id(value=123),
-            labels.Title(title='Title #1'),
-            labels.Owner(user_id=234),
-            labels.Status(status=statuses.Inactive(is_banned=True)),
-            labels.Status(status=statuses.Inactive(is_banned=False)),
+            labels.Title(value='Title #1'),
+            labels.Owner(value=234),
+            labels.Status(value=statuses.Inactive(is_banned=True)),
+            labels.Status(value=statuses.Inactive(is_banned=False)),
             labels.NoEmails(),
-            labels.UserGroup(slug='group-1'),
+            labels.UserGroup(value='group-1'),
             labels.NoCommunities(),
-            labels.AccessRole(id=345),
+            labels.AccessRole(value=345),
             labels.NoCustomField(path='path.to.field_1'),
         )),
-        core.filters.NoLabels[labels.Base](labels=(
-            labels.Slug(slug='slug-1'),
-            labels.Status(status=statuses.Pending()),
-            labels.Status(status=statuses.Active()),
-            labels.Email(email='email-1'),
+        core.filters.NoLabels(labels=(
+            labels.Slug(value='slug-1'),
+            labels.Status(value=statuses.Pending()),
+            labels.Status(value=statuses.Active()),
+            labels.Email(value='email-1'),
             labels.NoUserGroups(),
-            labels.Community(id=567),
+            labels.Community(value=567),
             labels.NoAccessRoles(),
             labels.CustomField(path='path.to.field_2', value='value-1'),
         )),

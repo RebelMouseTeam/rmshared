@@ -12,8 +12,8 @@ from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import expander
 from rmshared.content.taxonomy.core.variables import values
 from rmshared.content.taxonomy.core.variables import operators
-from rmshared.content.taxonomy.core.variables.abc import Operator
 from rmshared.content.taxonomy.core.variables.abc import Scalar
+from rmshared.content.taxonomy.core.variables.abc import Operator
 from rmshared.content.taxonomy.core.variables.abc import IResolver
 
 T = TypeVar('T')
