@@ -15,7 +15,6 @@ from rmshared.content.taxonomy import protocols as base_protocols
 from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
-from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core import protocol
 from rmshared.content.taxonomy.core.variables import arguments
 from rmshared.content.taxonomy.core.variables import operators
@@ -36,167 +35,95 @@ class Factory:
 
     def make_protocol(self) -> IProtocol:
         builder = base_protocols.Builder()
-        builder.customize_filters(self.make_filters, dependencies=(base_protocols.ILabels, base_protocols.IRanges))
-        builder.customize_labels(self.make_labels, dependencies=(base_protocols.IFields, base_protocols.IValues))
-        builder.customize_ranges(self.make_ranges, dependencies=(base_protocols.IFields, base_protocols.IValues))
-        builder.customize_fields(self.make_fields, dependencies=())
-        builder.customize_values(self.make_values, dependencies=())
+        builder.customize_filters(self._make_filters, dependencies=(base_protocols.ILabels, base_protocols.IRanges))
+        builder.customize_labels(self._make_labels, dependencies=(base_protocols.IFields, base_protocols.IValues))
+        builder.customize_ranges(self._make_ranges, dependencies=(base_protocols.IFields, base_protocols.IValues))
+        builder.customize_fields(self.delegate.make_fields, dependencies=())
+        builder.customize_values(self._make_values, dependencies=())
         instance = builder.make_protocol()
         instance = self.Protocol(instance, self.variables)
         return instance
 
-    def make_filters(self, labels_: base_protocols.ILabels, ranges_: base_protocols.IRanges) -> base_protocols.IFilters[Operator[filters.Filter]]:
+    def _make_filters(self, labels_: base_protocols.ILabels, ranges_: base_protocols.IRanges) -> base_protocols.IFilters[Operator[filters.Filter]]:
         delegate = self.delegate.make_filters(labels_, ranges_)
         instance = base_protocols.Filters()
-        # TODO: consider `fallback = base_protocols.fallbacks.Filters(delegate=delegate, fallback=instance)` for {'$switch': {...: {'$<operator>': ...}}}
-        instance.add_filter(operators.Switch[filters.Filter], self.SwitchFiltersProtocol(delegate, self.operators))
-        # TODO: consider `instance.add_filter(operators.Return[filters.Filter], self.ReturnFiltersProtocol(delegate, self.operators))` for {'$return': ...}
-        return base_protocols.fallbacks.Filters(delegate=instance, fallback=self.ReturnFiltersFallback(delegate), exceptions=(LookupError,))
+        instance.add_filter(operators.Switch[filters.Filter], self.SwitchFiltersProtocol(self.operators, delegate))
+        instance.add_filter(operators.Return[filters.Filter], self.ReturnFiltersProtocol(self.operators, delegate))
+        return instance
 
-    def make_labels(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.ILabels[Operator[labels.Label]]:
+    def _make_labels(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.ILabels[labels.Label]:
         delegate = self.delegate.make_labels(fields_, values_)
         instance = base_protocols.Labels()
-        # TODO: consider `fallback = base_protocols.fallbacks.Labels(delegate=delegate, fallback=instance)` for {'$switch': {...: {'$<operator>': ...}}}
-        instance.add_label(operators.Switch[labels.Label], self.SwitchLabelsProtocol(delegate, self.operators))
-        # TODO: consider `instance.add_label(operators.Return[labels.Label], self.ReturnLabelsProtocol(delegate, self.operators))` for {'$return': ...}
-        return base_protocols.fallbacks.Labels(delegate=instance, fallback=self.ReturnLabelsFallback(delegate), exceptions=(LookupError,))
+        instance.add_label(operators.Return[labels.Label], self.ReturnLabelProtocol(self.operators, delegate))
+        return instance
 
-    def make_ranges(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.IRanges[Operator[ranges.Range]]:
+    def _make_ranges(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.IRanges[ranges.Range]:
         delegate = self.delegate.make_ranges(fields_, values_)
         instance = base_protocols.Ranges()
-        # TODO: consider `fallback = base_protocols.fallbacks.Ranges(delegate=delegate, fallback=instance)` for {'$switch': {...: {'$<operator>': ...}}}
-        instance.add_range(operators.Switch[ranges.Range], self.SwitchRangesProtocol(delegate, self.operators))
-        # TODO: consider `instance.add_range(operators.Return[ranges.Range], self.ReturnRangesProtocol(delegate, self.operators))` for {'$return': ...}
-        return base_protocols.fallbacks.Ranges(delegate=instance, fallback=self.ReturnRangesFallback(delegate), exceptions=(LookupError,))
+        instance.add_range(operators.Return[ranges.Range], self.ReturnRangeProtocol(self.operators, delegate))
+        return instance
 
-    def make_fields(self) -> base_protocols.IFields[fields.Field]:
-        return self.delegate.make_fields()
-
-    def make_values(self) -> base_protocols.IValues:
+    def _make_values(self) -> base_protocols.IValues:
         instance = base_protocols.Values()
         instance.add_value(self.VariableValueProtocol(self.variables))
         instance.add_value(self.ConstantValueProtocol(self.delegate.make_values()))
         return instance
 
     class SwitchFiltersProtocol(base_protocols.composites.IFilters.IProtocol[operators.Switch[filters.Filter]]):
-        def __init__(self, delegate: base_protocols.IFilters[filters.Filter], operators_: 'Factory.Operators'):
-            self.delegate = delegate
+        def __init__(self, operators_: 'Factory.Operators', delegate: base_protocols.IFilters[filters.Filter]):
             self.operators = operators_
+            self.delegate = delegate
 
         def get_keys(self):
             return self.operators.get_switch_keys()
 
-        def make_filter(self, data) -> operators.Switch[filters.Filter]:
+        def make_filter(self, data):
             return self.operators.make_switch(data, self.delegate.make_filter)
 
-        def jsonify_filter(self, filter_: operators.Switch[filters.Filter]):
+        def jsonify_filter(self, filter_):
             return self.operators.jsonify_switch(filter_, self.delegate.jsonify_filter)
 
     class ReturnFiltersProtocol(base_protocols.composites.IFilters.IProtocol[operators.Return[filters.Filter]]):
-        def __init__(self, delegate: base_protocols.IFilters[filters.Filter], operators_: 'Factory.Operators'):
-            self.delegate = delegate
+        def __init__(self, operators_: 'Factory.Operators', delegate: base_protocols.IFilters[filters.Filter]):
             self.operators = operators_
+            self.delegate = delegate
 
         def get_keys(self):
             return self.operators.get_return_keys()
 
-        def make_filter(self, data) -> operators.Return[filters.Filter]:
+        def make_filter(self, data):
             return self.operators.make_return(data, self.delegate.make_filter)
 
-        def jsonify_filter(self, filter_: operators.Return[filters.Filter]):
+        def jsonify_filter(self, filter_):
             return self.operators.jsonify_return(filter_, self.delegate.jsonify_filter)
 
-    class ReturnFiltersFallback(base_protocols.IFilters[Operator[filters.Filter]]):
-        def __init__(self, delegate: base_protocols.IFilters[filters.Filter]):
-            self.delegate = delegate
-
-        def make_filter(self, data) -> operators.Return[filters.Filter]:
-            return operators.Return[filters.Filter](cases=(self.delegate.make_filter(data),))
-
-        def jsonify_filter(self, filter_: Operator[filters.Filter]):
-            assert isinstance(filter_, operators.Return)
-            assert len(filter_.cases) == 1, filter_
-            return self.delegate.jsonify_filter(filter_.cases[0])
-
-    class SwitchLabelsProtocol(base_protocols.composites.ILabels.IProtocol[operators.Switch[labels.Label]]):
-        def __init__(self, delegate: base_protocols.ILabels[labels.Label], operators_: 'Factory.Operators'):
-            self.delegate = delegate
+    class ReturnLabelProtocol(base_protocols.composites.ILabels.IProtocol[operators.Return[labels.Label]]):
+        def __init__(self, operators_: 'Factory.Operators', delegate: base_protocols.ILabels[labels.Label]):
             self.operators = operators_
-
-        def get_keys(self):
-            return self.operators.get_switch_keys()
-
-        def make_label(self, data) -> operators.Switch[labels.Label]:
-            return self.operators.make_switch(data, self.delegate.make_label)
-
-        def jsonify_label(self, label_: operators.Switch[labels.Label]):
-            return self.operators.jsonify_switch(label_, self.delegate.jsonify_label)
-
-    class ReturnLabelsProtocol(base_protocols.composites.ILabels.IProtocol[operators.Return[labels.Label]]):
-        def __init__(self, delegate: base_protocols.ILabels[labels.Label], operators_: 'Factory.Operators'):
             self.delegate = delegate
-            self.operators = operators_
 
         def get_keys(self):
             return self.operators.get_return_keys()
 
-        def make_label(self, data) -> operators.Return[labels.Label]:
+        def make_label(self, data):
             return self.operators.make_return(data, self.delegate.make_label)
 
-        def jsonify_label(self, label_: operators.Return[labels.Label]):
-            return self.operators.jsonify_return(label_, self.delegate.jsonify_label)
+        def jsonify_label(self, label):
+            return self.operators.jsonify_return(label, self.delegate.jsonify_label)
 
-    class ReturnLabelsFallback(base_protocols.ILabels[Operator[labels.Label]]):
-        def __init__(self, delegate: base_protocols.ILabels[labels.Label]):
-            self.delegate = delegate
-
-        def make_label(self, data) -> operators.Return[labels.Label]:
-            return operators.Return[labels.Label](cases=(self.delegate.make_label(data),))
-
-        def jsonify_label(self, label: Operator[labels.Label]):
-            assert isinstance(label, operators.Return)
-            assert len(label.cases) == 1, label
-            return self.delegate.jsonify_label(label.cases[0])
-
-    class SwitchRangesProtocol(base_protocols.composites.IRanges.IProtocol[operators.Switch[ranges.Range]]):
-        def __init__(self, delegate: base_protocols.IRanges[ranges.Range], operators_: 'Factory.Operators'):
-            self.delegate = delegate
+    class ReturnRangeProtocol(base_protocols.composites.IRanges.IProtocol[operators.Return[ranges.Range]]):
+        def __init__(self, operators_: 'Factory.Operators', delegate: base_protocols.IRanges[ranges.Range]):
             self.operators = operators_
-
-        def get_keys(self):
-            return self.operators.get_switch_keys()
-
-        def make_range(self, data) -> operators.Switch[ranges.Range]:
-            return self.operators.make_switch(data, self.delegate.make_range)
-
-        def jsonify_range(self, range_: operators.Switch[ranges.Range]):
-            return self.operators.jsonify_switch(range_, self.delegate.jsonify_range)
-
-    class ReturnRangesProtocol(base_protocols.composites.IRanges.IProtocol[operators.Return[ranges.Range]]):
-        def __init__(self, delegate: base_protocols.IRanges[ranges.Range], operators_: 'Factory.Operators'):
             self.delegate = delegate
-            self.operators = operators_
 
         def get_keys(self):
             return self.operators.get_return_keys()
 
-        def make_range(self, data) -> operators.Return[ranges.Range]:
+        def make_range(self, data):
             return self.operators.make_return(data, self.delegate.make_range)
 
-        def jsonify_range(self, range_: operators.Return[ranges.Range]):
+        def jsonify_range(self, range_):
             return self.operators.jsonify_return(range_, self.delegate.jsonify_range)
-
-    class ReturnRangesFallback(base_protocols.IRanges[Operator[ranges.Range]]):
-        def __init__(self, delegate: base_protocols.IRanges[ranges.Range]):
-            self.delegate = delegate
-
-        def make_range(self, data) -> operators.Return[ranges.Range]:
-            return operators.Return[ranges.Range](cases=(self.delegate.make_range(data),))
-
-        def jsonify_range(self, range_: Operator[ranges.Range]):
-            assert isinstance(range_, operators.Return)
-            assert len(range_.cases) == 1, range_
-            return self.delegate.jsonify_range(range_.cases[0])
 
     class VariableValueProtocol(base_protocols.composites.IValues.IProtocol[values.Variable]):
         def __init__(self, variables: 'Factory.Variables'):
@@ -249,7 +176,7 @@ class Factory:
 
             return {'$switch': {
                 '$ref': self.variables.jsonify_reference(operator.ref),
-                '$cases': self._jsonify_cases(operator.cases, jsonify_operator),
+                '$cases': dict(self._jsonify_cases(operator.cases, jsonify_operator)),
             }}
 
         def _make_cases(self, data, make_case):
@@ -313,7 +240,7 @@ class Factory:
 
         def __init__(self):
             self.argument_to_argument_name_map: Mapping[Type[Argument], str] = {
-                arguments.Value: '$',
+                arguments.Value: '$each',
                 arguments.Empty: '$none',
                 arguments.Any: '$any',
             }

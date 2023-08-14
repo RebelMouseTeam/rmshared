@@ -33,16 +33,16 @@ class Factory:
 
     def make_protocol(self) -> IProtocol:
         builder = base_protocols.Builder()
-        builder.customize_filters(self.make_filters, dependencies=(base_protocols.ILabels, base_protocols.IRanges))
-        builder.customize_labels(self.make_labels, dependencies=(base_protocols.IFields, base_protocols.IValues))
-        builder.customize_ranges(self.make_ranges, dependencies=(base_protocols.IFields, base_protocols.IValues))
-        builder.customize_fields(self.make_fields, dependencies=())
-        builder.customize_values(self.make_values, dependencies=())
+        builder.customize_filters(self._make_filters, dependencies=(base_protocols.ILabels, base_protocols.IRanges))
+        builder.customize_labels(self._make_labels, dependencies=(base_protocols.IFields, base_protocols.IValues))
+        builder.customize_ranges(self._make_ranges, dependencies=(base_protocols.IFields, base_protocols.IValues))
+        builder.customize_fields(self.delegate.make_fields, dependencies=())
+        builder.customize_values(self._make_values, dependencies=())
         instance = builder.make_protocol()
         instance = self.Protocol(instance, self.variables)
         return instance
 
-    def make_filters(self, labels_: base_protocols.ILabels, ranges_: base_protocols.IRanges) -> base_protocols.IFilters[Operator[filters.Filter]]:
+    def _make_filters(self, labels_: base_protocols.ILabels, ranges_: base_protocols.IRanges) -> base_protocols.IFilters[Operator[filters.Filter]]:
         delegate = self.delegate.make_filters(labels_, ranges_)
         instance = base_protocols.Filters()
         # TODO: consider `fallback = base_protocols.fallbacks.Filters(delegate=delegate, fallback=instance)` for {'@switch': {...: {'@<operator>': ...}}}
@@ -50,7 +50,7 @@ class Factory:
         instance.add_filter(operators.Return[filters.Filter], self.ReturnFiltersProtocol(delegate, self.operators))
         return instance
 
-    def make_labels(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.ILabels[Operator[labels.Label]]:
+    def _make_labels(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.ILabels[Operator[labels.Label]]:
         delegate = self.delegate.make_labels(fields_, values_)
         instance = base_protocols.Labels()
         # TODO: consider `fallback = base_protocols.fallbacks.Labels(delegate=delegate, fallback=instance)` for {'@switch': {...: {'@<operator>': ...}}}
@@ -58,7 +58,7 @@ class Factory:
         instance.add_label(operators.Return[labels.Label], self.ReturnLabelsProtocol(delegate, self.operators))
         return instance
 
-    def make_ranges(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.IRanges[Operator[ranges.Range]]:
+    def _make_ranges(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.IRanges[Operator[ranges.Range]]:
         delegate = self.delegate.make_ranges(fields_, values_)
         instance = base_protocols.Ranges()
         # TODO: consider `fallback = base_protocols.fallbacks.Ranges(delegate=delegate, fallback=instance)` for {'@switch': {...: {'@<operator>': ...}}}
@@ -66,10 +66,7 @@ class Factory:
         instance.add_range(operators.Return[ranges.Range], self.ReturnRangesProtocol(delegate, self.operators))
         return instance
 
-    def make_fields(self) -> base_protocols.IFields[fields.Field]:
-        return self.delegate.make_fields()
-
-    def make_values(self) -> base_protocols.IValues:
+    def _make_values(self) -> base_protocols.IValues:
         instance = base_protocols.Values()
         instance.add_value(self.VariableValueProtocol(self.variables))
         instance.add_value(self.ConstantValueProtocol(self.delegate.make_values()))
@@ -223,7 +220,7 @@ class Factory:
 
             return {'@switch': {
                 '@ref': self.variables.jsonify_reference(operator.ref),
-                '@cases': self._jsonify_cases(operator.cases, jsonify_return),
+                '@cases': dict(self._jsonify_cases(operator.cases, jsonify_return)),
             }}
 
         def _make_cases(self, data, make_case):

@@ -67,52 +67,56 @@ class TestData:
                 ]}},
             },
         }},
-        {'@return': {'@cases': [
-            {'any_label': [
-                {'@return': {'@cases': [
-                    {'value': {'field': {'post-id': {}}, 'value': {'@constant': 123}}}
+        {'@switch': {
+            '@ref': {'alias': '$3'},
+            '@cases': {
+                '@any': {'@return': {'@cases': [
+                    {'any_label': [
+                        {'@return': {'@cases': [
+                            {'value': {'field': {'post-id': {}}, 'value': {'@constant': 123}}},
+                        ]}},
+                    ]},
                 ]}},
-                {'@switch': {
-                    '@ref': {'alias': '$3'},
-                    '@cases': {
-                        '@empty': {'@return': {'@cases': [
+                '@empty': {'@return': {'@cases': [
+                    {'any_label': [
+                        {'@return': {'@cases': [
+                            {'value': {'field': {'post-id': {}}, 'value': {'@constant': 123}}},
                             {'empty': {'field': {'post-primary-tag': {}}}},
                         ]}},
-                        '@value': {'@return': {'@cases': [
+                    ]},
+                ]}},
+                '@value': {'@return': {'@cases': [
+                    {'any_label': [
+                        {'@return': {'@cases': [
+                            {'value': {'field': {'post-id': {}}, 'value': {'@constant': 123}}},
                             {'value': {'field': {'post-primary-tag': {}}, 'value': {'@variable': {'ref': {'alias': '$3'}, 'index': 1}}}},
                             {'value': {'field': {'post-primary-tag': {}}, 'value': {'@variable': {'ref': {'alias': '$3'}, 'index': 2}}}},
-                        ]}},
-                    },
-                }},
-            ]},
-        ]}},
-        {'@switch': {
-            '@ref': {'alias': '$4'},
-            '@cases': {
-                '@value': {'@return': {'@cases': [
-                    {'any_range': [
-                        {'@return': {'@cases': [
-                            {
-                                'field': {'post-modified-at': {}},
-                                'min': {'@variable': {'ref': {'alias': '$4'}, 'index': 2}},
-                                'max': {'@variable': {'ref': {'alias': '$5'}, 'index': 1}},
-                            },
                         ]}},
                     ]},
                 ]}},
             },
         }},
-        {'@return': {'@cases': [
-            {'no_ranges': [
-                {'@switch': {
-                    '@ref': {'alias': '$5'},
-                    '@cases': {
-                        '@value': {'@return': {'@cases': [
-                            {'field': {'post-modified-at': {}}, 'min': {'@variable': {'ref': {'alias': '$4'}, 'index': 1}}},
-                            {'field': {'post-published-at': {}}, 'min': {'@constant': 100}, 'max': {'@variable': {'ref': {'alias': '$5'}, 'index': 2}}},
-                        ]}},
-                    },
-                }},
-            ]},
-        ]}},
+        {'@switch': {
+            '@ref': {'alias': '$4'},
+            '@cases': {
+                '@value': {'@return': {'@cases': [
+                    {'any_range': [
+                        {'@return': {'@cases': [{
+                            'field': {'post-modified-at': {}},
+                            'min': {'@variable': {'ref': {'alias': '$4'}, 'index': 2}},
+                            'max': {'@variable': {'ref': {'alias': '$5'}, 'index': 1}},
+                        }]}},
+                    ]},
+                ]}},
+            },
+        }},
+        {'@switch': {
+            '@ref': {'alias': '$5'},
+            '@cases': {
+                '@value': {'@return': {'@cases': [{'no_ranges': [{'@return': {'@cases': [
+                    {'field': {'post-modified-at': {}}, 'min': {'@variable': {'ref': {'alias': '$4'}, 'index': 1}}},
+                    {'field': {'post-published-at': {}}, 'min': {'@constant': 100}, 'max': {'@variable': {'ref': {'alias': '$5'}, 'index': 2}}},
+                ]}}]}]}},
+            },
+        }},
     )

@@ -11,7 +11,7 @@ from rmshared.content.taxonomy.core.variables.abc import Reference
 
 FILTERS = tuple([
     operators.Return[filters.Filter](cases=(
-        filters.AnyLabel(labels=(
+        filters.AnyLabel[operators.Operator[labels.Label]](labels=(
             operators.Return[labels.Label](cases=(
                 labels.Value(field=fields.System('post-id'), value=values.Constant(123)),
             )),
@@ -39,7 +39,7 @@ FILTERS = tuple([
     operators.Switch[filters.Filter](
         ref=Reference('$2'),
         cases=read_only({
-            arguments.Any: operators.Return(cases=()),
+            arguments.Any: operators.Return[filters.Filter](cases=()),
             arguments.Empty: operators.Return[filters.Filter](cases=(
                 filters.NoLabels(labels=(
                     operators.Return[labels.Label](cases=(
@@ -56,25 +56,35 @@ FILTERS = tuple([
             )),
         }),
     ),
-    operators.Return[filters.Filter](cases=(
-        filters.AnyLabel(labels=(
-            operators.Return[labels.Label](cases=(
-                labels.Value(field=fields.System('post-id'), value=values.Constant(123)),
+    operators.Switch[filters.Filter](
+        ref=Reference('$3'),
+        cases=read_only({
+            arguments.Any: operators.Return[filters.Filter](cases=(
+                filters.AnyLabel(labels=(
+                    operators.Return[labels.Label](cases=(
+                        labels.Value(field=fields.System('post-id'), value=values.Constant(123)),
+                    )),
+                )),
             )),
-            operators.Switch[labels.Label](
-                ref=Reference('$3'),
-                cases=read_only({
-                    arguments.Empty: operators.Return[labels.Label](cases=(
+            arguments.Empty: operators.Return[filters.Filter](cases=(
+                filters.AnyLabel(labels=(
+                    operators.Return[labels.Label](cases=(
+                        labels.Value(field=fields.System('post-id'), value=values.Constant(123)),
                         labels.Empty(field=fields.System('post-primary-tag')),
                     )),
-                    arguments.Value: operators.Return[labels.Label](cases=(
+                )),
+            )),
+            arguments.Value: operators.Return[filters.Filter](cases=(
+                filters.AnyLabel(labels=(
+                    operators.Return[labels.Label](cases=(
+                        labels.Value(field=fields.System('post-id'), value=values.Constant(123)),
                         labels.Value(field=fields.System('post-primary-tag'), value=values.Variable(ref=Reference('$3'), index=1)),
                         labels.Value(field=fields.System('post-primary-tag'), value=values.Variable(ref=Reference('$3'), index=2)),
                     )),
-                }),
-            ),
-        )),
-    )),
+                )),
+            )),
+        }),
+    ),
     operators.Switch[filters.Filter](
         ref=Reference('$4'),
         cases=read_only({
@@ -91,12 +101,12 @@ FILTERS = tuple([
             )),
         }),
     ),
-    operators.Return[filters.Filter](cases=(
-        filters.NoRanges(ranges=(
-            operators.Switch[ranges.Range](
-                ref=Reference('$5'),
-                cases=read_only({
-                    arguments.Value: operators.Return[ranges.Range](cases=(
+    operators.Switch[filters.Filter](
+        ref=Reference('$5'),
+        cases=read_only({
+            arguments.Value: operators.Return[filters.Filter](cases=(
+                filters.NoRanges(ranges=(
+                    operators.Return[ranges.Range](cases=(
                         ranges.MoreThan[fields.Field, values.Value](
                             field=fields.System('post-modified-at'),
                             value=values.Variable(ref=Reference('$4'), index=1),
@@ -107,8 +117,8 @@ FILTERS = tuple([
                             max_value=values.Variable(ref=Reference('$5'), index=2),
                         ),
                     )),
-                }),
-            ),
-        )),
-    )),
+                )),
+            )),
+        }),
+    ),
 ])

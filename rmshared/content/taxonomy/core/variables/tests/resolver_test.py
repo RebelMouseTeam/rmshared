@@ -59,9 +59,6 @@ class TestServerResolver:
             )),
         )
 
-        from pprint import pprint
-        pprint([1, fixtures.FILTERS])
-
         filters_ = tuple(resolver.dereference_filters(filters_=read_only(fixtures.FILTERS), arguments_=self.Arguments({
             '$1': arguments.Value(values=(567,)),
             '$2': arguments.Any(),
@@ -81,7 +78,6 @@ class TestServerResolver:
                 labels.Value(field=fields.System('post-id'), value=123),
                 labels.Empty(field=fields.System('post-primary-tag')),
             )),
-            filters.NoRanges(ranges=tuple()),
         )
 
     class Arguments(Resolver.IArguments):

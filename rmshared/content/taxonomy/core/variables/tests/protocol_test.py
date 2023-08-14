@@ -21,64 +21,64 @@ class TestProtocol:
         assert data == self.FILTERS_DATA
 
     FILTERS_DATA = (
-        {'any_label': [
+        {'$return': [{'any_label': [{'$return': [
             {'value': {'field': {'post-id': {}}, 'value': 123}},
-        ]},
+        ]}]}]},
         {'$switch': {
             '$ref': '$$1',
             '$cases': {
-                '$none': [{'any_label': [
+                '$none': [{'any_label': [{'$return': [
                     {'empty': {'field': {'post-regular-section': {}}}},
-                ]}],
-                '$': [{'any_label': [
+                ]}]}],
+                '$each': [{'any_label': [{'$return': [
                     {'value': {'field': {'post-regular-section': {}}, 'value': '$$1[1]'}},
-                ]}],
+                ]}]}],
             },
         }},
         {'$switch': {
             '$ref': '$$2',
             '$cases': {
                 '$any': [],
-                '$none': [{'no_labels': [
+                '$none': [{'no_labels': [{'$return': [
                     {'empty': {'field': {'private-post': {}}}},
-                ]}],
-                '$': [{'any_label': [
+                ]}]}],
+                '$each': [{'any_label': [{'$return': [
                     {'badge': {'field': {'private-post': {}}}},
-                ]}],
+                ]}]}],
             },
         }},
-        {'any_label': [
-            {'value': {'field': {'post-id': {}}, 'value': 123}},
-            {'$switch': {
-                '$ref': '$$3',
-                '$cases': {
-                    '$none': [
-                        {'empty': {'field': {'post-primary-tag': {}}}},
-                    ],
-                    '$': [
-                        {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3[1]'}},
-                        {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3[2]'}},
-                    ],
-                },
-            }},
-        ]},
+        {'$switch': {
+            '$ref': '$$3',
+            '$cases': {
+                '$any': [{'any_label': [{'$return': [
+                    {'value': {'field': {'post-id': {}}, 'value': 123}},
+                ]}]}],
+                '$none': [{'any_label': [{'$return': [
+                    {'value': {'field': {'post-id': {}}, 'value': 123}},
+                    {'empty': {'field': {'post-primary-tag': {}}}},
+                ]}]}],
+                '$each': [{'any_label': [{'$return': [
+                    {'value': {'field': {'post-id': {}}, 'value': 123}},
+                    {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3[1]'}},
+                    {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3[2]'}},
+                ]}]}],
+            },
+        }},
         {'$switch': {
             '$ref': '$$4',
             '$cases': {
-                '$': [{'any_range': [
+                '$each': [{'any_range': [{'$return': [
                     {'field': {'post-modified-at': {}}, 'min': '$$4[2]', 'max': '$$5[1]'},
-                ]}],
+                ]}]}],
             },
         }},
-        {'no_ranges': [
-            {'$switch': {
-                '$ref': '$$5',
-                '$cases': {
-                    '$': [
-                        {'field': {'post-modified-at': {}}, 'min': '$$4[1]'},
-                        {'field': {'post-published-at': {}}, 'min': 100, 'max': '$$5[2]'},
-                    ],
-                },
-            }},
-        ]},
+        {'$switch': {
+            '$ref': '$$5',
+            '$cases': {
+                '$each': [{'no_ranges': [{'$return': [
+                    {'field': {'post-modified-at': {}}, 'min': '$$4[1]'},
+                    {'field': {'post-published-at': {}}, 'min': 100, 'max': '$$5[2]'},
+                ]}]}],
+            },
+        }},
     )
