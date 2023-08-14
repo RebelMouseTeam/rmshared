@@ -135,7 +135,7 @@ class Resolver(IResolver[Operator[filters.Filter], filters.Filter]):
                 try:
                     operator = operator.cases[type(argument)]
                 except LookupError:
-                    return []
+                    return iter([])
                 else:
                     return visit_case(operator)
 

@@ -17,8 +17,8 @@ class TestData:
         assert filters_ == fixtures.FILTERS
 
     def test_it_should_jsonify_filters(self, protocol_: IProtocol):
-        data = tuple(protocol_.jsonify_filters(filters_=fixtures.FILTERS))
-        assert data == self.FILTERS_DATA
+        data_ = tuple(protocol_.jsonify_filters(filters_=fixtures.FILTERS))
+        assert data_ == self.FILTERS_DATA
 
     FILTERS_DATA = (
         {'@return': {'@cases': [

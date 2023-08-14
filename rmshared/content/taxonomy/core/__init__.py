@@ -5,7 +5,7 @@ from rmshared.content.taxonomy.core import fields
 
 from rmshared.content.taxonomy.core import aliases
 
-from rmshared.content.taxonomy.core import mapper
+from rmshared.content.taxonomy.core import expander
 from rmshared.content.taxonomy.core import visitors
 
 from rmshared.content.taxonomy.core import data
@@ -28,7 +28,6 @@ __all__ = (
 
     'aliases',
 
-    'mapper',
     'expander',
     'visitors',
 

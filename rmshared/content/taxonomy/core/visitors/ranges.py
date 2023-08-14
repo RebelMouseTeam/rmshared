@@ -10,32 +10,6 @@ InValue = TypeVar('InValue')
 OutValue = TypeVar('OutValue')
 
 
-class MapBetween(visitors.IRanges[ranges.Between[Field, InValue], ranges.Between[Field, OutValue]]):
-    def __init__(self, values: visitors.IValues[InValue, OutValue]):
-        self.values = values
-
-    def visit_range(self, range_: ranges.Between[Field, InValue]) -> ranges.Between[Field, OutValue]:
-        min_value = self.values.visit_value(range_.min_value)
-        max_value = self.values.visit_value(range_.max_value)
-        return replace(range_, min_value=min_value, max_value=max_value)
-
-
-class MapLessThan(visitors.IRanges[ranges.LessThan[Field, InValue], ranges.LessThan[Field, OutValue]]):
-    def __init__(self, values: visitors.IValues[InValue, OutValue]):
-        self.values = values
-
-    def visit_range(self, range_: ranges.LessThan[Field, InValue]) -> ranges.LessThan[Field, OutValue]:
-        return replace(range_, value=self.values.visit_value(range_.value))
-
-
-class MapMoreThan(visitors.IRanges[ranges.MoreThan[Field, InValue], ranges.MoreThan[Field, OutValue]]):
-    def __init__(self, values: visitors.IValues[InValue, OutValue]):
-        self.values = values
-
-    def visit_range(self, range_: ranges.MoreThan[Field, InValue]) -> ranges.MoreThan[Field, OutValue]:
-        return replace(range_, value=self.values.visit_value(range_.value))
-
-
 class ExpandBetween(visitors.IRanges[ranges.Between[Field, InValue], Iterator[ranges.Between[Field, OutValue]]]):
     def __init__(self, values: visitors.IValues[InValue, OutValue]):
         self.values = values

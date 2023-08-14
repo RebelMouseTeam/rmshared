@@ -20,11 +20,9 @@ class Between(Range[Field], Generic[Field, Value]):
 
 @dataclass(frozen=True)
 class LessThan(Range[Field], Generic[Field, Value]):
-    field: Field
     value: Value
 
 
 @dataclass(frozen=True)
 class MoreThan(Range[Field], Generic[Field, Value]):
-    field: Field
     value: Value
