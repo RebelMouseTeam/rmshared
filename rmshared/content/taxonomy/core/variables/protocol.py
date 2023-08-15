@@ -51,17 +51,11 @@ class Factory:
         instance.add_filter(operators.Return[filters.Filter], self.ReturnFiltersProtocol(self.operators, delegate))
         return instance
 
-    def _make_labels(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.ILabels[labels.Label]:
-        delegate = self.delegate.make_labels(fields_, values_)
-        instance = base_protocols.Labels()
-        instance.add_label(operators.Return[labels.Label], self.ReturnLabelProtocol(self.operators, delegate))
-        return instance
+    def _make_labels(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.ILabels[Operator[labels.Label]]:
+        return self.ReturnLabels(delegate=self.delegate.make_labels(fields_, values_))
 
-    def _make_ranges(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.IRanges[ranges.Range]:
-        delegate = self.delegate.make_ranges(fields_, values_)
-        instance = base_protocols.Ranges()
-        instance.add_range(operators.Return[ranges.Range], self.ReturnRangeProtocol(self.operators, delegate))
-        return instance
+    def _make_ranges(self, fields_: base_protocols.IFields, values_: base_protocols.IValues) -> base_protocols.IRanges[Operator[ranges.Range]]:
+        return self.ReturnRanges(delegate=self.delegate.make_ranges(fields_, values_))
 
     def _make_values(self) -> base_protocols.IValues:
         instance = base_protocols.Values()
@@ -97,33 +91,27 @@ class Factory:
         def jsonify_filter(self, filter_):
             return self.operators.jsonify_return(filter_, self.delegate.jsonify_filter)
 
-    class ReturnLabelProtocol(base_protocols.composites.ILabels.IProtocol[operators.Return[labels.Label]]):
-        def __init__(self, operators_: 'Factory.Operators', delegate: base_protocols.ILabels[labels.Label]):
-            self.operators = operators_
+    class ReturnLabels(base_protocols.ILabels[operators.Return[labels.Label]]):
+        def __init__(self, delegate: base_protocols.ILabels[labels.Label]):
             self.delegate = delegate
-
-        def get_keys(self):
-            return self.operators.get_return_keys()
 
         def make_label(self, data):
-            return self.operators.make_return(data, self.delegate.make_label)
+            return operators.Return(cases=(self.delegate.make_label(data), ))
 
-        def jsonify_label(self, label):
-            return self.operators.jsonify_return(label, self.delegate.jsonify_label)
+        def jsonify_label(self, label_: operators.Return[labels.Label]):
+            assert len(label_.cases) == 1
+            return self.delegate.jsonify_label(label_.cases[0])
 
-    class ReturnRangeProtocol(base_protocols.composites.IRanges.IProtocol[operators.Return[ranges.Range]]):
-        def __init__(self, operators_: 'Factory.Operators', delegate: base_protocols.IRanges[ranges.Range]):
-            self.operators = operators_
+    class ReturnRanges(base_protocols.IRanges[operators.Return[ranges.Range]]):
+        def __init__(self, delegate: base_protocols.IRanges[ranges.Range]):
             self.delegate = delegate
 
-        def get_keys(self):
-            return self.operators.get_return_keys()
-
         def make_range(self, data):
-            return self.operators.make_return(data, self.delegate.make_range)
+            return operators.Return(cases=(self.delegate.make_range(data), ))
 
-        def jsonify_range(self, range_):
-            return self.operators.jsonify_return(range_, self.delegate.jsonify_range)
+        def jsonify_range(self, range_: operators.Return[ranges.Range]):
+            assert len(range_.cases) == 1
+            return self.delegate.jsonify_range(range_.cases[0])
 
     class VariableValueProtocol(base_protocols.composites.IValues.IProtocol[values.Variable]):
         def __init__(self, variables: 'Factory.Variables'):

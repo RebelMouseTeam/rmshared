@@ -70,6 +70,8 @@ FILTERS = tuple([
                 filters.AnyLabel(labels=(
                     operators.Return[labels.Label](cases=(
                         labels.Value(field=fields.System('post-id'), value=values.Constant(123)),
+                    )),
+                    operators.Return[labels.Label](cases=(
                         labels.Empty(field=fields.System('post-primary-tag')),
                     )),
                 )),
@@ -78,7 +80,11 @@ FILTERS = tuple([
                 filters.AnyLabel(labels=(
                     operators.Return[labels.Label](cases=(
                         labels.Value(field=fields.System('post-id'), value=values.Constant(123)),
+                    )),
+                    operators.Return[labels.Label](cases=(
                         labels.Value(field=fields.System('post-primary-tag'), value=values.Variable(ref=Reference('$3'), index=1)),
+                    )),
+                    operators.Return[labels.Label](cases=(
                         labels.Value(field=fields.System('post-primary-tag'), value=values.Variable(ref=Reference('$3'), index=2)),
                     )),
                 )),
@@ -111,6 +117,8 @@ FILTERS = tuple([
                             field=fields.System('post-modified-at'),
                             value=values.Variable(ref=Reference('$4'), index=1),
                         ),
+                    )),
+                    operators.Return[ranges.Range](cases=(
                         ranges.Between[fields.Field, values.Value](
                             field=fields.System('post-published-at'),
                             min_value=values.Constant(100),

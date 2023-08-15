@@ -81,6 +81,8 @@ class TestData:
                     {'any_label': [
                         {'@return': {'@cases': [
                             {'value': {'field': {'post-id': {}}, 'value': {'@constant': 123}}},
+                        ]}},
+                        {'@return': {'@cases': [
                             {'empty': {'field': {'post-primary-tag': {}}}},
                         ]}},
                     ]},
@@ -89,7 +91,11 @@ class TestData:
                     {'any_label': [
                         {'@return': {'@cases': [
                             {'value': {'field': {'post-id': {}}, 'value': {'@constant': 123}}},
+                        ]}},
+                        {'@return': {'@cases': [
                             {'value': {'field': {'post-primary-tag': {}}, 'value': {'@variable': {'ref': {'alias': '$3'}, 'index': 1}}}},
+                        ]}},
+                        {'@return': {'@cases': [
                             {'value': {'field': {'post-primary-tag': {}}, 'value': {'@variable': {'ref': {'alias': '$3'}, 'index': 2}}}},
                         ]}},
                     ]},
@@ -113,10 +119,14 @@ class TestData:
         {'@switch': {
             '@ref': {'alias': '$5'},
             '@cases': {
-                '@value': {'@return': {'@cases': [{'no_ranges': [{'@return': {'@cases': [
-                    {'field': {'post-modified-at': {}}, 'min': {'@variable': {'ref': {'alias': '$4'}, 'index': 1}}},
-                    {'field': {'post-published-at': {}}, 'min': {'@constant': 100}, 'max': {'@variable': {'ref': {'alias': '$5'}, 'index': 2}}},
-                ]}}]}]}},
+                '@value': {'@return': {'@cases': [{'no_ranges': [
+                    {'@return': {'@cases': [
+                        {'field': {'post-modified-at': {}}, 'min': {'@variable': {'ref': {'alias': '$4'}, 'index': 1}}},
+                    ]}},
+                    {'@return': {'@cases': [
+                        {'field': {'post-published-at': {}}, 'min': {'@constant': 100}, 'max': {'@variable': {'ref': {'alias': '$5'}, 'index': 2}}},
+                    ]}},
+                ]}]}},
             },
         }},
     )
