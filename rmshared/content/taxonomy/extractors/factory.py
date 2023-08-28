@@ -19,7 +19,7 @@ class Factory:
 
     @classmethod
     def make_values_extractor_for_post(cls, post: graph.posts.Post) -> IValuesExtractor:
-        field_to_system_values_streamer_map: Mapping[str, Callable[[], Iterable[Scalar]]] = {
+        field_name_to_system_values_streamer_map: Mapping[str, Callable[[], Iterable[Scalar]]] = {
             posts.fields.Id.name: lambda: [post.id],
             posts.fields.Type.name: lambda: map(cls.post_aspects.map_post_type, [post.type]),
             posts.fields.Status.name: lambda: map(cls.post_aspects.map_post_status, [post.status]),
@@ -43,10 +43,10 @@ class Factory:
             posts.fields.EditorLayout.name: lambda: map(attrgetter('slug'), filter(None, [post.editor_layout])),
             posts.fields.PageViewsCount.name: lambda: [post.lifetime_page_views_count],
         }
-        field_to_custom_values_getter_map: Mapping[str, Callable[[], Mapping[str, Any]]] = {
+        field_name_to_custom_values_getter_map: Mapping[str, Callable[[], Mapping[str, Any]]] = {
             posts.fields.CustomField.name: lambda: post.site_specific_info,
         }
-        return ValuesExtractor(field_to_system_values_streamer_map, field_to_custom_values_getter_map)
+        return ValuesExtractor(field_name_to_system_values_streamer_map, field_name_to_custom_values_getter_map)
 
     @classmethod
     def make_values_extractor_for_user_profile(cls, user_profile: graph.users.UserProfile) -> IValuesExtractor:
