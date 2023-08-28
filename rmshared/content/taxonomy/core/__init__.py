@@ -2,6 +2,7 @@ from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import fields
+from rmshared.content.taxonomy.core import events
 
 from rmshared.content.taxonomy.core import aliases
 
@@ -25,6 +26,7 @@ __all__ = (
     'labels',
     'ranges',
     'fields',
+    'events',
 
     'aliases',
 

@@ -1,8 +1,7 @@
-from dataclasses import dataclass
-
-from rmshared.content.taxonomy.abc import Event
+from rmshared.content.taxonomy import core
 
 
-@dataclass(frozen=True)
-class PageView(Event):
-    pass
+PageView = core.aliases.events.Event('post-page-view')
+PageViewDuration = core.aliases.events.Event('post-page-view-duration')
+TeaserView = core.aliases.events.Event('post-teaser-view')
+TeaserClick = core.aliases.events.Event('post-teaser-click')
