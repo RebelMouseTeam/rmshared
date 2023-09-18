@@ -6,7 +6,6 @@ from typing import Callable
 from typing import Generic
 from typing import Iterable
 from typing import Mapping
-from typing import Sequence
 from typing import Type
 from typing import TypeVar
 

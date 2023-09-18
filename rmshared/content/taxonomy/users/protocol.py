@@ -28,7 +28,7 @@ class Protocol(IProtocol):
             statuses.Pending: lambda _: statuses.Pending(),
             statuses.Inactive: self._make_inactive_user_profile_status,
         })
-        self.user_profile_status_to_jsonify_info_func_map = ensure_map_is_complete(statuses.Status, {
+        self.user_profile_status_to_jsonify_info_func_map: Mapping[Type[Status], Callable[[Status], ...]] = ensure_map_is_complete(statuses.Status, {
             statuses.Active: lambda _: {},
             statuses.Pending: lambda _: {},
             statuses.Inactive: self._jsonify_inactive_user_profile_status_info,

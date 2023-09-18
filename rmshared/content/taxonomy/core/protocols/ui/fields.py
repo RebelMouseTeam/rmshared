@@ -72,6 +72,6 @@ class Fields(IFields[fields.Field]):
 
         def make_field(self, name, info):
             return fields.Custom(name=str(name), path=str(info['path']))
-    
+
         def jsonify_field_info(self, field: fields.Custom):
             return {'path': field.path}

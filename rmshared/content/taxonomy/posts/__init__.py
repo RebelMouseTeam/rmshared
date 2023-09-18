@@ -6,7 +6,6 @@ from rmshared.content.taxonomy.posts import guids
 from rmshared.content.taxonomy.posts import fields
 from rmshared.content.taxonomy.posts import labels
 from rmshared.content.taxonomy.posts import events
-from rmshared.content.taxonomy.posts import aspects
 from rmshared.content.taxonomy.posts.abc import IAspects
 from rmshared.content.taxonomy.posts.abc import IProtocol
 from rmshared.content.taxonomy.posts.aspects import Aspects

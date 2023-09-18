@@ -1,3 +1,8 @@
+from typing import Callable
+from typing import Mapping
+from typing import Type
+from typing import TypeVar
+
 from rmshared.tools import ensure_map_is_complete
 
 from rmshared.content.taxonomy.posts import consts
@@ -6,21 +11,25 @@ from rmshared.content.taxonomy.posts import drafts
 from rmshared.content.taxonomy.posts import published
 from rmshared.content.taxonomy.posts.abc import IAspects
 
+Status = TypeVar('Status', bound=statuses.Status)
+Stage = TypeVar('Stage', bound=drafts.stages.Stage)
+Scope = TypeVar('Scope', bound=published.scopes.Scope)
+
 
 class Aspects(IAspects):
     def __init__(self):
-        self.post_status_to_factory_func_map = ensure_map_is_complete(statuses.Status, {
+        self.post_status_to_factory_func_map: Mapping[Type[Status], Callable[[Status], str]] = ensure_map_is_complete(statuses.Status, {
             statuses.Draft: self._map_draft_post_status,
             statuses.Published: self._map_published_post_status,
             statuses.Removed: lambda _: 'removed',
         })
-        self.draft_post_stage_to_factory_func_map = ensure_map_is_complete(drafts.stages.Stage, {
+        self.draft_post_stage_to_factory_func_map: Mapping[Type[Stage], Callable[[Stage], str]] = ensure_map_is_complete(drafts.stages.Stage, {
             drafts.stages.Created: self._map_draft_post_created_stage,
             drafts.stages.InProgress: self._map_draft_post_in_progress_stage,
             drafts.stages.InReview: lambda _: 'in-review',
             drafts.stages.Ready: lambda _: 'ready',
         })
-        self.published_post_scope_to_factory_func_map = ensure_map_is_complete(published.scopes.Scope, {
+        self.published_post_scope_to_factory_func_map: Mapping[Type[Scope], Callable[[Scope], str]] = ensure_map_is_complete(published.scopes.Scope, {
             published.scopes.Site: self._map_published_post_site_scope,
             published.scopes.Community: self._map_published_post_community_scope,
         })

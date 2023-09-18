@@ -1,13 +1,20 @@
+from typing import Callable
+from typing import Mapping
+from typing import Type
+from typing import TypeVar
+
 from rmshared.tools import ensure_map_is_complete
 
 from rmshared.content.taxonomy.users import consts
 from rmshared.content.taxonomy.users import statuses
 from rmshared.content.taxonomy.users.abc import IAspects
 
+Status = TypeVar('Status', bound=statuses.Status)
+
 
 class Aspects(IAspects):
     def __init__(self):
-        self.user_status_to_factory_func_map = ensure_map_is_complete(statuses.Status, {
+        self.user_status_to_factory_func_map: Mapping[Type[Status], Callable[[Status], str]] = ensure_map_is_complete(statuses.Status, {
             statuses.Active: lambda _: 'active',
             statuses.Pending: lambda _: 'pending',
             statuses.Inactive: self._map_inactive_user_profile_status,
