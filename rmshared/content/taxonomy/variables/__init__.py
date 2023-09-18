@@ -7,6 +7,7 @@ from rmshared.content.taxonomy.variables.abc import IResolver
 from rmshared.content.taxonomy.variables.abc import Operator
 from rmshared.content.taxonomy.variables.abc import Reference
 from rmshared.content.taxonomy.variables.resolver import Resolver
+from rmshared.content.taxonomy.variables.fakes import Fakes
 
 
 __all__ = (
@@ -19,4 +20,6 @@ __all__ = (
     'IResolver', 'Resolver',
 
     'protocols',
+
+    'Fakes',
 )

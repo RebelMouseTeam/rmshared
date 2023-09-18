@@ -31,6 +31,7 @@ class Fakes:
         self.faker.seed_instance(seed)
         self.core = core.Fakes(seed)
         self.graph = graph.Fakes(now, seed)
+        self.variables = variables.Fakes(seed)
 
     def make_guid(self) -> Guid:
         return self.faker.random_element(elements=frozenset(self._stream_guids()))
@@ -68,11 +69,11 @@ class Fakes:
     def stream_core_filters(self) -> Iterator[core.filters.Filter]:
         return self.core.stream_filters()
 
-    def stream_core_variable_filters(self) -> Iterator[variables.Operator[core.filters.Filter]]:
-        return self.core.stream_variable_filters()
-
-    def sample_core_variable_argument_types(self, size: Optional[int] = None) -> Iterable[Type[variables.Argument]]:
-        return self.core.sample_variable_argument_types(size)
-
     def make_core_field(self) -> core.fields.Field:
         return self.core.make_field()
+
+    def sample_variable_filters(self) -> Iterator[variables.Operator[core.filters.Filter]]:
+        return self.variables.sample_filters()
+
+    def sample_variable_argument_types(self, size: Optional[int] = None) -> Iterable[Type[variables.Argument]]:
+        return self.variables.sample_argument_types(size)
