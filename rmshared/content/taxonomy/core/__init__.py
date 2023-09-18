@@ -9,11 +9,7 @@ from rmshared.content.taxonomy.core import aliases
 from rmshared.content.taxonomy.core import expander
 from rmshared.content.taxonomy.core import visitors
 
-from rmshared.content.taxonomy.core import data
-from rmshared.content.taxonomy.core import protocol
 from rmshared.content.taxonomy.core import protocols
-
-from rmshared.content.taxonomy.core import variables
 
 from rmshared.content.taxonomy.core.abc import IEntity
 from rmshared.content.taxonomy.core.abc import IMatcher
@@ -33,11 +29,7 @@ __all__ = (
     'expander',
     'visitors',
 
-    'data',
-    'protocol',
     'protocols',
-
-    'variables',
 
     'IEntity',
     'IMatcher', 'Matcher',

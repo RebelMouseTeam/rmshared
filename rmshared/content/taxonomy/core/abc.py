@@ -7,6 +7,11 @@ from typing import TypeVar
 from rmshared.content.taxonomy.core import fields
 from rmshared.content.taxonomy.core import filters
 
+Filter = TypeVar('Filter')
+Label = TypeVar('Label')
+Range = TypeVar('Range')
+Field = TypeVar('Field')
+Event = TypeVar('Event')
 Value = TypeVar('Value')
 
 

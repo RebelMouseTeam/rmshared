@@ -1,12 +1,12 @@
 from copy import copy
 from copy import deepcopy
 from functools import cached_property
-from typing import Union, Type, Callable, TypeVar, Any
+from typing import Type, Callable, TypeVar, Any
 
 T = TypeVar('T')
 K = TypeVar('K')
 V = TypeVar('V')
-CastFunc = Union[Type[T], Callable[[Any], T]]
+CastFunc = Type[T] | Callable[[Any], T]
 
 
 def read_only(value):

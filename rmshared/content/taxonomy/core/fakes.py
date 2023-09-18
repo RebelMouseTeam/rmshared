@@ -17,11 +17,11 @@ from rmshared.tools import dict_from_list
 from rmshared.tools import ensure_map_is_complete
 from rmshared.typings import read_only
 
+from rmshared.content.taxonomy import variables  # TODO: extract all links to variables to a separate module
 from rmshared.content.taxonomy.core import filters
 from rmshared.content.taxonomy.core import labels
 from rmshared.content.taxonomy.core import ranges
 from rmshared.content.taxonomy.core import fields
-from rmshared.content.taxonomy.core import variables
 
 FakerWithProviders = Faker | BaseProvider | lorem.Provider | python.Provider | faker_ext.Provider
 Label = TypeVar('Label')

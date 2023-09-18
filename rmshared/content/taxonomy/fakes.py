@@ -14,6 +14,7 @@ from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import graph
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
+from rmshared.content.taxonomy import variables
 from rmshared.content.taxonomy.abc import Guid
 
 FakerWithProviders = Faker | BaseProvider | python.Provider | lorem.Provider | faker_ext.Provider
@@ -67,10 +68,10 @@ class Fakes:
     def stream_core_filters(self) -> Iterator[core.filters.Filter]:
         return self.core.stream_filters()
 
-    def stream_core_variable_filters(self) -> Iterator[core.variables.Operator[core.filters.Filter]]:
+    def stream_core_variable_filters(self) -> Iterator[variables.Operator[core.filters.Filter]]:
         return self.core.stream_variable_filters()
 
-    def sample_core_variable_argument_types(self, size: Optional[int] = None) -> Iterable[Type[core.variables.Argument]]:
+    def sample_core_variable_argument_types(self, size: Optional[int] = None) -> Iterable[Type[variables.Argument]]:
         return self.core.sample_variable_argument_types(size)
 
     def make_core_field(self) -> core.fields.Field:

@@ -79,7 +79,7 @@ def comma_separated_sequence(sequence_cast_func: Callable[[Any], Sequence[Any]],
     )
 
 
-def ensure_map_is_complete(type_class: Type[K], instance_class_to_any_map: Mapping[Type[K], Any]) -> Mapping[Type[K], Any]:
+def ensure_map_is_complete(type_class: Type[K], instance_class_to_any_map: T | Mapping[Type[K], Any]) -> T:
     """
     :raise: AssertionError
     """
@@ -193,10 +193,13 @@ def align_iterable(iterable: Iterable[T], alignment: Sequence[V], key_func: Unio
 
 
 def dict_from_list(
-        source_list: Iterable[T], key_func: CastFunc[K] = None, value_func: CastFunc[V] = None, return_type: Type[Mapping[K, V]] = dict
+        source: Iterable[T],
+        key_func: CastFunc[K] = None,
+        value_func: CastFunc[V] = None,
+        return_type: Type[Mapping[K, V]] = dict
 ) -> Mapping[K, V]:
-    key_iterator = iter(source_list)
-    value_iterator = iter(source_list)
+    key_iterator = iter(source)
+    value_iterator = iter(source)
     return _make_dict(key_iterator, key_func, value_iterator, value_func, return_type)
 
 
