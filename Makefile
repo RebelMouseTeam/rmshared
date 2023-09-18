@@ -9,7 +9,7 @@ lint:
 	@echo "$(OK_COLOR)==> Linting code ...$(NO_COLOR)"
 	@flake8 --exclude=tests --max-line-length=160 .
 
-test: clean
+test: clean lint
 	@echo "$(OK_COLOR)==> Running tests ...$(NO_COLOR)"
 	@py.test -vvv --cache-clear
 
