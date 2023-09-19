@@ -66,8 +66,14 @@ class Fakes:
     def make_user_profile(self, profile_id: Optional[int] = None) -> graph.users.UserProfile:
         return self.graph.make_user_profile(profile_id)
 
+    def sample_core_filters(self, max_size: Optional[int] = None, min_size: Optional[int] = None) -> Iterable[core.filters.Filter]:
+        return self.core.sample_filters(max_size, min_size)
+
     def stream_core_filters(self) -> Iterator[core.filters.Filter]:
         return self.core.stream_filters()
+
+    def sample_core_events(self, max_size: Optional[int] = None, min_size: Optional[int] = None) -> Iterable[core.events.Event]:
+        return self.core.sample_events(max_size, min_size)
 
     def make_core_field(self) -> core.fields.Field:
         return self.core.make_field()
