@@ -38,9 +38,6 @@ class Matcher(IMatcher):
         }
 
     def does_entity_match_filters(self, entity, filters_):
-        return self._does_entity_match_filters(entity, filters_)
-
-    def _does_entity_match_filters(self, entity: IEntity, filters_: Iterable[Filter]) -> bool:
         for filter_ in filters_:
             if not self._does_entity_match_filter(entity, filter_):
                 return False

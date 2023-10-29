@@ -22,72 +22,72 @@ class TestMatcher:
         entity = self.Entity()
         week_ago: int = self.NOW - Days(7)
 
-        assert matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456), labels.Value(field=self.FIELDS.USER_ID, value=654321))),
         }))
-        assert matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert matcher.does_entity_match_filters(entity, filters_=iter({
             filters.NoLabels(labels=(labels.Value(field=self.FIELDS.USER_ID, value=123456),)),
         }))
-        assert matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert matcher.does_entity_match_filters(entity, filters_=iter({
             filters.NoLabels(labels=(labels.Value(field=self.FIELDS.POST_ID, value=654321),)),
         }))
-        assert not matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert not matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.USER_ID, value=123456),)),
         }))
-        assert not matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert not matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=654321),)),
         }))
 
-        assert matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.AnyLabel(labels=(labels.Badge(field=self.FIELDS.POST_PRIVATE),)),
         }))
-        assert not matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert not matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.NoLabels(labels=(labels.Badge(field=self.FIELDS.POST_PRIVATE),)),
         }))
 
-        assert matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.AnyLabel(labels=(labels.Empty(field=self.FIELDS.POST_STAGE),)),
         }))
-        assert not matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert not matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.NoLabels(labels=(labels.Empty(field=self.FIELDS.POST_STAGE),)),
         }))
 
-        assert matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.AnyRange(ranges=(ranges.MoreThan(field=self.FIELDS.POST_MODIFIED_AT, value=0),)),
             filters.AnyRange(ranges=(ranges.MoreThan(field=self.FIELDS.POST_PUBLISHED_AT, value=0),)),
         }))
-        assert not matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert not matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.AnyRange(ranges=(ranges.MoreThan(field=self.FIELDS.POST_MODIFIED_AT, value=0),)),
             filters.NoRanges(ranges=(ranges.MoreThan(field=self.FIELDS.POST_PUBLISHED_AT, value=0),)),
         }))
 
-        assert matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.AnyRange(ranges=(ranges.MoreThan(field=self.FIELDS.POST_MODIFIED_AT, value=0),)),
             filters.AnyRange(ranges=(ranges.LessThan(field=self.FIELDS.POST_PUBLISHED_AT, value=week_ago),)),
         }))
-        assert not matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert not matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.AnyRange(ranges=(ranges.MoreThan(field=self.FIELDS.POST_MODIFIED_AT, value=0),)),
             filters.AnyRange(ranges=(ranges.LessThan(field=self.FIELDS.POST_PUBLISHED_AT, value=week_ago - Hours(1)),)),
         }))
-        assert matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.AnyRange(ranges=(ranges.MoreThan(field=self.FIELDS.POST_MODIFIED_AT, value=0),)),
             filters.AnyRange(ranges=(ranges.Between(field=self.FIELDS.POST_PUBLISHED_AT, min_value=week_ago - Hours(1), max_value=week_ago + Hours(2)),)),
         }))
-        assert not matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert not matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.AnyRange(ranges=(ranges.MoreThan(field=self.FIELDS.POST_MODIFIED_AT, value=0),)),
             filters.AnyRange(ranges=(ranges.Between(field=self.FIELDS.POST_PUBLISHED_AT, min_value=week_ago + Hours(1), max_value=week_ago + Hours(2)),)),
         }))
-        assert matcher.does_entity_match_filters(entity, filters_=frozenset({
+        assert matcher.does_entity_match_filters(entity, filters_=iter({
             filters.AnyLabel(labels=(labels.Value(field=self.FIELDS.POST_ID, value=123456),)),
             filters.AnyRange(ranges=(ranges.MoreThan(field=self.FIELDS.POST_MODIFIED_AT, value=week_ago - Hours(1)),)),
             filters.AnyRange(ranges=(ranges.Between(field=self.FIELDS.POST_PUBLISHED_AT, min_value=week_ago - Hours(1), max_value=week_ago + Hours(2)),)),

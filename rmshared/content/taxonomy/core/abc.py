@@ -2,6 +2,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 from typing import AbstractSet
 from typing import Generic
+from typing import Iterable
 from typing import TypeVar
 
 from rmshared.content.taxonomy.core import fields
@@ -23,5 +24,5 @@ class IEntity(Generic[Value], metaclass=ABCMeta):
 
 class IMatcher(metaclass=ABCMeta):
     @abstractmethod
-    def does_entity_match_filters(self, entity: 'IEntity', filters_: AbstractSet['filters.Filter']) -> bool:
+    def does_entity_match_filters(self, entity: 'IEntity', filters_: Iterable['filters.Filter']) -> bool:
         pass
