@@ -168,17 +168,6 @@ class TestServerResolver:
             self.alias_to_argument_map = alias_to_argument_map
 
         def get_argument(self, alias):
-            return self._get_argument(alias)
-
-        def get_value(self, alias: str, index: int):
-            argument = self._get_argument(alias)
-            assert isinstance(argument, arguments.Value), [alias, index, argument]
-            try:
-                return argument.values[index - 1]
-            except LookupError as e:
-                raise self.ValueNotFoundException(alias, index) from e
-
-        def _get_argument(self, alias: str) -> Argument:
             try:
                 return self.alias_to_argument_map[alias]
             except LookupError as e:

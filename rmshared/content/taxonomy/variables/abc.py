@@ -39,11 +39,5 @@ class IResolver(metaclass=ABCMeta):
         @abstractmethod
         def get_argument(self, alias: str) -> 'Argument': ...  # :raises: ArgumentNotFoundException
 
-        @abstractmethod
-        def get_value(self, alias: str, index: int) -> Scalar: ...  # :raises: ArgumentNotFoundException, ValueNotFoundException
-
         class ArgumentNotFoundException(LookupError):
-            ...
-
-        class ValueNotFoundException(LookupError):
             ...

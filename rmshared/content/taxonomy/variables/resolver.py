@@ -15,6 +15,7 @@ from rmshared.tools import ensure_map_is_complete
 from rmshared.content.taxonomy import core
 
 from rmshared.content.taxonomy.variables import values
+from rmshared.content.taxonomy.variables import arguments
 from rmshared.content.taxonomy.variables import operators
 from rmshared.content.taxonomy.variables.abc import Case
 from rmshared.content.taxonomy.variables.abc import Scalar
@@ -181,7 +182,9 @@ class Resolver(IResolver):
             return self.value_to_dereference_func_map[type(case)](case)
 
         def _dereference_variable(self, case: values.Variable) -> Scalar:
-            return self.arguments.get_value(case.ref.alias, case.index)
+            argument = self.arguments.get_argument(case.ref.alias)
+            assert isinstance(argument, arguments.Value), [case, argument]
+            return argument.values[case.index - 1]
 
         @staticmethod
         def _dereference_constant(case: values.Constant) -> Scalar:
