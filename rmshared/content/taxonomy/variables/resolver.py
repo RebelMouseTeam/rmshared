@@ -37,6 +37,19 @@ class Resolver(IResolver):
         resolver = self.factory.make_filters_resolver(arguments_)
         return chain.from_iterable(map(resolver.dereference_operator, operators_))
 
+    def dereference_filters_partially(self, operators_, arguments_):
+        constant_filters = []
+        variable_filters = []
+
+        resolver = self.factory.make_filters_resolver(arguments_)
+        for operator in operators_:
+            try:
+                constant_filters.extend(resolver.dereference_operator(operator))
+            except IResolver.IArguments.ArgumentNotFoundException:
+                variable_filters.append(operator)
+
+        return constant_filters, variable_filters
+
     class Factory:
         def __init__(self, resolver: 'Resolver'):
             self.resolver = resolver

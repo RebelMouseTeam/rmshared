@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Generic
 from typing import Iterable
 from typing import Iterator
+from typing import Tuple
 from typing import TypeVar
 
 Case = TypeVar('Case')
@@ -28,14 +29,21 @@ class Reference:
 
 class IResolver(metaclass=ABCMeta):
     @abstractmethod
-    def dereference_filters(self, operators_: Iterable['Operator[Filter]'], arguments_: 'IResolver.IArguments') -> Iterator[Filter]:
-        pass
+    def dereference_filters(self, operators_: Iterable['Operator[Filter]'], arguments_: 'IResolver.IArguments') -> Iterator[Filter]: ...
+
+    @abstractmethod
+    def dereference_filters_partially(
+            self, operators_: Iterable['Operator[Filter]'], arguments_: 'IResolver.IArguments') -> Tuple[Iterable[Filter], Iterable['Operator[Filter]']]: ...
 
     class IArguments(metaclass=ABCMeta):
         @abstractmethod
-        def get_argument(self, alias: str) -> 'Argument':
-            pass
+        def get_argument(self, alias: str) -> 'Argument': ...  # :raises: ArgumentNotFoundException
 
         @abstractmethod
-        def get_value(self, alias: str, index: int) -> Scalar:
-            pass
+        def get_value(self, alias: str, index: int) -> Scalar: ...  # :raises: ArgumentNotFoundException, ValueNotFoundException
+
+        class ArgumentNotFoundException(LookupError):
+            ...
+
+        class ValueNotFoundException(LookupError):
+            ...
