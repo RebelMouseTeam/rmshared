@@ -19,9 +19,9 @@ class Post:
     is_private: bool
     is_suspicious: bool
     is_excluded_from_search: bool
-    modified_ts: int
-    scheduled_ts: Optional[int]
-    published_ts: Optional[int]
+    modified_ts: int | float
+    scheduled_ts: Optional[int | float]
+    published_ts: Optional[int | float]
     title: str
     subtitles: Sequence[str]
     bodies: Sequence[str]

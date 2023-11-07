@@ -25,9 +25,9 @@ class Protocol(IProtocol):
             is_private=bool(data['is_private']),
             is_suspicious=bool(data['is_suspicious']),
             is_excluded_from_search=bool(data.get('is_excluded_from_search')),
-            modified_ts=int(data['modified_ts']),
-            scheduled_ts=unless_none(int)(data['scheduled_ts']),
-            published_ts=unless_none(int)(data['published_ts']),
+            modified_ts=float(data['modified_ts']),
+            scheduled_ts=unless_none(float)(data['scheduled_ts']),
+            published_ts=unless_none(float)(data['published_ts']),
             title=str(data['title']),
             subtitles=tuple(map(str, (data['subtitles']))),
             bodies=tuple(map(str, (data['bodies']))),
@@ -155,7 +155,7 @@ class Protocol(IProtocol):
             groups=frozenset(map(self._make_user_group, data['groups'])),
             communities=frozenset(map(self._make_community, data['communities'])),
             access_roles=frozenset(map(self._make_access_role, data['access_roles'])),
-            last_login_ts=int(data['last_login_ts'])
+            last_login_ts=unless_none(float)(data['last_login_ts']),
         )
 
     def _jsonify_user_details(self, details: users.UserDetails) -> Mapping[str, Any]:

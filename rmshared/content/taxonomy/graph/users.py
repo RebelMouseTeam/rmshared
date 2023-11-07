@@ -39,7 +39,7 @@ class UserDetails:
     groups: AbstractSet['UserGroup']
     communities: AbstractSet[others.Community]
     access_roles: AbstractSet['AccessRole']
-    last_login_ts: Optional[int]
+    last_login_ts: Optional[int | float]
 
 
 @dataclass(frozen=True)
