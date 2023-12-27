@@ -17,9 +17,10 @@ class TestPostValuesExtractor:
             is_private=True,
             is_suspicious=True,
             is_excluded_from_search=True,
-            modified_ts=1682679355,
+            modified_ts=1682679354,
             scheduled_ts=None,
-            published_ts=1682679355,
+            published_ts=1682679356,
+            embargoed_until_ts=None,
             title='How to make a cake',
             subtitles=('Ingredients', 'Instructions', 'Tips'),
             bodies=('1. Mix the ingredients', '2. Bake the cake', '3. Enjoy!'),
@@ -49,9 +50,10 @@ class TestPostValuesExtractor:
         assert list(extractor_1.extract_values(posts.fields.IsPrivate())) == [True]
         assert list(extractor_1.extract_values(posts.fields.IsSuspicious())) == [True]
         assert list(extractor_1.extract_values(posts.fields.IsExcludedFromSearch())) == [True]
-        assert list(extractor_1.extract_values(posts.fields.ModifiedAt())) == [1682679355]
+        assert list(extractor_1.extract_values(posts.fields.ModifiedAt())) == [1682679354]
         assert list(extractor_1.extract_values(posts.fields.ScheduledAt())) == []
-        assert list(extractor_1.extract_values(posts.fields.PublishedAt())) == [1682679355]
+        assert list(extractor_1.extract_values(posts.fields.PublishedAt())) == [1682679356]
+        assert list(extractor_1.extract_values(posts.fields.EmbargoedUntil())) == []
         assert list(extractor_1.extract_values(posts.fields.Title())) == ['How to make a cake']
         assert list(extractor_1.extract_values(posts.fields.Subtitle())) == ['Ingredients', 'Instructions', 'Tips']
         assert list(extractor_1.extract_values(posts.fields.Body())) == ['1. Mix the ingredients', '2. Bake the cake', '3. Enjoy!']
@@ -76,9 +78,10 @@ class TestPostValuesExtractor:
             is_private=False,
             is_suspicious=False,
             is_excluded_from_search=False,
-            modified_ts=1682679355,
+            modified_ts=1682679354,
             scheduled_ts=1682765755,
             published_ts=None,
+            embargoed_until_ts=1682765756,
             title='',
             subtitles=tuple(),
             bodies=tuple(),
@@ -101,9 +104,10 @@ class TestPostValuesExtractor:
         assert list(extractor_2.extract_values(posts.fields.IsPrivate())) == [False]
         assert list(extractor_2.extract_values(posts.fields.IsSuspicious())) == [False]
         assert list(extractor_2.extract_values(posts.fields.IsExcludedFromSearch())) == [False]
-        assert list(extractor_2.extract_values(posts.fields.ModifiedAt())) == [1682679355]
+        assert list(extractor_2.extract_values(posts.fields.ModifiedAt())) == [1682679354]
         assert list(extractor_2.extract_values(posts.fields.ScheduledAt())) == [1682765755]
         assert list(extractor_2.extract_values(posts.fields.PublishedAt())) == []
+        assert list(extractor_2.extract_values(posts.fields.EmbargoedUntil())) == [1682765756]
         assert list(extractor_2.extract_values(posts.fields.Title())) == ['']
         assert list(extractor_2.extract_values(posts.fields.Subtitle())) == []
         assert list(extractor_2.extract_values(posts.fields.Body())) == []

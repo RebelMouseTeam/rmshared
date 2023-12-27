@@ -55,6 +55,7 @@ class TestMappers:
         core.filters.AnyRange[core.ranges.Range[core.fields.Field]](ranges=(
             core.ranges.Between(field=fields.ModifiedAt(), min_value=100, max_value=500),
             core.ranges.LessThan(field=fields.ScheduledAt(), value=300),
+            core.ranges.MoreThan(field=fields.EmbargoedUntil(), value=400),
         )),
         core.filters.NoRanges[core.ranges.Range[core.fields.Field]](ranges=(
             core.ranges.MoreThan(field=fields.PublishedAt(), value=400),
@@ -105,6 +106,7 @@ class TestMappers:
         core.filters.AnyRange[core.ranges.Range](ranges=(
             core.ranges.Between(field=core.fields.System(name='post-modified-at'), min_value=100, max_value=500),
             core.ranges.LessThan(field=core.fields.System(name='post-scheduled-at'), value=300),
+            core.ranges.MoreThan(field=core.fields.System(name='post-embargoed-until'), value=400),
         )),
         core.filters.NoRanges[core.ranges.Range](ranges=(
             core.ranges.MoreThan(field=core.fields.System(name='post-published-at'), value=400),

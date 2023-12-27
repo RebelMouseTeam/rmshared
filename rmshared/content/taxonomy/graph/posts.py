@@ -22,6 +22,7 @@ class Post:
     modified_ts: int | float
     scheduled_ts: Optional[int | float]
     published_ts: Optional[int | float]
+    embargoed_until_ts: Optional[int | float]
     title: str
     subtitles: Sequence[str]
     bodies: Sequence[str]

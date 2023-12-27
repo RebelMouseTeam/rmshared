@@ -9,6 +9,7 @@ IsExcludedFromSearch = core.aliases.fields.System('post-is-excluded-from-search'
 ModifiedAt = core.aliases.fields.System('post-modified-at')
 ScheduledAt = core.aliases.fields.System('post-scheduled-at')
 PublishedAt = core.aliases.fields.System('post-published-at')
+EmbargoedUntil = core.aliases.fields.System('post-embargoed-until')
 Title = core.aliases.fields.System('post-title')
 Subtitle = core.aliases.fields.System('post-subtitle')
 Body = core.aliases.fields.System('post-body')

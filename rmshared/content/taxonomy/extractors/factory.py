@@ -29,6 +29,7 @@ class Factory:
             posts.fields.ModifiedAt.name: lambda: [post.modified_ts],
             posts.fields.ScheduledAt.name: lambda: filter(None, [post.scheduled_ts]),
             posts.fields.PublishedAt.name: lambda: filter(None, [post.published_ts]),
+            posts.fields.EmbargoedUntil.name: lambda: filter(None, [post.embargoed_until_ts]),
             posts.fields.Title.name: lambda: [post.title],
             posts.fields.Subtitle.name: lambda: post.subtitles,
             posts.fields.Body.name: lambda: post.bodies,

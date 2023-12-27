@@ -46,9 +46,11 @@ class Fakes:
             scheduled_ts = self.now + Hours(self.faker.random_int(min=0, max=48))
             scheduled_ts_or_none = self.faker.random_element(elements=OrderedDict([(None, 0.85), (scheduled_ts, 0.15)]))
             published_ts_or_none = None
+            embargoed_until_ts_or_none = self.faker.random_element(elements=OrderedDict([(None, 0.95), (self.now + Hours(1), 0.05)]))
         else:
             published_ts_or_none = self.now - Hours(self.faker.random_int(min=0, max=48))
             scheduled_ts_or_none = None
+            embargoed_until_ts_or_none = None
 
         return graph.posts.Post(
             id=post_id or self.faker.random_int(max=99999999),
@@ -61,6 +63,7 @@ class Fakes:
             modified_ts=modified_ts,
             scheduled_ts=scheduled_ts_or_none,
             published_ts=published_ts_or_none,
+            embargoed_until_ts=embargoed_until_ts_or_none,
             title=self.faker.sentence(),
             subtitles=tuple(self.faker.stream_random_items(self.faker.sentence, max_size=5)),
             bodies=tuple(self.faker.stream_random_items(self.faker.text, max_size=5)),

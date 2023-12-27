@@ -17,6 +17,8 @@ from rmshared.content.taxonomy.graph.abc import IProtocol
 
 class Protocol(IProtocol):
     def make_post(self, data):
+        from rmshared.tools import merge_dicts
+        data = merge_dicts({'embargoed_until_ts': None}, data)  # TODO: remove after migration
         return posts.Post(
             id=int(data['id']),
             type=self.posts.make_post_type(data['type']),
@@ -28,6 +30,7 @@ class Protocol(IProtocol):
             modified_ts=float(data['modified_ts']),
             scheduled_ts=unless_none(float)(data['scheduled_ts']),
             published_ts=unless_none(float)(data['published_ts']),
+            embargoed_until_ts=unless_none(float)(data['embargoed_until_ts']),
             title=str(data['title']),
             subtitles=tuple(map(str, (data['subtitles']))),
             bodies=tuple(map(str, (data['bodies']))),
@@ -55,6 +58,7 @@ class Protocol(IProtocol):
             'modified_ts': post.modified_ts,
             'scheduled_ts': post.scheduled_ts,
             'published_ts': post.published_ts,
+            'embargoed_until_ts': post.embargoed_until_ts,
             'title': post.title,
             'subtitles': list(post.subtitles),
             'bodies': list(post.bodies),
