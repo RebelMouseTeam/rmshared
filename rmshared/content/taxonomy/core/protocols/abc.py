@@ -3,7 +3,6 @@ from abc import abstractmethod
 from typing import Any
 from typing import Generic
 from typing import Mapping
-from typing import Tuple
 from typing import TypeVar
 
 Filter = TypeVar('Filter')
@@ -50,7 +49,7 @@ class IFields(Generic[Field], metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def jsonify_field(self, field: Field) -> Tuple[str, Mapping[str, Any]]:
+    def jsonify_field(self, field: Field) -> Mapping[str, Any]:
         pass
 
 
