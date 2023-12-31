@@ -37,13 +37,13 @@ class Fakes:
         return self.faker.random_element(elements=frozenset(self._stream_guids()))
 
     def _stream_guids(self) -> Iterator[Guid]:
-        yield self._make_post_guid()
-        yield self._make_user_profile_guid()
+        yield self.make_post_guid()
+        yield self.make_user_profile_guid()
 
-    def _make_post_guid(self) -> posts.guids.Post:
+    def make_post_guid(self) -> posts.guids.Post:
         return posts.guids.Post(id=self.faker.random_int(min=99999, max=99999999))
 
-    def _make_user_profile_guid(self) -> users.guids.UserProfile:
+    def make_user_profile_guid(self) -> users.guids.UserProfile:
         return users.guids.UserProfile(id=self.faker.random_int(min=9999, max=9999999))
 
     def make_guid_type(self) -> Type[Guid]:
