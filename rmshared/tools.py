@@ -1,5 +1,6 @@
 from collections import defaultdict
 from functools import partial
+from functools import wraps
 from itertools import chain
 from operator import methodcaller
 from typing import Any
@@ -243,3 +244,23 @@ def parse_name_and_info(data: Mapping[str, Any]) -> Tuple[str, Any]:
         return name, info
     else:
         raise ValueError(['invalid_name_and_info_structure', data])
+
+
+def retry_on_exception(exception_type_or_types: Type[Exception] | Sequence[Exception], attempts: int = 3):
+    assert attempts > 0
+
+    def decorator_factory(func: callable):
+        @wraps(func)
+        def decorator(*args, **kwargs):
+            exception = None
+            for _ in range(attempts):
+                try:
+                    return func(*args, **kwargs)
+                except exception_type_or_types as e:
+                    exception = e
+            else:
+                raise exception
+
+        return decorator
+
+    return decorator_factory
