@@ -1,6 +1,7 @@
 from collections import defaultdict
 from functools import partial
 from functools import wraps
+from inspect import iscoroutinefunction
 from itertools import chain
 from operator import methodcaller
 from typing import Any
@@ -251,6 +252,17 @@ def retry_on_exception(exception_type_or_types: Type[Exception] | Sequence[Excep
 
     def decorator_factory(func: callable):
         @wraps(func)
+        async def async_decorator(*args, **kwargs):
+            exception = None
+            for _ in range(attempts):
+                try:
+                    return await func(*args, **kwargs)
+                except exception_type_or_types as e:
+                    exception = e
+            else:
+                raise exception
+
+        @wraps(func)
         def decorator(*args, **kwargs):
             exception = None
             for _ in range(attempts):
@@ -261,6 +273,9 @@ def retry_on_exception(exception_type_or_types: Type[Exception] | Sequence[Excep
             else:
                 raise exception
 
-        return decorator
+        if iscoroutinefunction(func):
+            return async_decorator
+        else:
+            return decorator
 
     return decorator_factory
