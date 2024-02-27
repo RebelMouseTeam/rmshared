@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name='rmshared',
-    version='0.6.14',
+    version='0.6.15',
     author='CordiS',
     author_email='cordis@rebelmouse.com',
     url='https://github.com/RebelMouseTeam/rmshared',
