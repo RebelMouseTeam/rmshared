@@ -102,16 +102,3 @@ class Operators(IOperators[Case]):
 
         def jsonify_operator_info(self, operator: operators.Return[Case], jsonify_case: Callable[[Case], Any]) -> list[Any]:
             return list(map(jsonify_case, operator.cases))
-
-
-class Returns(IOperators[Case]):  # TODO: Special case for labels and ranges. Get rid of it
-    def __init__(self, variables: IVariables):
-        self.variables = variables
-
-    def make_operator(self, data, make_case):
-        return operators.Return(cases=(make_case(data),))
-
-    def jsonify_operator(self, operator, jsonify_case):
-        assert isinstance(operator, operators.Return)
-        assert len(operator.cases) == 1
-        return jsonify_case(operator.cases[0])

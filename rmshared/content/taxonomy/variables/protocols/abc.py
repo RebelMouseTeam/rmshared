@@ -19,10 +19,6 @@ Builder = TypeVar('Builder')
 
 class IBuilder(metaclass=ABCMeta):  # TODO: Rename to something better
     @abstractmethod
-    def make_returns(self, variables: 'IVariables') -> 'IOperators':
-        pass
-
-    @abstractmethod
     def make_operators(self, variables: 'IVariables') -> 'IOperators':
         pass
 

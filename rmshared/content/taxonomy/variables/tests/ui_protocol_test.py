@@ -22,16 +22,22 @@ class TestUiProtocol:
 
     FILTERS_DATA = (
         {'$return': [{'any_label': [
-            {'value': {'field': {'post-id': {}}, 'value': 123}},
+            {'$return': [
+                {'value': {'field': {'post-id': {}}, 'value': 123}},
+            ]},
         ]}]},
         {'$switch': {
             '$ref': '$$1',
             '$cases': {
                 '$none': [{'any_label': [
-                    {'empty': {'field': {'post-regular-section': {}}}},
+                    {'$return': [
+                        {'empty': {'field': {'post-regular-section': {}}}},
+                    ]},
                 ]}],
                 '$each': [{'any_label': [
-                    {'value': {'field': {'post-regular-section': {}}, 'value': '$$1[1]'}},
+                    {'$return': [
+                        {'value': {'field': {'post-regular-section': {}}, 'value': '$$1[1]'}},
+                    ]},
                 ]}],
             },
         }},
@@ -40,10 +46,14 @@ class TestUiProtocol:
             '$cases': {
                 '$any': [],
                 '$none': [{'no_labels': [
-                    {'empty': {'field': {'private-post': {}}}},
+                    {'$return': [
+                        {'empty': {'field': {'private-post': {}}}},
+                    ]},
                 ]}],
                 '$each': [{'any_label': [
-                    {'badge': {'field': {'private-post': {}}}},
+                    {'$return': [
+                        {'badge': {'field': {'private-post': {}}}},
+                    ]},
                 ]}],
             },
         }},
@@ -51,16 +61,28 @@ class TestUiProtocol:
             '$ref': '$$3',
             '$cases': {
                 '$any': [{'any_label': [
-                    {'value': {'field': {'post-id': {}}, 'value': 123}},
+                    {'$return': [
+                        {'value': {'field': {'post-id': {}}, 'value': 123}},
+                    ]},
                 ]}],
                 '$none': [{'any_label': [
-                    {'value': {'field': {'post-id': {}}, 'value': 123}},
-                    {'empty': {'field': {'post-primary-tag': {}}}},
+                    {'$return': [
+                        {'value': {'field': {'post-id': {}}, 'value': 123}},
+                    ]},
+                    {'$return': [
+                        {'empty': {'field': {'post-primary-tag': {}}}},
+                    ]},
                 ]}],
                 '$each': [{'any_label': [
-                    {'value': {'field': {'post-id': {}}, 'value': 123}},
-                    {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3[1]'}},
-                    {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3[2]'}},
+                    {'$return': [
+                        {'value': {'field': {'post-id': {}}, 'value': 123}},
+                    ]},
+                    {'$return': [
+                        {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3[1]'}},
+                    ]},
+                    {'$return': [
+                        {'value': {'field': {'post-primary-tag': {}}, 'value': '$$3[2]'}},
+                    ]},
                 ]}],
             },
         }},
@@ -68,7 +90,9 @@ class TestUiProtocol:
             '$ref': '$$4',
             '$cases': {
                 '$each': [{'any_range': [
-                    {'field': {'post-modified-at': {}}, 'min': '$$4[2]', 'max': '$$5[1]'},
+                    {'$return': [
+                        {'field': {'post-modified-at': {}}, 'min': '$$4[2]', 'max': '$$5[1]'},
+                    ]},
                 ]}],
             },
         }},
@@ -76,8 +100,12 @@ class TestUiProtocol:
             '$ref': '$$5',
             '$cases': {
                 '$each': [{'no_ranges': [
-                    {'field': {'post-modified-at': {}}, 'min': '$$4[1]'},
-                    {'field': {'post-published-at': {}}, 'min': 100, 'max': '$$5[2]'},
+                    {'$return': [
+                        {'field': {'post-modified-at': {}}, 'min': '$$4[1]'},
+                    ]},
+                    {'$return': [
+                        {'field': {'post-published-at': {}}, 'min': 100, 'max': '$$5[2]'},
+                    ]},
                 ]}],
             },
         }},

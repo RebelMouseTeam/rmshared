@@ -27,7 +27,7 @@ class Factory:
         variables = builder.make_variables()
         operators = builder.make_operators(variables)
         values = builder.make_values(variables, delegate=delegate.make_values())
-        return Builder(operators, values, delegate, returns=builder.make_returns(variables))
+        return Builder(operators, values, delegate)
 
     def make_composite(self) -> core.protocols.IComposite:
         return self.delegate.make_composite()

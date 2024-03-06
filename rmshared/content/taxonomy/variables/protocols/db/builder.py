@@ -5,9 +5,6 @@ from rmshared.content.taxonomy.variables.protocols.db.values import Values
 
 
 class Builder(IBuilder):
-    def make_returns(self, variables):
-        return self.make_operators(variables)
-
     def make_operators(self, variables):
         return Operators(variables)
 
