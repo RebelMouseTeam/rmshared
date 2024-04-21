@@ -10,11 +10,6 @@ class Tag:
 
 
 @dataclass(frozen=True)
-class Section:
-    id: int
-
-
-@dataclass(frozen=True)
 class Community:
     id: int
     slug: str

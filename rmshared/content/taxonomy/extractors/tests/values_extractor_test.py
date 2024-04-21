@@ -26,8 +26,8 @@ class TestPostValuesExtractor:
             bodies=('1. Mix the ingredients', '2. Bake the cake', '3. Enjoy!'),
             primary_tag=graph.others.Tag(slug='food'),
             regular_tags=frozenset({graph.others.Tag(slug='cake'), graph.others.Tag(slug='dessert')}),
-            primary_section=graph.others.Section(id=345),
-            regular_sections=frozenset({graph.others.Section(id=456), graph.others.Section(id=567)}),
+            primary_section=graph.sections.Section(id=345),
+            regular_sections=frozenset({graph.sections.Section(id=456), graph.sections.Section(id=567)}),
             community=graph.others.Community(id=678, slug='food', title='Food', about_html='About food', description='Food is good', details=None),
             authors=(
                 graph.users.UserProfile(

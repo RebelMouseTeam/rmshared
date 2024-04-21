@@ -7,6 +7,7 @@ from typing import Optional
 
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy.graph import others
+from rmshared.content.taxonomy.graph import sections
 from rmshared.content.taxonomy.graph import users
 
 
@@ -28,8 +29,8 @@ class Post:
     bodies: Sequence[str]
     primary_tag: Optional[others.Tag]
     regular_tags: AbstractSet[others.Tag]
-    primary_section: Optional[others.Section]
-    regular_sections: AbstractSet[others.Section]
+    primary_section: Optional[sections.Section]
+    regular_sections: AbstractSet[sections.Section]
     community: Optional[others.Community]
     authors: Sequence[users.UserProfile]
     page_layout: Optional[others.Layout]

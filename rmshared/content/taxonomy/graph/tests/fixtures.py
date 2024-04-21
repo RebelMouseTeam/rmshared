@@ -11,6 +11,7 @@ from rmshared.content.taxonomy.graph.users import UserDetails
 from rmshared.content.taxonomy.graph.users import UserProfile
 from rmshared.content.taxonomy.graph.users import UserProfileDetails
 from rmshared.content.taxonomy.graph.users import AccessRole
+from rmshared.content.taxonomy.graph.sections import Section
 
 
 POST_1 = Post(
@@ -29,15 +30,15 @@ POST_1 = Post(
     subtitles=('Subtitle #1', 'Subtitle #2'),
     bodies=('Body #1', 'Body #2'),
     primary_tag=others.Tag(slug='tag-1'),
-    regular_tags=frozenset([
+    regular_tags=frozenset({
         others.Tag(slug='tag-1'),
         others.Tag(slug='tag-2'),
-    ]),
-    primary_section=others.Section(id=123),
-    regular_sections=frozenset([
-        others.Section(id=123),
-        others.Section(id=234),
-    ]),
+    }),
+    primary_section=Section(id=123),
+    regular_sections=frozenset({
+        Section(id=123),
+        Section(id=234),
+    }),
     community=others.Community(
         id=987,
         slug='community-1',
@@ -147,15 +148,15 @@ POST_2 = Post(
     subtitles=('Subtitle #1', 'Subtitle #2'),
     bodies=('Body #1', 'Body #2'),
     primary_tag=None,
-    regular_tags=frozenset([
+    regular_tags=frozenset({
         others.Tag(slug='tag-1'),
         others.Tag(slug='tag-2'),
-    ]),
+    }),
     primary_section=None,
-    regular_sections=frozenset([
-        others.Section(id=123),
-        others.Section(id=234),
-    ]),
+    regular_sections=frozenset({
+        Section(id=123),
+        Section(id=234),
+    }),
     community=None,
     authors=(
         UserProfile(
@@ -220,12 +221,12 @@ USER_PROFILE_1 = UserProfile(
         id=8765,
         details=UserDetails(
             status=users.consts.USER.STATUS.ACTIVE,
-            emails=frozenset(['email_1@example.org', 'email_2@example.org']),
-            groups=frozenset([
+            emails=frozenset({'email_1@example.org', 'email_2@example.org'}),
+            groups=frozenset({
                 UserGroup(slug='user-group-1'),
                 UserGroup(slug='user-group-2'),
-            ]),
-            communities=frozenset([
+            }),
+            communities=frozenset({
                 others.Community(
                     id=987,
                     slug='community-1',
@@ -242,11 +243,11 @@ USER_PROFILE_1 = UserProfile(
                     description='Description of community #2',
                     details=None,
                 ),
-            ]),
-            access_roles=frozenset([
+            }),
+            access_roles=frozenset({
                 AccessRole(id=12345),
                 AccessRole(id=54321),
-            ]),
+            }),
             last_login_ts=1440000000,
         ),
     ),

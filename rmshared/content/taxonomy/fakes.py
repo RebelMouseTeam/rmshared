@@ -60,7 +60,7 @@ class Fakes:
     def make_post(self, post_id: Optional[int] = None) -> graph.posts.Post:
         return self.graph.make_post(post_id)
 
-    def make_section(self, section_id: Optional[int] = None) -> graph.others.Section:
+    def make_section(self, section_id: Optional[int] = None) -> graph.sections.Section:
         return self.graph.make_section(section_id)
 
     def make_user_profile(self, profile_id: Optional[int] = None) -> graph.users.UserProfile:

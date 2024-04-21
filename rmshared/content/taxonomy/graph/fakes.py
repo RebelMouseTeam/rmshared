@@ -97,11 +97,11 @@ class Fakes:
     def make_tag(self) -> graph.others.Tag:
         return graph.others.Tag(slug=self.faker.slug())
 
-    def _stream_sections(self, primary_section: Optional[graph.others.Section] = None) -> Iterator[graph.others.Section]:
+    def _stream_sections(self, primary_section: Optional[graph.sections.Section] = None) -> Iterator[graph.sections.Section]:
         return chain(filter(None, [primary_section]), self.faker.stream_random_items(self.make_section, max_size=5))
 
-    def make_section(self, section_id: Optional[int] = None) -> graph.others.Section:
-        return graph.others.Section(id=section_id or self.faker.random_int(max=999999))
+    def make_section(self, section_id: Optional[int] = None) -> graph.sections.Section:
+        return graph.sections.Section(id=section_id or self.faker.random_int(max=999999))
 
     def make_user_profile(self, profile_id: Optional[int] = None) -> graph.users.UserProfile:
         user_profile = self._make_user_profile_without_details(profile_id)

@@ -12,6 +12,7 @@ from rmshared.tools import unless_none
 from rmshared.content.taxonomy.graph import posts
 from rmshared.content.taxonomy.graph import users
 from rmshared.content.taxonomy.graph import others
+from rmshared.content.taxonomy.graph import sections
 from rmshared.content.taxonomy.graph.abc import IProtocol
 
 
@@ -85,11 +86,11 @@ class Protocol(IProtocol):
         }
 
     @staticmethod
-    def _make_section(data: Mapping[str, Any]) -> others.Section:
-        return others.Section(id=int(data['id']))
+    def _make_section(data: Mapping[str, Any]) -> sections.Section:
+        return sections.Section(id=int(data['id']))
 
     @staticmethod
-    def _jsonify_section(section: others.Section) -> Mapping[str, Any]:
+    def _jsonify_section(section: sections.Section) -> Mapping[str, Any]:
         return {
             'id': section.id,
         }
