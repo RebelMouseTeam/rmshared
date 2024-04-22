@@ -57,9 +57,9 @@ class Protocol(IProtocol):
         return {self.VISIBILITY_STATUS_TO_ID_MAP[status]: {}}
 
     VISIBILITY_STATUS_TO_ID_MAP = read_only({
-        consts.VISIBILITY.STATUS.LISTED: 'listed()',
-        consts.VISIBILITY.STATUS.PRIVATE: 'private()',
-        consts.VISIBILITY.STATUS.UNLISTED: 'unlisted()',
+        consts.VISIBILITY.STATUS.LISTED: 'listed',
+        consts.VISIBILITY.STATUS.PRIVATE: 'private',
+        consts.VISIBILITY.STATUS.UNLISTED: 'unlisted',
     })
     VISIBILITY_STATUS_FROM_ID_MAP = invert_dict(VISIBILITY_STATUS_TO_ID_MAP)
     assert frozenset(VISIBILITY_STATUS_FROM_ID_MAP.values()) == consts.VISIBILITY.STATUS.ALL

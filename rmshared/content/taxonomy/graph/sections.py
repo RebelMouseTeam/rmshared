@@ -22,7 +22,7 @@ class SectionDetails:
     slug: str
     title: str
     order_id: int
-    created_ts: int
+    created_ts: float
     is_read_only: bool
     ancestors: Sequence[Section]
     visibility: sections.consts.VISIBILITY.STATUS

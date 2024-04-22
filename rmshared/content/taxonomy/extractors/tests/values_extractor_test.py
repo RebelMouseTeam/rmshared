@@ -133,7 +133,7 @@ class TestPostValuesExtractor:
                 slug='section-1',
                 title='Section #1',
                 order_id=15,
-                created_ts=1682679356,
+                created_ts=1682679356.0,
                 is_read_only=False,
                 ancestors=(
                     graph.sections.Section(id=234, details=None),
@@ -191,7 +191,7 @@ class TestPostValuesExtractor:
                 slug='section-2',
                 title='Section #2',
                 order_id=0,
-                created_ts=1440000000,
+                created_ts=1440000000.0,
                 is_read_only=True,
                 ancestors=(),
                 visibility=sections.consts.VISIBILITY.STATUS.PRIVATE,

@@ -117,7 +117,7 @@ class Fakes:
             slug=self.faker.slug(),
             title=self.faker.sentence(),
             order_id=self.faker.random_int(max=999),
-            created_ts=self.faker.random_int(max=self.now),
+            created_ts=float(self.faker.random_int(max=self.now)),
             is_read_only=self.faker.random_element(elements=OrderedDict([(True, 0.01), (False, 0.99)])),
             ancestors=tuple(self.faker.stream_random_items(self._make_section_without_details, max_size=5)),
             visibility=self.sections.make_visibility_status(),
