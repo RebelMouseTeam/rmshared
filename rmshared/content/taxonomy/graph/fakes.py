@@ -8,6 +8,7 @@ from typing import Type
 
 from faker import Faker
 from faker import Generator
+from faker.providers import internet
 from faker.providers import lorem
 from faker.providers import python
 from faker.providers import BaseProvider
@@ -19,8 +20,9 @@ from rmshared.typings import read_only
 from rmshared.content.taxonomy import graph
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
+from rmshared.content.taxonomy import sections
 
-FakerWithProviders = Faker | Generator | BaseProvider | python.Provider | lorem.Provider | faker_ext.Provider
+FakerWithProviders = Faker | Generator | BaseProvider | python.Provider | lorem.Provider | internet.Provider | faker_ext.Provider
 
 
 class Fakes:
@@ -34,6 +36,7 @@ class Fakes:
         self.faker.seed_instance(seed)
         self.posts = posts.Fakes(now, seed)
         self.users = users.Fakes(now, seed)
+        self.sections = sections.Fakes(now, seed)
 
     def make_post(self, post_id: Optional[int] = None) -> graph.posts.Post:
         status = self.make_post_status_other_than(posts.statuses.Removed)
@@ -97,11 +100,57 @@ class Fakes:
     def make_tag(self) -> graph.others.Tag:
         return graph.others.Tag(slug=self.faker.slug())
 
-    def _stream_sections(self, primary_section: Optional[graph.others.Section] = None) -> Iterator[graph.others.Section]:
+    def _stream_sections(self, primary_section: Optional[graph.sections.Section] = None) -> Iterator[graph.sections.Section]:
         return chain(filter(None, [primary_section]), self.faker.stream_random_items(self.make_section, max_size=5))
 
-    def make_section(self, section_id: Optional[int] = None) -> graph.others.Section:
-        return graph.others.Section(id=section_id or self.faker.random_int(max=999999))
+    def make_section(self, section_id: Optional[int] = None) -> graph.sections.Section:
+        section = self._make_section_without_details(section_id)
+        section = replace(section, details=self._make_section_details())
+        return section
+
+    def _make_section_without_details(self, section_id: Optional[int] = None) -> graph.sections.Section:
+        return graph.sections.Section(id=section_id or self.faker.random_int(max=999999), details=None)
+
+    def _make_section_details(self) -> graph.sections.SectionDetails:
+        return graph.sections.SectionDetails(
+            path=self.faker.uri_path(),
+            slug=self.faker.slug(),
+            title=self.faker.sentence(),
+            order_id=self.faker.random_int(max=999),
+            created_ts=float(self.faker.random_int(max=self.now)),
+            is_read_only=self.faker.random_element(elements=OrderedDict([(True, 0.01), (False, 0.99)])),
+            ancestors=tuple(self.faker.stream_random_items(self._make_section_without_details, max_size=5)),
+            visibility=self.sections.make_visibility_status(),
+            access=self._make_section_access(),
+            settings=self._make_section_settings(),
+            meta_info=self._make_section_meta_info(),
+            site_specific_info=self._make_site_specific_info(),
+        )
+
+    def _make_section_access(self) -> graph.sections.SectionAccess:
+        return graph.sections.SectionAccess(
+            read_access_kind=self.sections.make_read_access_kind(),
+        )
+
+    def _make_section_settings(self) -> graph.sections.SectionSettings:
+        return graph.sections.SectionSettings(
+            open_in_new_tab=self.faker.random_element(elements=OrderedDict([(True, 0.01), (False, 0.99)])),
+            allow_community_posts=self.faker.random_element(elements=OrderedDict([(True, 0.05), (False, 0.95)])),
+            hide_from_entry_editor=self.faker.random_element(elements=OrderedDict([(True, 0.10), (False, 0.90)])),
+            lock_posts_after_publishing=self.faker.random_element(elements=OrderedDict([(True, 0.01), (False, 0.99)])),
+        )
+
+    def _make_section_meta_info(self) -> graph.sections.SectionMetaInfo:
+        return graph.sections.SectionMetaInfo(
+            image=self.faker.random_element(elements=(None, self._make_image())),
+            link_out=self.faker.uri(),
+            meta_tags=tuple(self.faker.stream_random_items(self.faker.word, max_size=5)),
+            meta_title=self.faker.sentence(),
+            about_html=self._make_about_html(),
+        )
+
+    def _make_image(self) -> graph.others.Image:
+        return graph.others.Image(id=self.faker.random_int(max=999999))
 
     def make_user_profile(self, profile_id: Optional[int] = None) -> graph.users.UserProfile:
         user_profile = self._make_user_profile_without_details(profile_id)

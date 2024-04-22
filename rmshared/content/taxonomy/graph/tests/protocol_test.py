@@ -23,3 +23,23 @@ class TestProtocol:
 
         data_2 = protocol.jsonify_post(post_2)
         assert data_2 == fixtures.POST_2_DATA
+
+    def test_it_should_make_and_jsonify_sections(self, protocol: Protocol):
+        section_1 = protocol.make_section(data=fixtures.SECTION_1_DATA)
+        assert section_1 == fixtures.SECTION_1
+
+        data_1 = protocol.jsonify_section(section_1)
+        assert data_1 == fixtures.SECTION_1_DATA
+
+        section_2 = protocol.make_section(data=fixtures.SECTION_2_DATA)
+        assert section_2 == fixtures.SECTION_2
+
+        data_2 = protocol.jsonify_section(section_2)
+        assert data_2 == fixtures.SECTION_2_DATA
+
+    def test_it_should_make_and_jsonify_user_profiles(self, protocol: Protocol):
+        user_profile_1 = protocol.make_user_profile(data=fixtures.USER_PROFILE_1_DATA)
+        assert user_profile_1 == fixtures.USER_PROFILE_1
+
+        data_1 = protocol.jsonify_user_profile(user_profile_1)
+        assert data_1 == fixtures.USER_PROFILE_1_DATA

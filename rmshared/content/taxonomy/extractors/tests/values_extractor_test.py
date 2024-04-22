@@ -3,6 +3,7 @@ from rmshared.typings import read_only
 from rmshared.content.taxonomy import graph
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
+from rmshared.content.taxonomy import sections
 
 from rmshared.content.taxonomy.extractors.factory import Factory
 
@@ -26,8 +27,8 @@ class TestPostValuesExtractor:
             bodies=('1. Mix the ingredients', '2. Bake the cake', '3. Enjoy!'),
             primary_tag=graph.others.Tag(slug='food'),
             regular_tags=frozenset({graph.others.Tag(slug='cake'), graph.others.Tag(slug='dessert')}),
-            primary_section=graph.others.Section(id=345),
-            regular_sections=frozenset({graph.others.Section(id=456), graph.others.Section(id=567)}),
+            primary_section=graph.sections.Section(id=345, details=None),
+            regular_sections=frozenset({graph.sections.Section(id=456, details=None), graph.sections.Section(id=567, details=None)}),
             community=graph.others.Community(id=678, slug='food', title='Food', about_html='About food', description='Food is good', details=None),
             authors=(
                 graph.users.UserProfile(
@@ -123,6 +124,118 @@ class TestPostValuesExtractor:
         assert list(extractor_2.extract_values(posts.fields.CustomField(path='foo.qux'))) == []
         assert list(extractor_2.extract_values(posts.fields.CustomField(path='foo.qxa'))) == []
         assert list(extractor_2.extract_values(posts.fields.PageViewsCount())) == [0]
+
+    def test_it_should_extract_values_from_sections(self):
+        extractor_1 = Factory.make_values_extractor_for_section(graph.sections.Section(
+            id=123,
+            details=graph.sections.SectionDetails(
+                path='path/to/section-1',
+                slug='section-1',
+                title='Section #1',
+                order_id=15,
+                created_ts=1682679356.0,
+                is_read_only=False,
+                ancestors=(
+                    graph.sections.Section(id=234, details=None),
+                    graph.sections.Section(id=345, details=None),
+                ),
+                visibility=sections.consts.VISIBILITY.STATUS.LISTED,
+                access=graph.sections.SectionAccess(
+                    read_access_kind=sections.access.Public(),
+                ),
+                settings=graph.sections.SectionSettings(
+                    open_in_new_tab=False,
+                    allow_community_posts=True,
+                    hide_from_entry_editor=False,
+                    lock_posts_after_publishing=True,
+                ),
+                meta_info=graph.sections.SectionMetaInfo(
+                    image=graph.others.Image(id=456),
+                    link_out='https://example.org',
+                    meta_tags=('tag-1', 'tag-2'),
+                    meta_title='Meta title',
+                    about_html='About section #1',
+                ),
+                site_specific_info=read_only({'foo': {'bar': 'baz', 'qux': [123, 456], 'qxa': None}}),
+            ),
+        ))
+
+        assert list(extractor_1.extract_values(sections.fields.Id())) == [123]
+        assert list(extractor_1.extract_values(sections.fields.Path())) == ['path/to/section-1']
+        assert list(extractor_1.extract_values(sections.fields.Slug())) == ['section-1']
+        assert list(extractor_1.extract_values(sections.fields.Title())) == ['Section #1']
+        assert list(extractor_1.extract_values(sections.fields.OrderId())) == [15]
+        assert list(extractor_1.extract_values(sections.fields.CreatedAt())) == [1682679356]
+        assert list(extractor_1.extract_values(sections.fields.IsReadOnly())) == [False]
+        assert list(extractor_1.extract_values(sections.fields.ParentId())) == [345]
+        assert list(extractor_1.extract_values(sections.fields.AncestorId())) == [234, 345]
+        assert list(extractor_1.extract_values(sections.fields.Visibility())) == ['listed()']
+        assert list(extractor_1.extract_values(sections.fields.ReadAccess())) == ['public()']
+        assert list(extractor_1.extract_values(sections.fields.OpenInNewTabSetting())) == [False]
+        assert list(extractor_1.extract_values(sections.fields.AllowCommunityPostsSetting())) == [True]
+        assert list(extractor_1.extract_values(sections.fields.HideFromEntryEditorSetting())) == [False]
+        assert list(extractor_1.extract_values(sections.fields.LockPostsAfterPublishingSetting())) == [True]
+        assert list(extractor_1.extract_values(sections.fields.ImageId())) == [456]
+        assert list(extractor_1.extract_values(sections.fields.LinkOut())) == ['https://example.org']
+        assert list(extractor_1.extract_values(sections.fields.MetaTag())) == ['tag-1', 'tag-2']
+        assert list(extractor_1.extract_values(sections.fields.MetaTitle())) == ['Meta title']
+        assert list(extractor_1.extract_values(sections.fields.AboutHtml())) == ['About section #1']
+        assert list(extractor_1.extract_values(sections.fields.CustomField(path='foo.bar'))) == ['baz']
+        assert list(extractor_1.extract_values(sections.fields.CustomField(path='foo.qux'))) == [123, 456]
+        assert list(extractor_1.extract_values(sections.fields.CustomField(path='foo.qxa'))) == []
+
+        extractor_2 = Factory.make_values_extractor_for_section(graph.sections.Section(
+            id=2345,
+            details=graph.sections.SectionDetails(
+                path='section-2',
+                slug='section-2',
+                title='Section #2',
+                order_id=0,
+                created_ts=1440000000.0,
+                is_read_only=True,
+                ancestors=(),
+                visibility=sections.consts.VISIBILITY.STATUS.PRIVATE,
+                access=graph.sections.SectionAccess(
+                    read_access_kind=sections.access.Restricted(is_inherited=True),
+                ),
+                settings=graph.sections.SectionSettings(
+                    open_in_new_tab=True,
+                    allow_community_posts=False,
+                    hide_from_entry_editor=True,
+                    lock_posts_after_publishing=False,
+                ),
+                meta_info=graph.sections.SectionMetaInfo(
+                    image=None,
+                    link_out=None,
+                    meta_tags=(),
+                    meta_title='',
+                    about_html='',
+                ),
+                site_specific_info=read_only(dict()),
+            ),
+        ))
+
+        assert list(extractor_2.extract_values(sections.fields.Id())) == [2345]
+        assert list(extractor_2.extract_values(sections.fields.Path())) == ['section-2']
+        assert list(extractor_2.extract_values(sections.fields.Slug())) == ['section-2']
+        assert list(extractor_2.extract_values(sections.fields.Title())) == ['Section #2']
+        assert list(extractor_2.extract_values(sections.fields.OrderId())) == [0]
+        assert list(extractor_2.extract_values(sections.fields.CreatedAt())) == [1440000000]
+        assert list(extractor_2.extract_values(sections.fields.IsReadOnly())) == [True]
+        assert list(extractor_2.extract_values(sections.fields.ParentId())) == []
+        assert list(extractor_2.extract_values(sections.fields.AncestorId())) == []
+        assert list(extractor_2.extract_values(sections.fields.Visibility())) == ['private()']
+        assert list(extractor_2.extract_values(sections.fields.ReadAccess())) == ['restricted(inherited=true)']
+        assert list(extractor_2.extract_values(sections.fields.OpenInNewTabSetting())) == [True]
+        assert list(extractor_2.extract_values(sections.fields.AllowCommunityPostsSetting())) == [False]
+        assert list(extractor_2.extract_values(sections.fields.HideFromEntryEditorSetting())) == [True]
+        assert list(extractor_2.extract_values(sections.fields.LockPostsAfterPublishingSetting())) == [False]
+        assert list(extractor_2.extract_values(sections.fields.ImageId())) == []
+        assert list(extractor_2.extract_values(sections.fields.LinkOut())) == []
+        assert list(extractor_2.extract_values(sections.fields.MetaTag())) == []
+        assert list(extractor_2.extract_values(sections.fields.MetaTitle())) == ['']
+        assert list(extractor_2.extract_values(sections.fields.AboutHtml())) == ['']
+        assert list(extractor_2.extract_values(sections.fields.CustomField(path='foo.bar'))) == []
 
     def test_it_should_extract_values_from_user_profiles(self):
         extractor_1 = Factory.make_values_extractor_for_user_profile(graph.users.UserProfile(

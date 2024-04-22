@@ -12,6 +12,7 @@ from rmshared.tools import unless_none
 from rmshared.content.taxonomy.graph import posts
 from rmshared.content.taxonomy.graph import users
 from rmshared.content.taxonomy.graph import others
+from rmshared.content.taxonomy.graph import sections
 from rmshared.content.taxonomy.graph.abc import IProtocol
 
 
@@ -36,8 +37,8 @@ class Protocol(IProtocol):
             bodies=tuple(map(str, (data['bodies']))),
             primary_tag=unless_none(self._make_tag)(data['primary_tag']),
             regular_tags=frozenset(map(self._make_tag, (data['regular_tags']))),
-            primary_section=unless_none(self._make_section)(data['primary_section']),
-            regular_sections=frozenset(map(self._make_section, (data['regular_sections']))),
+            primary_section=unless_none(self.make_section)(data['primary_section']),
+            regular_sections=frozenset(map(self.make_section, (data['regular_sections']))),
             community=unless_none(self._make_community)(data['community']),
             authors=tuple(map(self.make_user_profile, (data['authors']))),
             page_layout=unless_none(self._make_layout)(data['page_layout']),
@@ -64,8 +65,8 @@ class Protocol(IProtocol):
             'bodies': list(post.bodies),
             'primary_tag': unless_none(self._jsonify_tag)(post.primary_tag),
             'regular_tags': sorted(map(self._jsonify_tag, post.regular_tags), key=itemgetter('slug')),
-            'primary_section': unless_none(self._jsonify_section)(post.primary_section),
-            'regular_sections': sorted(map(self._jsonify_section, post.regular_sections), key=itemgetter('id')),
+            'primary_section': unless_none(self.jsonify_section)(post.primary_section),
+            'regular_sections': sorted(map(self.jsonify_section, post.regular_sections), key=itemgetter('id')),
             'community': unless_none(self._jsonify_community)(post.community),
             'authors': list(map(self.jsonify_user_profile, post.authors)),
             'page_layout': unless_none(self._jsonify_layout)(post.page_layout),
@@ -84,14 +85,104 @@ class Protocol(IProtocol):
             'slug': tag.slug,
         }
 
-    @staticmethod
-    def _make_section(data: Mapping[str, Any]) -> others.Section:
-        return others.Section(id=int(data['id']))
+    def make_section(self, data: Mapping[str, Any]) -> sections.Section:
+        return sections.Section(
+            id=int(data['id']),
+            details=unless_none(self._make_section_details)(data.get('details')),
+        )
 
-    @staticmethod
-    def _jsonify_section(section: others.Section) -> Mapping[str, Any]:
+    def jsonify_section(self, section: sections.Section) -> Mapping[str, Any]:
         return {
             'id': section.id,
+            'details': unless_none(self._jsonify_section_details)(section.details),
+        }
+
+    def _make_section_details(self, data: Mapping[str, Any]) -> sections.SectionDetails:
+        return sections.SectionDetails(
+            path=str(data['path']),
+            slug=str(data['slug']),
+            title=str(data['title']),
+            order_id=int(data['order_id']),
+            created_ts=float(data['created_ts']),
+            is_read_only=bool(data['is_read_only']),
+            ancestors=tuple(map(self.make_section, data['ancestors'])),
+            visibility=self.sections.make_section_visibility_status(data['visibility']),
+            access=self._make_section_access(data['access']),
+            settings=self._make_section_settings(data['settings']),
+            meta_info=self._make_section_meta_info(data['meta_info']),
+            site_specific_info=read_only(dict(data['site_specific_info'])),
+        )
+
+    def _jsonify_section_details(self, details: sections.SectionDetails) -> Mapping[str, Any]:
+        return {
+            'path': details.path,
+            'slug': details.slug,
+            'title': details.title,
+            'order_id': details.order_id,
+            'created_ts': details.created_ts,
+            'is_read_only': details.is_read_only,
+            'ancestors': list(map(self.jsonify_section, details.ancestors)),
+            'visibility': self.sections.jsonify_section_visibility_status(details.visibility),
+            'access': self._jsonify_section_access(details.access),
+            'settings': self._jsonify_section_settings(details.settings),
+            'meta_info': self._jsonify_section_meta_info(details.meta_info),
+            'site_specific_info': dict(details.site_specific_info),
+        }
+
+    def _make_section_access(self, data: Mapping[str, Any]) -> sections.SectionAccess:
+        return sections.SectionAccess(
+            read_access_kind=self.sections.make_section_read_access_kind(data['read_access_kind']),
+        )
+
+    def _jsonify_section_access(self, access: sections.SectionAccess) -> Mapping[str, Any]:
+        return {
+            'read_access_kind': self.sections.jsonify_section_read_access_kind(access.read_access_kind),
+        }
+
+    @staticmethod
+    def _make_section_settings(data: Mapping[str, Any]) -> sections.SectionSettings:
+        return sections.SectionSettings(
+            open_in_new_tab=bool(data['open_in_new_tab']),
+            allow_community_posts=bool(data['allow_community_posts']),
+            hide_from_entry_editor=bool(data['hide_from_entry_editor']),
+            lock_posts_after_publishing=bool(data['lock_posts_after_publishing']),
+        )
+
+    @staticmethod
+    def _jsonify_section_settings(settings: sections.SectionSettings) -> Mapping[str, Any]:
+        return {
+            'open_in_new_tab': settings.open_in_new_tab,
+            'allow_community_posts': settings.allow_community_posts,
+            'hide_from_entry_editor': settings.hide_from_entry_editor,
+            'lock_posts_after_publishing': settings.lock_posts_after_publishing,
+        }
+
+    def _make_section_meta_info(self, data: Mapping[str, Any]) -> sections.SectionMetaInfo:
+        return sections.SectionMetaInfo(
+            image=unless_none(self._make_image)(data['image']),
+            link_out=unless_none(str)(data['link_out']),
+            meta_tags=tuple(map(str, data['meta_tags'])),
+            meta_title=str(data['meta_title']),
+            about_html=str(data['about_html']),
+        )
+
+    def _jsonify_section_meta_info(self, meta_info: sections.SectionMetaInfo) -> Mapping[str, Any]:
+        return {
+            'image': unless_none(self._jsonify_image)(meta_info.image),
+            'link_out': meta_info.link_out,
+            'meta_tags': list(meta_info.meta_tags),
+            'meta_title': meta_info.meta_title,
+            'about_html': meta_info.about_html,
+        }
+
+    @staticmethod
+    def _make_image(data: Mapping[str, Any]) -> others.Image:
+        return others.Image(id=int(data['id']))
+
+    @staticmethod
+    def _jsonify_image(image: others.Image) -> Mapping[str, Any]:
+        return {
+            'id': image.id,
         }
 
     @staticmethod
@@ -165,9 +256,9 @@ class Protocol(IProtocol):
     def _jsonify_user_details(self, details: users.UserDetails) -> Mapping[str, Any]:
         return {
             'status': self.users.jsonify_user_status(details.status),
-            'emails': list(details.emails),
-            'groups': list(map(self._jsonify_user_group, details.groups)),
-            'communities': list(map(self._jsonify_community, details.communities)),
+            'emails': list(sorted(details.emails)),
+            'groups': list(map(self._jsonify_user_group, sorted(details.groups))),
+            'communities': list(map(self._jsonify_community, sorted(details.communities))),
             'access_roles': list(map(self._jsonify_access_role, details.access_roles)),
             'last_login_ts': details.last_login_ts,
         }
@@ -235,3 +326,8 @@ class Protocol(IProtocol):
     def users(self):
         from rmshared.content.taxonomy import users
         return users.Protocol()
+
+    @cached_property
+    def sections(self):
+        from rmshared.content.taxonomy import sections
+        return sections.Protocol()
