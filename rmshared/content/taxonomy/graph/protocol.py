@@ -256,9 +256,9 @@ class Protocol(IProtocol):
     def _jsonify_user_details(self, details: users.UserDetails) -> Mapping[str, Any]:
         return {
             'status': self.users.jsonify_user_status(details.status),
-            'emails': list(details.emails),
-            'groups': list(map(self._jsonify_user_group, details.groups)),
-            'communities': list(map(self._jsonify_community, details.communities)),
+            'emails': list(sorted(details.emails)),
+            'groups': list(map(self._jsonify_user_group, sorted(details.groups))),
+            'communities': list(map(self._jsonify_community, sorted(details.communities))),
             'access_roles': list(map(self._jsonify_access_role, details.access_roles)),
             'last_login_ts': details.last_login_ts,
         }

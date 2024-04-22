@@ -36,3 +36,10 @@ class TestProtocol:
 
         data_2 = protocol.jsonify_section(section_2)
         assert data_2 == fixtures.SECTION_2_DATA
+
+    def test_it_should_make_and_jsonify_user_profiles(self, protocol: Protocol):
+        user_profile_1 = protocol.make_user_profile(data=fixtures.USER_PROFILE_1_DATA)
+        assert user_profile_1 == fixtures.USER_PROFILE_1
+
+        data_1 = protocol.jsonify_user_profile(user_profile_1)
+        assert data_1 == fixtures.USER_PROFILE_1_DATA

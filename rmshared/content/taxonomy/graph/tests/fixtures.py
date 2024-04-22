@@ -411,18 +411,20 @@ USER_PROFILE_1_DATA = {
             ],
             'communities': [
                 {
-                    'id': 987,
-                    'slug': 'community-1',
-                    'title': 'Community #1',
-                    'about_html': 'About community #1',
-                    'description': 'Description of community #1',
-                },
-                {
                     'id': 876,
                     'slug': 'community-2',
                     'title': 'Community #2',
                     'about_html': 'About community #2',
                     'description': 'Description of community #2',
+                    'details': None,
+                },
+                {
+                    'id': 987,
+                    'slug': 'community-1',
+                    'title': 'Community #1',
+                    'about_html': 'About community #1',
+                    'description': 'Description of community #1',
+                    'details': None,
                 },
             ],
             'access_roles': [
@@ -439,6 +441,6 @@ USER_PROFILE_1_DATA = {
     'details': {
         'status': {'inactive': {'is_banned': True}},
         'site_specific_info': {'some': {'info': 'here'}},
-        'lifetime_posts_count': '54321',
+        'lifetime_posts_count': 54321,
     },
 }

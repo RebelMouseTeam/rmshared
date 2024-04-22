@@ -4,6 +4,8 @@ from typing import Any
 from typing import Mapping
 from typing import Optional
 
+from rmshared.dataclasses import total_ordering
+
 from rmshared.content.taxonomy import users
 from rmshared.content.taxonomy.graph import others
 
@@ -43,10 +45,12 @@ class UserDetails:
 
 
 @dataclass(frozen=True)
+@total_ordering
 class UserGroup:
     slug: str
 
 
 @dataclass(frozen=True)
+@total_ordering
 class AccessRole:
     id: int

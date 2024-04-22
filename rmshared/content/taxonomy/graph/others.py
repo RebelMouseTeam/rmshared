@@ -3,13 +3,17 @@ from typing import Any
 from typing import Mapping
 from typing import Optional
 
+from rmshared.dataclasses import total_ordering
+
 
 @dataclass(frozen=True)
+@total_ordering
 class Tag:
     slug: str
 
 
 @dataclass(frozen=True)
+@total_ordering
 class Community:
     id: int
     slug: str
