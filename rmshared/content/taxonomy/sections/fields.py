@@ -9,9 +9,9 @@ CreatedAt = core.aliases.fields.System('section-profile-created-at')
 IsReadOnly = core.aliases.fields.System('section-is-read-only')
 
 ParentId = core.aliases.fields.System('section-parent-id')
-ParentSlug = core.aliases.fields.System('section-parent-slug')
+# TODO: consider `ParentSlug = core.aliases.fields.System('section-parent-slug')`
 AncestorId = core.aliases.fields.System('section-ancestor-id')
-AncestorSlug = core.aliases.fields.System('section-ancestor-slug')
+# TODO: consider `AncestorSlug = core.aliases.fields.System('section-ancestor-slug')`
 
 Visibility = core.aliases.fields.System('section-visibility')
 ReadAccess = core.aliases.fields.System('section-read-access-kind')

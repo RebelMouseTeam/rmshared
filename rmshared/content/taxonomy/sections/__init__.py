@@ -1,4 +1,5 @@
 from rmshared.content.taxonomy.sections import guids
+from rmshared.content.taxonomy.sections import access
 from rmshared.content.taxonomy.sections import consts
 from rmshared.content.taxonomy.sections import fields
 from rmshared.content.taxonomy.sections import labels
@@ -10,6 +11,7 @@ from rmshared.content.taxonomy.sections.fakes import Fakes
 
 
 __all__ = (
+    'access',
     'consts',
 
     'guids',

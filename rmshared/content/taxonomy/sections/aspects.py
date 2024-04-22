@@ -29,8 +29,8 @@ class Aspects(IAspects):
         return self.SECTION_STATUS_TO_ID_MAP[status]
 
     SECTION_STATUS_TO_ID_MAP = read_only({
-        consts.VISIBILITY.STATUS.LISTED: 'listed',
-        consts.VISIBILITY.STATUS.PRIVATE: 'private',
-        consts.VISIBILITY.STATUS.UNLISTED: 'unlisted',
+        consts.VISIBILITY.STATUS.LISTED: 'listed()',
+        consts.VISIBILITY.STATUS.PRIVATE: 'private()',
+        consts.VISIBILITY.STATUS.UNLISTED: 'unlisted()',
     })
     assert frozenset(SECTION_STATUS_TO_ID_MAP.keys()) == consts.VISIBILITY.STATUS.ALL

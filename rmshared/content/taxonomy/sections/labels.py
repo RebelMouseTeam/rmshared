@@ -14,9 +14,7 @@ Title = core.aliases.labels.SystemFieldValue[str, str](fields.Title)
 ReadOnly = core.aliases.labels.SystemFieldBadge(fields.IsReadOnly)
 
 ParentId = core.aliases.labels.SystemFieldValue[int, int](fields.ParentId)
-ParentSlug = core.aliases.labels.SystemFieldValue[str, str](fields.ParentSlug)
 AncestorId = core.aliases.labels.SystemFieldValue[int, int](fields.AncestorId)
-AncestorSlug = core.aliases.labels.SystemFieldValue[str, str](fields.AncestorSlug)
 
 ReadAccess = core.aliases.labels.SystemFieldValue[access.Kind, str](fields.ReadAccess, Aspects().map_section_read_access_kind)
 Visibility = core.aliases.labels.SystemFieldValue[consts.VISIBILITY.STATUS, str](fields.Visibility, Aspects().map_section_visibility_status)

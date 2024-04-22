@@ -28,3 +28,8 @@ class CommunityDetails:
 @dataclass(frozen=True)
 class Layout:
     slug: str
+
+
+@dataclass(frozen=True)
+class Image:
+    id: int

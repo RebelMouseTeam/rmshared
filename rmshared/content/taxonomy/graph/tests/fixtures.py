@@ -34,10 +34,10 @@ POST_1 = Post(
         others.Tag(slug='tag-1'),
         others.Tag(slug='tag-2'),
     }),
-    primary_section=Section(id=123),
+    primary_section=Section(id=123, details=None),
     regular_sections=frozenset({
-        Section(id=123),
-        Section(id=234),
+        Section(id=123, details=None),
+        Section(id=234, details=None),
     }),
     community=others.Community(
         id=987,
@@ -154,8 +154,8 @@ POST_2 = Post(
     }),
     primary_section=None,
     regular_sections=frozenset({
-        Section(id=123),
-        Section(id=234),
+        Section(id=123, details=None),
+        Section(id=234, details=None),
     }),
     community=None,
     authors=(

@@ -87,7 +87,7 @@ class Protocol(IProtocol):
 
     @staticmethod
     def _make_section(data: Mapping[str, Any]) -> sections.Section:
-        return sections.Section(id=int(data['id']))
+        return sections.Section(id=int(data['id']), details=None)
 
     @staticmethod
     def _jsonify_section(section: sections.Section) -> Mapping[str, Any]:
