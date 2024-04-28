@@ -1,3 +1,4 @@
+from rmshared.content.taxonomy.core.protocols import db
 from rmshared.content.taxonomy.core.protocols import ui
 from rmshared.content.taxonomy.core.protocols.abc import IBuilder
 from rmshared.content.taxonomy.core.protocols.abc import IComposite
@@ -11,6 +12,7 @@ from rmshared.content.taxonomy.core.protocols.factory import Factory
 from rmshared.content.taxonomy.core.protocols.composite import Composite
 
 __all__ = (
+    'db',
     'ui',
 
     'IBuilder',
