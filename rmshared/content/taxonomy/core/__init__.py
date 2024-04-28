@@ -6,6 +6,7 @@ from rmshared.content.taxonomy.core import events
 
 from rmshared.content.taxonomy.core import aliases
 
+from rmshared.content.taxonomy.core import encoders
 from rmshared.content.taxonomy.core import protocols
 
 from rmshared.content.taxonomy.core.abc import IEntity
@@ -23,6 +24,7 @@ __all__ = (
 
     'aliases',
 
+    'encoders',
     'protocols',
 
     'IEntity',
