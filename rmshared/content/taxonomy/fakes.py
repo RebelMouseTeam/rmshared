@@ -14,6 +14,7 @@ from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy import graph
 from rmshared.content.taxonomy import posts
 from rmshared.content.taxonomy import users
+from rmshared.content.taxonomy import sections
 from rmshared.content.taxonomy import variables
 from rmshared.content.taxonomy.abc import Guid
 
@@ -38,10 +39,14 @@ class Fakes:
 
     def _stream_guids(self) -> Iterator[Guid]:
         yield self.make_post_guid()
+        yield self.make_section_guid()
         yield self.make_user_profile_guid()
 
     def make_post_guid(self) -> posts.guids.Post:
         return posts.guids.Post(id=self.faker.random_int(min=99999, max=99999999))
+
+    def make_section_guid(self) -> sections.guids.Section:
+        return sections.guids.Section(id=self.faker.random_int(min=9999, max=9999999))
 
     def make_user_profile_guid(self) -> users.guids.UserProfile:
         return users.guids.UserProfile(id=self.faker.random_int(min=9999, max=9999999))
@@ -55,6 +60,7 @@ class Fakes:
     @staticmethod
     def _stream_guid_types() -> Iterator[Type[Guid]]:
         yield posts.guids.Post
+        yield sections.guids.Section
         yield users.guids.UserProfile
 
     def make_post(self, post_id: Optional[int] = None) -> graph.posts.Post:
