@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from dataclasses import replace
@@ -52,39 +54,39 @@ class Resolver(IResolver):
         return constant_filters, variable_filters
 
     class Factory:
-        def __init__(self, resolver: 'Resolver'):
+        def __init__(self, resolver: Resolver):
             self.resolver = resolver
 
-        def make_filters_resolver(self, arguments: 'Resolver.IArguments') -> 'Resolver.Operators[core.filters.Filter]':
-            cases = self._make_filters_cases(arguments)
-            return self.resolver.Operators(cases, arguments)
+        def make_filters_resolver(self, arguments_: Resolver.IArguments) -> Resolver.Operators[core.filters.Filter]:
+            cases = self._make_filters_cases(arguments_)
+            return self.resolver.Operators(cases, arguments_)
 
-        def _make_labels_resolver(self, arguments: 'Resolver.IArguments') -> 'Resolver.Operators[core.labels.Label]':
-            cases = self._make_labels_cases(arguments)
-            return self.resolver.Operators(cases, arguments)
+        def _make_labels_resolver(self, arguments_: Resolver.IArguments) -> Resolver.Operators[core.labels.Label]:
+            cases = self._make_labels_cases(arguments_)
+            return self.resolver.Operators(cases, arguments_)
 
-        def _make_ranges_resolver(self, arguments: 'Resolver.IArguments') -> 'Resolver.Operators[core.ranges.Range]':
-            cases = self._make_ranges_cases(arguments)
-            return self.resolver.Operators(cases, arguments)
+        def _make_ranges_resolver(self, arguments_: Resolver.IArguments) -> Resolver.Operators[core.ranges.Range]:
+            cases = self._make_ranges_cases(arguments_)
+            return self.resolver.Operators(cases, arguments_)
 
-        def _make_filters_cases(self, arguments: 'Resolver.IArguments') -> 'Resolver.Filters':
-            labels = self._make_labels_resolver(arguments)
-            ranges = self._make_ranges_resolver(arguments)
+        def _make_filters_cases(self, arguments_: Resolver.IArguments) -> Resolver.Filters:
+            labels = self._make_labels_resolver(arguments_)
+            ranges = self._make_ranges_resolver(arguments_)
             return self.resolver.Filters(labels, ranges)
 
-        def _make_labels_cases(self, arguments: 'Resolver.IArguments') -> 'Resolver.Labels':
-            values_ = self._make_values_cases(arguments)
+        def _make_labels_cases(self, arguments_: Resolver.IArguments) -> Resolver.Labels:
+            values_ = self._make_values_cases(arguments_)
             return self.resolver.Labels(values_)
 
-        def _make_ranges_cases(self, arguments: 'Resolver.IArguments') -> 'Resolver.Ranges':
-            values_ = self._make_values_cases(arguments)
+        def _make_ranges_cases(self, arguments_: Resolver.IArguments) -> Resolver.Ranges:
+            values_ = self._make_values_cases(arguments_)
             return self.resolver.Ranges(values_)
 
-        def _make_values_cases(self, arguments: 'Resolver.IArguments') -> 'Resolver.Values':
-            return self.resolver.Values(arguments)
+        def _make_values_cases(self, arguments_: Resolver.IArguments) -> Resolver.Values:
+            return self.resolver.Values(arguments_)
 
     class Operators(Generic[Case]):
-        def __init__(self, cases: 'Resolver.Operators.ICases[Case]', arguments_: IResolver.IArguments):
+        def __init__(self, cases: ICases[Case, Case], arguments_: IResolver.IArguments):
             self.cases = cases
             self.arguments = arguments_
             self.operator_to_dereference_func_map: Mapping[Type[Operator], Callable[[Operator], Iterable[Case]]] = ensure_map_is_complete(operators.Operator, {
@@ -110,10 +112,10 @@ class Resolver(IResolver):
         class ICases(Generic[InCase, OutCase], metaclass=ABCMeta):
             @abstractmethod
             def dereference_case(self, case: InCase) -> OutCase:
-                pass
+                ...
 
     class Filters(Operators.ICases[core.filters.Filter, core.filters.Filter]):
-        def __init__(self, labels: 'Resolver.Operators[core.filters.Label]', ranges: 'Resolver.Operators[core.filters.Range]'):
+        def __init__(self, labels: Resolver.Operators[core.filters.Label], ranges: Resolver.Operators[core.filters.Range]):
             self.labels = labels
             self.ranges = ranges
             self.filter_to_dereference_func_map: Mapping[Type[Filter], Callable[[Filter], Filter]] = ensure_map_is_complete(core.filters.Filter, {
@@ -133,7 +135,7 @@ class Resolver(IResolver):
             return replace(case, ranges=tuple(chain.from_iterable(map(self.ranges.dereference_operator, case.ranges))))
 
     class Labels(Operators.ICases[core.labels.Label, core.labels.Label]):
-        def __init__(self, values_: 'Resolver.Operators.ICases[core.labels.Value]'):
+        def __init__(self, values_: Resolver.Operators.ICases[core.labels.Value, Scalar]):
             self.values = values_
             self.label_to_dereference_func_map: Mapping[Type[Label], Callable[[Label], Label]] = ensure_map_is_complete(core.labels.Label, {
                 core.labels.Value: self._dereference_value,
@@ -148,7 +150,7 @@ class Resolver(IResolver):
             return replace(label, value=self.values.dereference_case(label.value))
 
     class Ranges(Operators.ICases[core.ranges.Range, core.ranges.Range]):
-        def __init__(self, values_: 'Resolver.Operators.ICases[core.ranges.Value]'):
+        def __init__(self, values_: Resolver.Operators.ICases[core.ranges.Value, Scalar]):
             self.values = values_
             self.range_to_dereference_func_map: Mapping[Type[Range], Callable[[Range], Range]] = ensure_map_is_complete(core.ranges.Range, {
                 core.ranges.Between: self._dereference_between,
@@ -171,7 +173,7 @@ class Resolver(IResolver):
             return replace(case, value=self.values.dereference_case(case.value))
 
     class Values(Operators.ICases[values.Value, Scalar]):
-        def __init__(self, arguments_: 'Resolver.IArguments'):
+        def __init__(self, arguments_: Resolver.IArguments):
             self.arguments = arguments_
             self.value_to_dereference_func_map: Mapping[Type[Value], Callable[[Value], Value]] = ensure_map_is_complete(values.Value, {
                 values.Variable: self._dereference_variable,

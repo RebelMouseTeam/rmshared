@@ -1,5 +1,5 @@
 orjson==3.10.1
-aiohttp==3.9.5
+aiohttp==3.10.11
 
 mock==5.1.0
 faker==24.14.0
