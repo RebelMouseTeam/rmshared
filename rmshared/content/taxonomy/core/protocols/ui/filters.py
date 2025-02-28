@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from operator import attrgetter
@@ -20,13 +22,13 @@ from rmshared.content.taxonomy.core.protocols.abc import IRanges
 
 class Filters(IFilters[filters.Filter]):
     def __init__(self, labels: ILabels, ranges: IRanges):
-        self.filter_to_delegate_map: Mapping[Type[Filter], 'Filters.IDelegate'] = ensure_map_is_complete(filters.Filter, {
+        self.filter_to_delegate_map: Mapping[Type[Filter], Filters.IDelegate] = ensure_map_is_complete(filters.Filter, {
             filters.AnyLabel: self.AnyLabel(labels),
             filters.NoLabels: self.NoLabels(labels),
             filters.AnyRange: self.AnyRange(ranges),
             filters.NoRanges: self.NoRanges(ranges),
         })
-        self.name_to_delegate_map: Mapping[str, 'Filters.IDelegate'] = dict_from_list(
+        self.name_to_delegate_map: Mapping[str, Filters.IDelegate] = dict_from_list(
             source=self.filter_to_delegate_map.values(),
             key_func=attrgetter('name'),
         )
@@ -43,15 +45,15 @@ class Filters(IFilters[filters.Filter]):
         @property
         @abstractmethod
         def name(self) -> str:
-            pass
+            ...
 
         @abstractmethod
         def make_filter(self, info: Collection[Any]) -> Filter:
-            pass
+            ...
 
         @abstractmethod
         def jsonify_filter_info(self, filter_: Filter) -> Collection[Any]:
-            pass
+            ...
 
     class AnyLabel(IDelegate[filters.AnyLabel]):
         def __init__(self, labels: ILabels):

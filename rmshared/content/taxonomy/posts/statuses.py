@@ -5,8 +5,9 @@ from rmshared.content.taxonomy.posts import drafts
 from rmshared.content.taxonomy.posts import published
 
 
+@dataclass(frozen=True)
 class Status(metaclass=ABCMeta):
-    pass
+    ...
 
 
 @dataclass(frozen=True)

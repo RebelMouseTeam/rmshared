@@ -2,8 +2,9 @@ from abc import ABCMeta
 from dataclasses import dataclass
 
 
+@dataclass(frozen=True)
 class Scope(metaclass=ABCMeta):
-    pass
+    ...
 
 
 @dataclass(frozen=True)

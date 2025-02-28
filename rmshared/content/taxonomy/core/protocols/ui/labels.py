@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from operator import attrgetter
@@ -20,12 +22,12 @@ from rmshared.content.taxonomy.core.protocols.abc import IValues
 
 class Labels(ILabels[labels.Label]):
     def __init__(self, fields: IFields, values: IValues):
-        self.label_to_delegate_map: Mapping[Type[Label], 'Labels.IDelegate'] = ensure_map_is_complete(labels.Label, {
+        self.label_to_delegate_map: Mapping[Type[Label], Labels.IDelegate] = ensure_map_is_complete(labels.Label, {
             labels.Value: self.Value(fields, values),
             labels.Badge: self.Badge(fields),
             labels.Empty: self.Empty(fields),
         })
-        self.name_to_delegate_map: Mapping[str, 'Labels.IDelegate'] = dict_from_list(
+        self.name_to_delegate_map: Mapping[str, Labels.IDelegate] = dict_from_list(
             source=self.label_to_delegate_map.values(),
             key_func=attrgetter('name'),
         )
@@ -42,15 +44,15 @@ class Labels(ILabels[labels.Label]):
         @property
         @abstractmethod
         def name(self) -> AbstractSet[str]:
-            pass
+            ...
 
         @abstractmethod
         def make_label(self, info: Mapping[str, Any]) -> Label:
-            pass
+            ...
 
         @abstractmethod
         def jsonify_label_info(self, label: Label) -> Mapping[str, Any]:
-            pass
+            ...
 
     class Value(IDelegate[labels.Value]):
         def __init__(self, fields: IFields, values: IValues):

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from operator import attrgetter
@@ -21,11 +23,11 @@ Value = TypeVar('Value', bound=values.Value)
 
 class Values(core.protocols.IValues[values.Value]):
     def __init__(self, variables: IVariables, delegate: core.protocols.IValues):
-        self.value_to_delegate_map: Mapping[Type[Value], 'Values.IDelegate[Value]'] = ensure_map_is_complete(values.Value, {
+        self.value_to_delegate_map: Mapping[Type[Value], Values.IDelegate[Value, Case]] = ensure_map_is_complete(values.Value, {
             values.Variable: self.Variable(variables),
             values.Constant: self.Constant(delegate),
         })
-        self.value_name_to_delegate_map: Mapping[str, 'Values.IDelegate'] = dict_from_list(
+        self.value_name_to_delegate_map: Mapping[str, Values.IDelegate] = dict_from_list(
             source=self.value_to_delegate_map.values(),
             key_func=attrgetter('name'),
         )
@@ -42,15 +44,15 @@ class Values(core.protocols.IValues[values.Value]):
         @property
         @abstractmethod
         def name(self) -> str:
-            pass
+            ...
 
         @abstractmethod
         def make_value(self, info: Any) -> Value:
-            pass
+            ...
 
         @abstractmethod
         def jsonify_value_info(self, value: Value) -> Any:
-            pass
+            ...
 
     class Variable(IDelegate[values.Variable, Case]):
         def __init__(self, variables: IVariables):

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from operator import attrgetter
@@ -16,11 +18,11 @@ from rmshared.content.taxonomy.core.protocols.abc import IFields
 
 class Fields(IFields[fields.Field]):
     def __init__(self):
-        self.field_to_delegate_map: Mapping[Type[Field], 'Fields.IDelegate'] = ensure_map_is_complete(fields.Field, {
+        self.field_to_delegate_map: Mapping[Type[Field], Fields.IDelegate] = ensure_map_is_complete(fields.Field, {
             fields.System: self.System(),
             fields.Custom: self.Custom(),
         })
-        self.field_type_to_delegate_map: Mapping[str, 'Fields.IDelegate'] = dict_from_list(
+        self.field_type_to_delegate_map: Mapping[str, Fields.IDelegate] = dict_from_list(
             source=self.field_to_delegate_map.values(),
             key_func=attrgetter('type'),
         )
@@ -39,15 +41,15 @@ class Fields(IFields[fields.Field]):
         @property
         @abstractmethod
         def type(self) -> str:
-            pass
+            ...
 
         @abstractmethod
         def make_field(self, info: Mapping[str, Any]) -> Field:
-            pass
+            ...
 
         @abstractmethod
         def jsonify_field_info(self, field: Field) -> Mapping[str, Any]:
-            pass
+            ...
 
     class System(IDelegate[fields.System]):
         @property

@@ -8,8 +8,9 @@ Label = TypeVar('Label')
 Range = TypeVar('Range')
 
 
+@dataclass(frozen=True)
 class Filter(metaclass=ABCMeta):
-    pass
+    ...
 
 
 @dataclass(frozen=True)

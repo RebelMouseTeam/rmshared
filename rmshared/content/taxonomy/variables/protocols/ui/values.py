@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from collections import OrderedDict
@@ -17,7 +19,7 @@ Value = TypeVar('Value', bound=values.Value)
 
 class Values(core.protocols.IValues[Value]):
     def __init__(self, variables: IVariables, delegate: core.protocols.IValues):
-        self.value_to_delegate_map: OrderedDict[Type[Value], 'Values.IDelegate[Value]'] = ensure_map_is_complete(values.Value, OrderedDict([
+        self.value_to_delegate_map: OrderedDict[Type[Value], Values.IDelegate[Value]] = ensure_map_is_complete(values.Value, OrderedDict([
             (values.Variable, self.Variable(variables)),
             (values.Constant, self.Constant(delegate)),
         ]))

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from typing import AbstractSet
@@ -19,10 +21,10 @@ Value = TypeVar('Value')
 class IEntity(Generic[Value], metaclass=ABCMeta):
     @abstractmethod
     def get_values(self, field: fields.Field) -> AbstractSet[Value]:
-        pass
+        ...
 
 
 class IMatcher(metaclass=ABCMeta):
     @abstractmethod
-    def does_entity_match_filters(self, entity: 'IEntity', filters_: Iterable['filters.Filter']) -> bool:
-        pass
+    def does_entity_match_filters(self, entity: IEntity, filters_: Iterable[filters.Filter]) -> bool:
+        ...

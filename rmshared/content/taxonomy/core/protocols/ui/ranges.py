@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from typing import AbstractSet
@@ -18,18 +20,18 @@ from rmshared.content.taxonomy.core.protocols.abc import IValues
 
 class Ranges(IRanges[ranges.Range]):
     def __init__(self, fields: IFields, values: IValues):
-        self.range_to_delegate_map: Mapping[Type[Range], 'Ranges.IDelegate'] = ensure_map_is_complete(ranges.Range, {
+        self.range_to_delegate_map: Mapping[Type[Range], Ranges.IDelegate] = ensure_map_is_complete(ranges.Range, {
             ranges.Between: self.Between(fields, values),
             ranges.LessThan: self.LessThan(fields, values),
             ranges.MoreThan: self.MoreThan(fields, values),
         })
-        self.keys_to_delegate_map: Mapping[frozenset[str], 'Ranges.IDelegate'] = dict_from_list(
+        self.keys_to_delegate_map: Mapping[frozenset[str], Ranges.IDelegate] = dict_from_list(
             source=self.range_to_delegate_map.values(),
             key_func=self._get_delegate_keys,
         )
 
     @staticmethod
-    def _get_delegate_keys(delegate: 'Ranges.IDelegate') -> frozenset[str]:
+    def _get_delegate_keys(delegate: IDelegate) -> frozenset[str]:
         return frozenset(delegate.keys)
 
     def make_range(self, data):
@@ -43,15 +45,15 @@ class Ranges(IRanges[ranges.Range]):
         @property
         @abstractmethod
         def keys(self) -> AbstractSet[str]:
-            pass
+            ...
 
         @abstractmethod
         def make_range(self, data: Mapping[str, Any]) -> Range:
-            pass
+            ...
 
         @abstractmethod
         def jsonify_range(self, range_: Range) -> Mapping[str, Any]:
-            pass
+            ...
 
     class Between(IDelegate[ranges.Between]):
         def __init__(self, fields: IFields, values: IValues):

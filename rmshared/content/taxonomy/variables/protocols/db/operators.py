@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from operator import attrgetter
@@ -27,11 +29,11 @@ Operator = TypeVar('Operator', bound=operators.Operator)
 
 class Operators(IOperators[Case]):
     def __init__(self, variables: IVariables):
-        self.operator_to_delegate_map: Mapping[Type[Operator], 'Operators.IDelegate[Operator]'] = ensure_map_is_complete(operators.Operator, {
+        self.operator_to_delegate_map: Mapping[Type[Operator], Operators.IDelegate[Operator, Case]] = ensure_map_is_complete(operators.Operator, {
             operators.Switch: self.Switch(self, variables),
             operators.Return: self.Return(),
         })
-        self.operator_name_to_delegate_map: Mapping[str, 'Operators.IDelegate'] = dict_from_list(
+        self.operator_name_to_delegate_map: Mapping[str, Operators.IDelegate] = dict_from_list(
             source=self.operator_to_delegate_map.values(),
             key_func=attrgetter('name'),
         )
@@ -48,18 +50,18 @@ class Operators(IOperators[Case]):
         @property
         @abstractmethod
         def name(self) -> str:
-            pass
+            ...
 
         @abstractmethod
         def make_operator(self, info: Any, make_case: Callable[[Any], Case]) -> Operator:
-            pass
+            ...
 
         @abstractmethod
         def jsonify_operator_info(self, operator: Operator, jsonify_case: Callable[[Case], Any]) -> Any:
-            pass
+            ...
 
     class Switch(IDelegate[operators.Switch[Case], Case]):
-        def __init__(self, operators_: 'Operators', variables: IVariables):
+        def __init__(self, operators_: Operators, variables: IVariables):
             self.operators = operators_
             self.variables = variables
 
@@ -68,7 +70,7 @@ class Operators(IOperators[Case]):
             return '@switch'
 
         def make_operator(self, info: Mapping[str, Any], make_case) -> operators.Switch[Case]:
-            return operators.Switch[Case](
+            return operators.Switch(
                 ref=self.variables.make_reference(info['@ref']),
                 cases=read_only(self._make_cases(info['@cases'], make_case)),
             )
@@ -85,7 +87,7 @@ class Operators(IOperators[Case]):
 
             return map_dict(data, map_key_func=self.variables.make_argument, map_value_func=_make_operator)
 
-        def _jsonify_cases(self, cases: Mapping[Type[arguments.Argument], operators.Operator[Case]], jsonify_case: Callable[[Case], Any]) -> Mapping[str, Any]:
+        def _jsonify_cases(self, cases: Mapping[Type[arguments.Argument], Operator[Case]], jsonify_case: Callable[[Case], Any]) -> Mapping[str, Any]:
             def _jsonify_operator(operator_: operators.Operator[Case]) -> Any:
                 return self.operators.jsonify_operator(operator_, jsonify_case)
 
@@ -97,7 +99,7 @@ class Operators(IOperators[Case]):
             return '@return'
 
         def make_operator(self, info: Mapping[str, Iterable[Any]], make_case: Callable[[Any], Case]) -> operators.Return[Case]:
-            return operators.Return[Case](cases=tuple(map(make_case, info['@cases'])))
+            return operators.Return(cases=tuple(map(make_case, info['@cases'])))
 
         def jsonify_operator_info(self, operator: operators.Return[Case], jsonify_case: Callable[[Case], Any]) -> Mapping[str, list[Any]]:
             return {'@cases': list(map(jsonify_case, operator.cases))}

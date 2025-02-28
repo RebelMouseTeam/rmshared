@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from typing import AbstractSet
@@ -17,17 +19,17 @@ from rmshared.content.taxonomy.core.protocols.abc import IFields
 
 class Fields(IFields[fields.Field]):
     def __init__(self):
-        self.field_to_delegate_map: Mapping[Type[Field], 'Fields.IDelegate'] = ensure_map_is_complete(fields.Field, {
+        self.field_to_delegate_map: Mapping[Type[Field], Fields.IDelegate] = ensure_map_is_complete(fields.Field, {
             fields.System: self.System(),
             fields.Custom: self.Custom(),
         })
-        self.keys_to_delegate_map: Mapping[frozenset[str], 'Fields.IDelegate'] = dict_from_list(
+        self.keys_to_delegate_map: Mapping[frozenset[str], Fields.IDelegate] = dict_from_list(
             source=self.field_to_delegate_map.values(),
             key_func=self._get_delegate_keys,
         )
 
     @staticmethod
-    def _get_delegate_keys(delegate: 'Fields.IDelegate') -> frozenset[str]:
+    def _get_delegate_keys(delegate: IDelegate) -> frozenset[str]:
         return frozenset(delegate.keys)
 
     def make_field(self, data):
@@ -43,15 +45,15 @@ class Fields(IFields[fields.Field]):
         @property
         @abstractmethod
         def keys(self) -> AbstractSet[str]:
-            pass
+            ...
 
         @abstractmethod
         def make_field(self, name: str, info: Mapping[str, Any]) -> Field:
-            pass
+            ...
 
         @abstractmethod
         def jsonify_field_info(self, field: Field) -> Mapping[str, Any]:
-            pass
+            ...
 
     class System(IDelegate[fields.System]):
         @property

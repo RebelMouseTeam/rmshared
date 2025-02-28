@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABCMeta
 from abc import abstractmethod
 from operator import attrgetter
@@ -28,11 +30,11 @@ Operator = TypeVar('Operator', bound=operators.Operator)
 
 class Operators(IOperators[Case]):
     def __init__(self, variables: IVariables):
-        self.operator_to_delegate_map: Mapping[Type[Operator], 'Operators.IDelegate[Operator]'] = ensure_map_is_complete(operators.Operator, {
+        self.operator_to_delegate_map: Mapping[Type[Operator], Operators.IDelegate[Operator, Case]] = ensure_map_is_complete(operators.Operator, {
             operators.Switch: self.Switch(variables),
             operators.Return: self.Return(),
         })
-        self.operator_name_to_delegate_map: Mapping[str, 'Operators.IDelegate'] = dict_from_list(
+        self.operator_name_to_delegate_map: Mapping[str, Operators.IDelegate] = dict_from_list(
             source=self.operator_to_delegate_map.values(),
             key_func=attrgetter('name'),
         )
@@ -49,15 +51,15 @@ class Operators(IOperators[Case]):
         @property
         @abstractmethod
         def name(self) -> str:
-            pass
+            ...
 
         @abstractmethod
         def make_operator(self, info: Any, make_case: Callable[[Any], Case]) -> Operator:
-            pass
+            ...
 
         @abstractmethod
         def jsonify_operator_info(self, operator: Operator, jsonify_case: Callable[[Case], Any]) -> Any:
-            pass
+            ...
 
     class Switch(IDelegate[operators.Switch[Case], Case]):
         def __init__(self, variables: IVariables):
