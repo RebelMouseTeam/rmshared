@@ -4,7 +4,8 @@ from aiohttp import web_request
 
 from rmshared.tools import ItemGetter
 
-from rmshared.requests.interfaces import IDataAdapter, IRequest
+from rmshared.requests.abc import IDataAdapter
+from rmshared.requests.abc import IRequest
 
 
 class StubDataAdapter(IDataAdapter):
@@ -57,7 +58,7 @@ class AioHttpRequestDataAdapter(IDataAdapter):
         except LookupError:
             pass
         else:
-            return self.ListValue(value)
+            return self.ListValue(value=value)
 
         try:
             data = await self._get_or_load_json_data()

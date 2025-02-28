@@ -1,6 +1,8 @@
-from abc import ABCMeta, abstractmethod
-from typing import TypeVar, Union, List, Any
+from abc import ABCMeta
+from abc import abstractmethod
 from dataclasses import dataclass
+from typing import Generic
+from typing import TypeVar
 
 from rmshared.typings import CastFunc
 
@@ -12,7 +14,7 @@ class IRequest(metaclass=ABCMeta):
     PAYLOAD = object()
 
     @abstractmethod
-    async def get_argument(self, cast_func: CastFunc[T], path: Union[str, object], default: Union[T, object] = MISSED) -> T:
+    async def get_argument(self, cast_func: CastFunc[T], path: str | object, default: T | object = MISSED) -> T:
         """
         :raises: IRequest.MissingArgumentException
         :raises: IRequest.InvalidArgumentException
@@ -27,9 +29,9 @@ class IRequest(metaclass=ABCMeta):
 
 class IDataAdapter(metaclass=ABCMeta):
     @dataclass(frozen=True)
-    class ListValue:
-        value: List[IRequest.T]
+    class ListValue(Generic[IRequest.T]):
+        value: list[IRequest.T]
 
     @abstractmethod
-    async def get_argument(self, path: Union[str, object], default: Any) -> Union[Any, ListValue]:
-        pass
+    async def get_argument(self, path: str | object, default: IRequest.T | object) -> IRequest.T | ListValue[IRequest.T]:
+        ...

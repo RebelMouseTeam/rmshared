@@ -1,4 +1,4 @@
+from rmshared.requests.abc import IRequest
 from rmshared.requests.factory import Factory
-from rmshared.requests.interfaces import IRequest
 
-__all__ = ['Factory', 'IRequest']
+__all__ = ('Factory', 'IRequest')

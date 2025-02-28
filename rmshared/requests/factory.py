@@ -3,7 +3,7 @@ from typing import Dict
 from aiohttp import web_request
 
 from rmshared.requests import adapters
-from rmshared.requests.interfaces import IRequest
+from rmshared.requests.abc import IRequest
 from rmshared.requests.request import Request
 
 
