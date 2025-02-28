@@ -14,8 +14,8 @@ Argument = TypeVar('Argument', bound=arguments.Argument)
 
 
 class Variables(IVariables):
-    ALIAS_REGEX = re.compile(r'^\$(?P<alias>\$\d+)$')
-    VALUE_REGEX = re.compile(r'^\$(?P<alias>\$\d+)(?:\[(?P<index>\d+)])?$')
+    ALIAS_REGEX = re.compile(r'^\$(?P<alias>\$\d+|\w+)$')
+    VALUE_REGEX = re.compile(r'^\$(?P<alias>\$\d+|\w+)(?:\[(?P<index>\d+)])?$')
 
     def __init__(self):
         self.argument_to_argument_name_map: Mapping[Type[Argument], str] = {

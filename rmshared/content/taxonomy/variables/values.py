@@ -8,8 +8,9 @@ from rmshared.content.taxonomy.variables.abc import Reference
 DelegateValue = TypeVar('DelegateValue')
 
 
+@dataclass(frozen=True)
 class Value(Generic[DelegateValue], metaclass=ABCMeta):
-    pass
+    ...
 
 
 @dataclass(frozen=True)

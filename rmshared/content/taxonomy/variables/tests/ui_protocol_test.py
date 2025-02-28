@@ -27,7 +27,7 @@ class TestUiProtocol:
             ]},
         ]}]},
         {'$switch': {
-            '$ref': '$$1',
+            '$ref': '$variable_1',
             '$cases': {
                 '$none': [{'any_label': [
                     {'$return': [
@@ -36,7 +36,7 @@ class TestUiProtocol:
                 ]}],
                 '$each': [{'any_label': [
                     {'$return': [
-                        {'value': {'field': {'post-regular-section': {}}, 'value': '$$1[1]'}},
+                        {'value': {'field': {'post-regular-section': {}}, 'value': '$variable_1[1]'}},
                     ]},
                 ]}],
             },

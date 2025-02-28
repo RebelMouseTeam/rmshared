@@ -20,6 +20,7 @@ class TestServerResolver:
 
     def test_it_should_dereference_filters(self, resolver: Resolver):
         filters_ = tuple(resolver.dereference_filters(operators_=fixtures.FILTERS, arguments_=self.Arguments({
+            'variable_1': arguments.Empty(),
             '$1': arguments.Empty(),
             '$2': arguments.Value(values=tuple()),
             '$3': arguments.Value(values=('tag-1', 'tag-2')),
@@ -52,6 +53,7 @@ class TestServerResolver:
         )
 
         filters_ = tuple(resolver.dereference_filters(operators_=fixtures.FILTERS, arguments_=self.Arguments({
+            'variable_1': arguments.Value(values=(567,)),
             '$1': arguments.Value(values=(567,)),
             '$2': arguments.Any(),
             '$3': arguments.Empty(),
@@ -75,24 +77,29 @@ class TestServerResolver:
     def test_it_should_dereference_filters_partially(self, resolver: Resolver):
         arguments_0 = self.Arguments({})
         arguments_1 = self.Arguments({
+            'variable_1': arguments.Value(values=(567,)),
             '$1': arguments.Value(values=(567,)),
         })
         arguments_2 = self.Arguments({
+            'variable_1': arguments.Value(values=(567,)),
             '$1': arguments.Value(values=(567,)),
             '$2': arguments.Any(),
         })
         arguments_3 = self.Arguments({
+            'variable_1': arguments.Value(values=(567,)),
             '$1': arguments.Value(values=(567,)),
             '$2': arguments.Any(),
             '$3': arguments.Empty(),
         })
         arguments_4 = self.Arguments({
+            'variable_1': arguments.Value(values=(567,)),
             '$1': arguments.Value(values=(567,)),
             '$2': arguments.Any(),
             '$3': arguments.Empty(),
             '$4': arguments.Value(values=(100, 200)),
         })
         arguments_5 = self.Arguments({
+            'variable_1': arguments.Value(values=(567,)),
             '$1': arguments.Value(values=(567,)),
             '$2': arguments.Any(),
             '$3': arguments.Empty(),

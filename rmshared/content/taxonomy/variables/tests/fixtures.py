@@ -15,7 +15,7 @@ FILTERS = tuple([
         )),
     )),
     operators.Switch(
-        ref=Reference('$1'),
+        ref=Reference('variable_1'),
         cases=read_only({
             arguments.Empty: operators.Return(cases=(
                 core.filters.AnyLabel(labels=(
@@ -27,7 +27,7 @@ FILTERS = tuple([
             arguments.Value: operators.Return(cases=(
                 core.filters.AnyLabel(labels=(
                     operators.Return(cases=(
-                        core.labels.Value(field=core.fields.System('post-regular-section'), value=values.Variable(ref=Reference('$1'), index=1)),
+                        core.labels.Value(field=core.fields.System('post-regular-section'), value=values.Variable(ref=Reference('variable_1'), index=1)),
                     )),
                 )),
             )),

@@ -29,7 +29,7 @@ class TestDbProtocol:
             ]},
         ]}},
         {'@switch': {
-            '@ref': {'alias': '$1'},
+            '@ref': {'alias': 'variable_1'},
             '@cases': {
                 '@empty': {'@return': {'@cases': [
                     {'any_label': [
@@ -41,7 +41,7 @@ class TestDbProtocol:
                 '@value': {'@return': {'@cases': [
                     {'any_label': [
                         {'@return': {'@cases': [
-                            {'value': {'field': {'post-regular-section': {}}, 'value': {'@variable': {'ref': {'alias': '$1'}, 'index': 1}}}},
+                            {'value': {'field': {'post-regular-section': {}}, 'value': {'@variable': {'ref': {'alias': 'variable_1'}, 'index': 1}}}},
                         ]}},
                     ]},
                 ]}},
