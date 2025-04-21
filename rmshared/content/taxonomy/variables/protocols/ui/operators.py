@@ -70,7 +70,7 @@ class Operators(IOperators[Case]):
             return '$switch'
 
         def make_operator(self, info: Mapping[str, Any], make_case) -> operators.Switch[Case]:
-            return operators.Switch[Case](
+            return operators.Switch(
                 ref=self.variables.make_reference(info['$ref']),
                 cases=read_only(self._make_cases(info['$cases'], make_case)),
             )
@@ -100,7 +100,7 @@ class Operators(IOperators[Case]):
             return '$return'
 
         def make_operator(self, info: Iterable[Any], make_case: Callable[[Any], Case]) -> operators.Return[Case]:
-            return operators.Return[Case](cases=tuple(map(make_case, info)))
+            return operators.Return(cases=tuple(map(make_case, info)))
 
         def jsonify_operator_info(self, operator: operators.Return[Case], jsonify_case: Callable[[Case], Any]) -> list[Any]:
             return list(map(jsonify_case, operator.cases))

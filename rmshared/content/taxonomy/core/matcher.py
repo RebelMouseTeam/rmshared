@@ -89,8 +89,8 @@ class Matcher(IMatcher):
         else:
             return False
 
-    def _does_value_match_range(self, entity: IEntity, range_: ranges.Range) -> bool:
-        return self.range_to_matcher_map[type(range_)](entity, range_)
+    def _does_value_match_range(self, value: Value, range_: ranges.Range) -> bool:
+        return self.range_to_matcher_map[type(range_)](value, range_)
 
     @staticmethod
     def _does_value_match_between_range(value: Value, range_: ranges.Between[Any, Value]) -> bool:
