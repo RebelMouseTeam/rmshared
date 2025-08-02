@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from abc import ABCMeta
 from abc import abstractmethod
+from collections.abc import Iterable
+from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Generic
-from typing import Iterable
-from typing import Iterator
-from typing import Tuple
 from typing import TypeVar
 
 Case = TypeVar('Case')
@@ -31,11 +30,13 @@ class Reference:
 
 class IResolver(metaclass=ABCMeta):
     @abstractmethod
-    def dereference_filters(self, operators_: Iterable[Operator[Filter]], arguments_: IArguments) -> Iterator[Filter]: ...
+    def dereference_filters(self, operators_: Iterable[Operator[Filter]], arguments_: IArguments) -> Iterator[Filter]:
+        ...
 
     @abstractmethod
     def dereference_filters_partially(
-            self, operators_: Iterable[Operator[Filter]], arguments_: IArguments) -> Tuple[Iterable[Filter], Iterable[Operator[Filter]]]: ...
+            self, operators_: Iterable[Operator[Filter]], arguments_: IArguments
+    ) -> tuple[Iterable[Filter], Iterable[Operator[Filter]]]: ...
 
     class IArguments(metaclass=ABCMeta):
         @abstractmethod

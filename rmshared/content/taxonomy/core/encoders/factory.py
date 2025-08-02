@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from rmshared.content.taxonomy.core.encoders import keys
 from rmshared.content.taxonomy.core.encoders.abc import IBuilder
 from rmshared.content.taxonomy.core.encoders.abc import IComposite
@@ -12,7 +14,7 @@ from rmshared.content.taxonomy.core.encoders.composite import Composite
 
 class Factory:
     @classmethod
-    def make_instance_for_keys(cls) -> 'Factory':
+    def make_instance_for_keys(cls) -> Factory:
         return cls(builder=keys.Builder())
 
     def __init__(self, builder: IBuilder):

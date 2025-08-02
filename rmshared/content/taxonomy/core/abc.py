@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from abc import ABCMeta
 from abc import abstractmethod
-from typing import AbstractSet
+from collections.abc import Iterable
+from collections.abc import Set
 from typing import Generic
-from typing import Iterable
 from typing import TypeVar
 
 from rmshared.content.taxonomy.core import fields
@@ -20,7 +20,7 @@ Value = TypeVar('Value')
 
 class IEntity(Generic[Value], metaclass=ABCMeta):
     @abstractmethod
-    def get_values(self, field: fields.Field) -> AbstractSet[Value]:
+    def get_values(self, field: fields.Field) -> Set[Value]:
         ...
 
 

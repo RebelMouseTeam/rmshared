@@ -1,7 +1,10 @@
+from collections.abc import Callable
 from copy import copy
 from copy import deepcopy
 from functools import cached_property
-from typing import Type, Callable, TypeVar, Any
+from typing import Any
+from typing import Type
+from typing import TypeVar
 
 T = TypeVar('T')
 K = TypeVar('K')

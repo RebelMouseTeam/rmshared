@@ -8,6 +8,7 @@ from rmshared.content.taxonomy.core import aliases
 
 from rmshared.content.taxonomy.core import encoders
 from rmshared.content.taxonomy.core import protocols
+from rmshared.content.taxonomy.core import traversal
 
 from rmshared.content.taxonomy.core.abc import IEntity
 from rmshared.content.taxonomy.core.abc import IMatcher
@@ -26,6 +27,7 @@ __all__ = (
 
     'encoders',
     'protocols',
+    'traversal',
 
     'IEntity',
     'IMatcher', 'Matcher',
