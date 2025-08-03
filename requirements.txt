@@ -1,9 +1,0 @@
-orjson==3.10.1
-aiohttp==3.10.11
-
-mock==5.1.0
-faker==24.14.0
-pytest==8.2.0
-flake8==7.0.0
-
-enumclasses @ https://github.com/RebelMouseTeam/enumclasses/archive/refs/tags/v1.1.7.tar.gz
