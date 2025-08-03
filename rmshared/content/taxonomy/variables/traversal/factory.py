@@ -5,8 +5,12 @@ from rmshared.content.taxonomy.variables.traversal.assembler import Assembler
 
 
 class Factory:
-    def __init__(self):
-        self.delegate = core.traversal.Factory(assembler=Assembler(delegate=core.traversal.Assembler()))
+    @classmethod
+    def make_instance(cls) -> Factory:
+        return cls(assembler=Assembler(delegate=core.traversal.Assembler()))
+
+    def __init__(self, assembler: core.traversal.IAssembler):
+        self.delegate = core.traversal.Factory(assembler)
 
     def make_composite(self) -> core.traversal.IComposite:
         return self.delegate.make_composite()

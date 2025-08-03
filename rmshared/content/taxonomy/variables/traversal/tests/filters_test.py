@@ -5,7 +5,7 @@ from pytest import fixture
 
 from rmshared.content.taxonomy import core
 from rmshared.content.taxonomy.variables.fakes import Fakes
-from rmshared.content.taxonomy.variables.traversal import IOperators
+from rmshared.content.taxonomy.variables.traversal.abc import IOperators
 from rmshared.content.taxonomy.variables.traversal.filters import Filters
 from rmshared.content.taxonomy.variables.traversal.operators import Operators
 
