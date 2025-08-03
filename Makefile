@@ -34,3 +34,7 @@ publish:
 	@python setup.py sdist bdist_wheel
 	@twine upload dist/*
 	@rm -fr build dist .egg pook.egg-info
+
+install-dependencies:
+	@echo "$(OK_COLOR)==> Installing development dependencies ...$(NO_COLOR)"
+	@pip install -e .[dev]
