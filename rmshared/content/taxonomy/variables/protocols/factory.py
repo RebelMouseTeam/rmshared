@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from rmshared.content.taxonomy import core
 
 from rmshared.content.taxonomy.variables.protocols import db
@@ -10,11 +12,11 @@ from rmshared.content.taxonomy.variables.protocols.builder import Builder
 
 class Factory:
     @classmethod
-    def make_instance_for_ui(cls) -> 'Factory':
+    def make_instance_for_ui(cls) -> Factory:
         return cls(builder=ui.Builder())
 
     @classmethod
-    def make_instance_for_db(cls) -> 'Factory':
+    def make_instance_for_db(cls) -> Factory:
         return cls(builder=db.Builder())
 
     def __init__(self, builder: IBuilder):
@@ -23,7 +25,7 @@ class Factory:
 
     @staticmethod
     def _make_builder(builder: IBuilder) -> core.protocols.IBuilder:
-        delegate = core.protocols.ui.Builder()
+        delegate = core.protocols.ui.Builder()  # TODO: Why `ui` Builder and not generic one?
         variables = builder.make_variables()
         operators = builder.make_operators(variables)
         values = builder.make_values(variables, delegate=delegate.make_values())

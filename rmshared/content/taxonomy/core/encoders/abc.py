@@ -9,12 +9,12 @@ LabelIn = TypeVar('LabelIn')
 LabelOut = TypeVar('LabelOut')
 RangeIn = TypeVar('RangeIn')
 RangeOut = TypeVar('RangeOut')
-InField = TypeVar('InField')
-OutField = TypeVar('OutField')
-InValue = TypeVar('InValue')
-OutValue = TypeVar('OutValue')
-InEvent = TypeVar('InEvent')
-OutEvent = TypeVar('OutEvent')
+FieldIn = TypeVar('FieldIn')
+FieldOut = TypeVar('FieldOut')
+EventIn = TypeVar('EventIn')
+EventOut = TypeVar('EventOut')
+ValueIn = TypeVar('ValueIn')
+ValueOut = TypeVar('ValueOut')
 
 
 class IFilters(Generic[FilterIn, FilterOut], metaclass=ABCMeta):
@@ -35,21 +35,21 @@ class IRanges(Generic[RangeIn, RangeOut], metaclass=ABCMeta):
         ...
 
 
-class IFields(Generic[InField, OutField], metaclass=ABCMeta):
+class IFields(Generic[FieldIn, FieldOut], metaclass=ABCMeta):
     @abstractmethod
-    def encode_field(self, field: InField) -> OutField:
+    def encode_field(self, field: FieldIn) -> FieldOut:
         ...
 
 
-class IEvents(Generic[InEvent, OutEvent], metaclass=ABCMeta):
+class IEvents(Generic[EventIn, EventOut], metaclass=ABCMeta):
     @abstractmethod
-    def encode_event(self, event: InEvent) -> OutEvent:
+    def encode_event(self, event: EventIn) -> EventOut:
         ...
 
 
-class IValues(Generic[InValue, OutValue], metaclass=ABCMeta):
+class IValues(Generic[ValueIn, ValueOut], metaclass=ABCMeta):
     @abstractmethod
-    def encode_value(self, value: InValue) -> OutValue:
+    def encode_value(self, value: ValueIn) -> ValueOut:
         ...
 
 
@@ -57,9 +57,9 @@ class IComposite(
     IFilters[FilterIn, FilterOut],
     ILabels[LabelIn, LabelOut],
     IRanges[RangeIn, RangeOut],
-    IFields[InField, OutField],
-    IEvents[InEvent, OutEvent],
-    IValues[InValue, OutValue],
+    IFields[FieldIn, FieldOut],
+    IEvents[EventIn, EventOut],
+    IValues[ValueIn, ValueOut],
     metaclass=ABCMeta
 ):
     ...

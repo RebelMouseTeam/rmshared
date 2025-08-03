@@ -40,7 +40,22 @@ class Fakes:
         return self.faker.random_element(elements=frozenset(self.stream_filters()))
 
     def stream_filters(self) -> Iterator[filters.Filter]:
-        return self.stream_generic_filters(self._sample_labels, self._sample_ranges)
+        yield self.make_any_label_filter()
+        yield self.make_no_labels_filter()
+        yield self.make_any_range_filter()
+        yield self.make_no_ranges_filter()
+
+    def make_any_label_filter(self) -> filters.AnyLabel:
+        return filters.AnyLabel(labels=tuple(self._sample_labels()))
+
+    def make_no_labels_filter(self) -> filters.NoLabels:
+        return filters.NoLabels(labels=tuple(self._sample_labels()))
+
+    def make_any_range_filter(self) -> filters.AnyRange:
+        return filters.AnyRange(ranges=tuple(self._sample_ranges()))
+
+    def make_no_ranges_filter(self) -> filters.NoRanges:
+        return filters.NoRanges(ranges=tuple(self._sample_ranges()))
 
     @staticmethod
     def stream_generic_filters(stream_labels: Callable[[], Iterator[Label]], stream_ranges: Callable[[], Iterator[Range]]) -> Iterator[filters.Filter]:
@@ -56,9 +71,18 @@ class Fakes:
         return self.faker.random_element(elements=frozenset(self._stream_labels()))
 
     def _stream_labels(self) -> Iterator[labels.Label]:
-        yield labels.Value(field=self.make_field(), value=self.make_scalar())
-        yield labels.Badge(field=self.make_field())
-        yield labels.Empty(field=self.make_field())
+        yield self.make_value_label()
+        yield self.make_badge_label()
+        yield self.make_empty_label()
+
+    def make_value_label(self):
+        return labels.Value(field=self.make_field(), value=self.make_scalar())
+
+    def make_badge_label(self) -> labels.Badge:
+        return labels.Badge(field=self.make_field())
+
+    def make_empty_label(self) -> labels.Empty:
+        return labels.Empty(field=self.make_field())
 
     def _sample_ranges(self) -> Iterator[ranges.Range]:
         return self.faker.stream_random_items(factory_func=self.make_range, min_size=1, max_size=3)
@@ -67,9 +91,18 @@ class Fakes:
         return self.faker.random_element(elements=frozenset(self._stream_ranges()))
 
     def _stream_ranges(self) -> Iterator[ranges.Range]:
-        yield ranges.Between(field=self.make_field(), min_value=self.make_scalar(), max_value=self.make_scalar())
-        yield ranges.LessThan(field=self.make_field(), value=self.make_scalar())
-        yield ranges.MoreThan(field=self.make_field(), value=self.make_scalar())
+        yield self.make_between_range()
+        yield self.make_less_than_range()
+        yield self.make_more_than_range()
+
+    def make_between_range(self) -> ranges.Between:
+        return ranges.Between(field=self.make_field(), min_value=self.make_scalar(), max_value=self.make_scalar())
+
+    def make_more_than_range(self) -> ranges.MoreThan:
+        return ranges.MoreThan(field=self.make_field(), value=self.make_scalar())
+
+    def make_less_than_range(self) -> ranges.LessThan:
+        return ranges.LessThan(field=self.make_field(), value=self.make_scalar())
 
     def make_field(self) -> fields.Field:
         return self.faker.random_element(elements=frozenset(self._stream_fields()))

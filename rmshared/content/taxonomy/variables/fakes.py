@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import replace
 from typing import Callable
 from typing import Iterable
@@ -43,6 +45,16 @@ class Fakes:
         self.core = core.Fakes(now, seed)
         self.values = self.Values(self)
 
+    def make_operator(self) -> operators.Operator[object]:
+        return self.faker.random_element(elements=frozenset(self._stream_operators()))
+
+    def _stream_operators(self) -> Iterator[operators.Operator[object]]:
+        yield self._make_switch_operator(make_case=lambda: object())
+        yield self._make_return_operator(make_case=lambda: object(), max_size=1)
+
+    def make_argument_type(self) -> Type[arguments.Argument]:
+        return self.faker.random_element(elements=frozenset(self._stream_argument_types()))
+
     def sample_argument_types(self, size: Optional[int] = None) -> Iterable[Type[arguments.Argument]]:
         return self.faker.random_sample(elements=tuple(self._stream_argument_types()), length=size)
 
@@ -52,7 +64,7 @@ class Fakes:
         yield arguments.Empty
         yield arguments.Any
 
-    def _make_filter_operator(self) -> operators.Operator[core.filters.Filter]:
+    def make_filter_operator(self) -> operators.Operator[core.filters.Filter]:
         return self.faker.random_element(elements=frozenset(self._stream_filter_operators()))
 
     def _stream_filter_operators(self) -> Iterator[operators.Operator[core.filters.Filter]]:
@@ -60,7 +72,13 @@ class Fakes:
         yield self._make_return_operator(make_case=self._make_filter_with_switches)
 
     def sample_filters(self) -> Iterator[operators.Operator[core.filters.Filter]]:
-        return self.faker.stream_random_items(factory_func=self._make_filter_operator, min_size=3, max_size=5)
+        return self.faker.stream_random_items(factory_func=self.make_filter_operator, min_size=3, max_size=5)
+
+    def make_label_operator(self) -> operators.Operator[core.labels.Label]:
+        return self.faker.random_element(elements=frozenset(self._stream_label_operators()))
+
+    def make_range_operator(self) -> operators.Operator[core.ranges.Range]:
+        return self.faker.random_element(elements=frozenset(self._stream_range_operators()))
 
     def _make_filter_with_returns(self) -> core.filters.Filter:
         def sample_label_operators():
@@ -135,7 +153,7 @@ class Fakes:
     class Values:
         Case = TypeVar('Case')
 
-        def __init__(self, fakes: 'Fakes'):
+        def __init__(self, fakes: Fakes):
             self.fakes = fakes
             self.faker = fakes.faker
             self.label_to_replace_values_func_map = ensure_map_is_complete(core.labels.Label, {
