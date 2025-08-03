@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from abc import ABCMeta
 from abc import abstractmethod
+from contextlib import AbstractContextManager
 from typing import Generic
+from typing import Optional
 from typing import TypeVar
 
 Filter = TypeVar('Filter')
@@ -15,41 +17,25 @@ Event = TypeVar('Event')
 
 class IFilters(Generic[Filter], metaclass=ABCMeta):
     @abstractmethod
-    def enter_filter(self, filter_: Filter) -> None:
-        ...
-
-    @abstractmethod
-    def leave_filter(self, filter_: Filter) -> None:
+    def visit_filter(self, filter_: Filter) -> Optional[AbstractContextManager[None]]:
         ...
 
 
 class ILabels(Generic[Label], metaclass=ABCMeta):
     @abstractmethod
-    def enter_label(self, label: Label) -> None:
-        ...
-
-    @abstractmethod
-    def leave_label(self, label: Label) -> None:
+    def visit_label(self, label: Label) -> Optional[AbstractContextManager[None]]:
         ...
 
 
 class IRanges(Generic[Range], metaclass=ABCMeta):
     @abstractmethod
-    def enter_range(self, range_: Range) -> None:
-        ...
-
-    @abstractmethod
-    def leave_range(self, range_: Range) -> None:
+    def visit_range(self, range_: Range) -> Optional[AbstractContextManager[None]]:
         ...
 
 
 class IEvents(Generic[Event], metaclass=ABCMeta):
     @abstractmethod
-    def enter_event(self, event: Event) -> None:
-        ...
-
-    @abstractmethod
-    def leave_event(self, event: Event) -> None:
+    def visit_event(self, event: Event) -> None:
         ...
 
 

@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from unittest.mock import Mock
 
 from pytest import fixture
@@ -21,28 +22,29 @@ class TestOperators:
         return Fakes()
 
     def test_it_should_delegate_operator_visit(self, fakes: Fakes, operators: IOperators | Mock):
-        operators.enter_operator = Mock()
-        operators.leave_operator = Mock()
+        operators.visit_operator = Mock()
         visitor = Operators(delegate=operators)
 
         operator = fakes.make_operator()
-        visitor.enter_operator(operator)
-        visitor.leave_operator(operator)
+        visitor.visit_operator(operator)
+        operators.visit_operator.assert_called_once_with(operator)
 
-        operators.enter_operator.assert_called_once_with(operator)
-        operators.leave_operator.assert_called_once_with(operator)
+    def test_it_should_delegate_operator_visit_with_context_manager(self, fakes: Fakes, operators: IOperators | Mock):
+        @contextmanager
+        def visit_operator(_):
+            yield
 
-    def test_it_should_not_delegate_operator_visit(self, fakes: Fakes, non_visitor: Mock):
-        visitor = Operators(delegate=non_visitor)
+        operators.visit_operator = Mock(side_effect=visit_operator)
+        visitor = Operators(delegate=operators)
 
         operator = fakes.make_operator()
-        visitor.enter_operator(operator)
-        visitor.leave_operator(operator)
+        visitor.visit_operator(operator)
+        operators.visit_operator.assert_called_once_with(operator)
 
-        assert not hasattr(non_visitor, 'enter_operator') or not non_visitor.enter_operator.called
-        assert not hasattr(non_visitor, 'leave_operator') or not non_visitor.leave_operator.called
+    def test_it_should_not_delegate_operator_visit(self, fakes: Fakes, non_visitor: Mock):
+        non_visitor.visit_operator = Mock()
 
-    def test_it_should_not_fail_none_delegate(self, fakes: Fakes):
-        visitor = Operators(delegate=None)
-        visitor.enter_operator(operator=fakes.make_operator())
-        visitor.leave_operator(operator=fakes.make_operator())
+        visitor = Operators(delegate=non_visitor)
+        visitor.visit_operator(operator=fakes.make_operator())
+
+        assert non_visitor.visit_operator.call_count == 0

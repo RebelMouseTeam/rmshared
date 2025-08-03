@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from unittest.mock import Mock
 
 from pytest import fixture
@@ -21,28 +22,29 @@ class TestEvents:
         return Fakes()
 
     def test_it_should_delegate_event_visit(self, fakes: Fakes, events: IEvents | Mock):
-        events.enter_event = Mock()
-        events.leave_event = Mock()
+        events.visit_event = Mock()
         visitor = Events(delegate=events)
 
         event = fakes.make_event()
-        visitor.enter_event(event)
-        visitor.leave_event(event)
+        visitor.visit_event(event)
+        events.visit_event.assert_called_once_with(event)
 
-        events.enter_event.assert_called_once_with(event)
-        events.leave_event.assert_called_once_with(event)
+    def test_it_should_delegate_event_visit_with_context_manager(self, fakes: Fakes, events: IEvents | Mock):
+        @contextmanager
+        def visit_event(_):
+            yield
 
-    def test_it_should_not_delegate_event_visit(self, fakes: Fakes, non_visitor: Mock):
-        visitor = Events(delegate=non_visitor)
+        events.visit_event = Mock(side_effect=visit_event)
+        visitor = Events(delegate=events)
 
         event = fakes.make_event()
-        visitor.enter_event(event)
-        visitor.leave_event(event)
+        visitor.visit_event(event)
+        events.visit_event.assert_called_once_with(event)
 
-        assert not hasattr(non_visitor, 'enter_event') or not non_visitor.enter_event.called
-        assert not hasattr(non_visitor, 'leave_event') or not non_visitor.leave_event.called
+    def test_it_should_not_delegate_event_visit(self, fakes: Fakes, non_visitor: Mock):
+        non_visitor.visit_event = Mock()
 
-    def test_it_should_not_fail_none_delegate(self, fakes: Fakes):
-        visitor = Events(delegate=None)
-        visitor.enter_event(event=fakes.make_event())
-        visitor.leave_event(event=fakes.make_event())
+        visitor = Events(delegate=non_visitor)
+        visitor.visit_event(event=fakes.make_event())
+
+        assert non_visitor.visit_event.call_count == 0

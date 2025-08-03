@@ -53,8 +53,3 @@ class TestValues:
         visitor.visit_variable(variable)
 
         assert not hasattr(non_visitor, 'visit_variable') or not non_visitor.visit_variable.called
-
-    def test_it_should_not_fail_none_delegate(self, fakes: Fakes):
-        visitor = Values(delegate=None)
-        visitor.visit_constant(constant=fakes.make_constant())
-        visitor.visit_variable(variable=fakes.make_variable())

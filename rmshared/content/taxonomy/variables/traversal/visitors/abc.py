@@ -1,5 +1,7 @@
 from abc import ABCMeta
 from abc import abstractmethod
+from contextlib import AbstractContextManager
+from typing import Optional
 from typing import Type
 
 from rmshared.content.taxonomy.variables import values
@@ -9,11 +11,7 @@ from rmshared.content.taxonomy.variables.abc import Operator
 
 class IOperators(metaclass=ABCMeta):
     @abstractmethod
-    def enter_operator(self, operator: Operator) -> None:
-        ...
-
-    @abstractmethod
-    def leave_operator(self, operator: Operator) -> None:
+    def visit_operator(self, operator: Operator) -> Optional[AbstractContextManager[None]]:
         ...
 
 

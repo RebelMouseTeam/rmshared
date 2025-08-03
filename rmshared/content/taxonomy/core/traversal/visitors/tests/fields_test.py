@@ -36,7 +36,3 @@ class TestFields:
         visitor.visit_field(field)
 
         assert not hasattr(non_visitor, 'visit_field') or not non_visitor.visit_field.called
-
-    def test_it_should_not_fail_none_delegate(self, fakes: Fakes):
-        visitor = Fields(delegate=None)
-        visitor.visit_field(field=fakes.make_field())

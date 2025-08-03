@@ -1,8 +1,10 @@
 from collections.abc import Callable
 from collections.abc import Mapping
+from contextlib import AbstractContextManager
 from typing import Type
 from typing import TypeVar
 
+from rmshared.tools import ensure_context_manager
 from rmshared.tools import ensure_map_is_complete
 
 from rmshared.content.taxonomy.variables import operators
@@ -23,20 +25,12 @@ class Operators(IOperators[Case]):
 
     def traverse_operators(self, operators_, visitor):
         for operator in operators_:
-            self._visit_operator(operator, visitor)
-
-    def _visit_operator(self, operator: Operator, visitor: IOperators.IVisitor) -> None:
-        self._enter_operator(operator, visitor=visitors.Operators(delegate=visitor))
-        self._traverse_cases(operator, visitor)
-        self._leave_operator(operator, visitor=visitors.Operators(delegate=visitor))
+            with self._visit_operator(operator, visitor=visitors.Operators(delegate=visitor)):
+                self._traverse_cases(operator, visitor)
 
     @staticmethod
-    def _enter_operator(operator: Operator, visitor: visitors.IOperators) -> None:
-        visitor.enter_operator(operator)
-
-    @staticmethod
-    def _leave_operator(operator: Operator, visitor: visitors.IOperators) -> None:
-        visitor.leave_operator(operator)
+    def _visit_operator(operator: Operator, visitor: visitors.IOperators) -> AbstractContextManager[None]:
+        return ensure_context_manager(delegate=visitor.visit_operator(operator))
 
     def _traverse_cases(self, operator: operators.Operator[Case], visitor: IOperators.IVisitor) -> None:
         self.operator_to_traverse_cases_func_map[type(operator)](operator, visitor)
@@ -44,7 +38,7 @@ class Operators(IOperators[Case]):
     def _traverse_switch_cases(self, operator: operators.Switch[Case], visitor: IOperators.IVisitor) -> None:
         for argument, operator in operator.cases.items():
             self._visit_argument(argument, visitor=visitors.Arguments(delegate=visitor))
-            self._visit_operator(operator, visitor)
+            self.traverse_operators(operators_=(operator,), visitor=visitor)
 
     @staticmethod
     def _traverse_return_cases(operator: operators.Return[Case], visitor: IOperators.IVisitor) -> None:

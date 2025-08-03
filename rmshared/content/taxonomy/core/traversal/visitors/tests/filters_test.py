@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from unittest.mock import Mock
 
 from pytest import fixture
@@ -21,29 +22,29 @@ class TestFilters:
         return Fakes()
 
     def test_it_should_delegate_filter_visit(self, fakes: Fakes, filters: IFilters | Mock):
-        filters.enter_filter = Mock()
-        filters.leave_filter = Mock()
+        filters.visit_filter = Mock()
         visitor = Filters(delegate=filters)
 
         filter_ = fakes.make_filter()
-        visitor.enter_filter(filter_)
-        visitor.leave_filter(filter_)
+        visitor.visit_filter(filter_)
+        filters.visit_filter.assert_called_once_with(filter_)
 
-        filters.enter_filter.assert_called_once_with(filter_)
-        filters.leave_filter.assert_called_once_with(filter_)
+    def test_it_should_delegate_filter_visit_with_context_manager(self, fakes: Fakes, filters: IFilters | Mock):
+        @contextmanager
+        def visit_filter(_):
+            yield
 
-    def test_it_should_not_delegate_filter_visit(self, fakes: Fakes, non_visitor: Mock):
-        visitor = Filters(delegate=non_visitor)
+        filters.visit_filter = Mock(side_effect=visit_filter)
+        visitor = Filters(delegate=filters)
 
         filter_ = fakes.make_filter()
-        visitor.enter_filter(filter_)
-        visitor.leave_filter(filter_)
+        visitor.visit_filter(filter_)
+        filters.visit_filter.assert_called_once_with(filter_)
 
-        assert not hasattr(non_visitor, 'enter_filter') or not non_visitor.enter_filter.called
-        assert not hasattr(non_visitor, 'leave_filter') or not non_visitor.leave_filter.called
+    def test_it_should_not_delegate_filter_visit(self, fakes: Fakes, non_visitor: Mock):
+        non_visitor.visit_filter = Mock()
 
-    def test_it_should_not_fail_none_delegate(self, fakes: Fakes):
-        visitor = Filters(delegate=None)
+        visitor = Filters(delegate=non_visitor)
+        visitor.visit_filter(filter_=fakes.make_filter())
 
-        visitor.enter_filter(filter_=fakes.make_filter())
-        visitor.leave_filter(filter_=fakes.make_filter())
+        assert non_visitor.visit_filter.call_count == 0

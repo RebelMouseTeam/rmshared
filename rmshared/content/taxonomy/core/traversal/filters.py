@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from collections.abc import Mapping
+from contextlib import AbstractContextManager
 from typing import Any
 from typing import Type
 from typing import TypeVar
 
+from rmshared.tools import ensure_context_manager
 from rmshared.tools import ensure_map_is_complete
 
 from rmshared.content.taxonomy.core import filters
@@ -30,17 +32,12 @@ class Filters(IFilters[Filter]):
 
     def traverse_filters(self, filters_, visitor) -> None:
         for filter_ in filters_:
-            self._enter_filter(filter_, visitor=visitors.Filters(delegate=visitor))
-            self._traverse_filter(filter_, visitor)
-            self._leave_filter(filter_, visitor=visitors.Filters(delegate=visitor))
+            with self._visit_filter(filter_, visitor=visitors.Filters(delegate=visitor)):
+                self._traverse_filter(filter_, visitor)
 
     @staticmethod
-    def _enter_filter(filter_: Filter, visitor: visitors.IFilters) -> None:
-        return visitor.enter_filter(filter_)
-
-    @staticmethod
-    def _leave_filter(filter_: Filter, visitor: visitors.IFilters) -> None:
-        return visitor.leave_filter(filter_)
+    def _visit_filter(filter_: Filter, visitor: visitors.IFilters) -> AbstractContextManager[None]:
+        return ensure_context_manager(delegate=visitor.visit_filter(filter_))
 
     def _traverse_filter(self, filter_: Filter, visitor: Any) -> None:
         self.filter_to_traverse_func_map[type(filter_)](filter_, visitor)

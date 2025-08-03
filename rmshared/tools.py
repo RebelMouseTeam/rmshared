@@ -1,4 +1,6 @@
 from collections import defaultdict
+from contextlib import AbstractContextManager
+from contextlib import nullcontext
 from functools import partial
 from functools import wraps
 from inspect import iscoroutinefunction
@@ -100,6 +102,13 @@ def ensure_map_is_likely_complete(type_class: Type[K], any_to_any_map: Mapping[T
     keys_count = len(set(any_to_any_map.keys()) - {None, type(None)})
     assert subtypes_count == keys_count, any_to_any_map
     return any_to_any_map
+
+
+def ensure_context_manager(delegate: Optional[AbstractContextManager[T]] | T) -> AbstractContextManager[Optional[T]]:
+    if isinstance(delegate, AbstractContextManager):
+        return delegate
+    else:
+        return nullcontext(enter_result=delegate)
 
 
 class ItemGetter(Callable[[Dict], T]):

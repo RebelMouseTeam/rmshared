@@ -19,11 +19,8 @@ class TestEvents:
             def __init__(self):
                 self.visits = []
 
-            def enter_event(self, event):
-                self.visits.append(('enter', event))
-
-            def leave_event(self, event):
-                self.visits.append(('leave', event))
+            def visit_event(self, event):
+                self.visits.append(('visit_event', event))
 
         visitor = Visitor()
         event_1 = fakes.make_event()
@@ -31,9 +28,6 @@ class TestEvents:
         traverser.traverse_events([event_1, event_2], visitor)
 
         assert visitor.visits == [
-            ('enter', event_1),
-            ('leave', event_1),
-            ('enter', event_2),
-            ('leave', event_2)
+            ('visit_event', event_1),
+            ('visit_event', event_2)
         ]
-

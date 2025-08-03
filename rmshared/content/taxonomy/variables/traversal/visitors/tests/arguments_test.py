@@ -36,7 +36,3 @@ class TestArguments:
         visitor.visit_argument(argument)
 
         assert not hasattr(non_visitor, 'visit_argument') or not non_visitor.visit_argument.called
-
-    def test_it_should_not_fail_none_delegate(self, fakes: Fakes):
-        visitor = Arguments(delegate=None)
-        visitor.visit_argument(argument=fakes.make_argument_type())

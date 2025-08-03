@@ -1,9 +1,11 @@
 from collections.abc import Callable
 from collections.abc import Mapping
+from contextlib import AbstractContextManager
 from typing import Any
 from typing import Type
 from typing import TypeVar
 
+from rmshared.tools import ensure_context_manager
 from rmshared.tools import ensure_map_is_complete
 
 from rmshared.content.taxonomy.core import ranges
@@ -23,17 +25,12 @@ class Ranges(IRanges[Range]):
 
     def traverse_ranges(self, ranges_, visitor) -> None:
         for range_ in ranges_:
-            self._enter_range(range_, visitor=visitors.Ranges(delegate=visitor))
-            self._traverse_range(range_, visitor)
-            self._leave_range(range_, visitor=visitors.Ranges(delegate=visitor))
+            with self._visit_range(range_, visitor=visitors.Ranges(delegate=visitor)):
+                self._traverse_range(range_, visitor)
 
     @staticmethod
-    def _enter_range(range_: Range, visitor: visitors.IRanges) -> None:
-        return visitor.enter_range(range_)
-
-    @staticmethod
-    def _leave_range(range_: Range, visitor: visitors.IRanges) -> None:
-        return visitor.leave_range(range_)
+    def _visit_range(range_: Range, visitor: visitors.IRanges) -> AbstractContextManager[None]:
+        return ensure_context_manager(delegate=visitor.visit_range(range_))
 
     def _traverse_range(self, range_: Range, visitor: Any) -> None:
         self.range_to_traverse_func_map[type(range_)](range_, visitor)

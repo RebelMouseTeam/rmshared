@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from unittest.mock import Mock
 
 from pytest import fixture
@@ -21,28 +22,29 @@ class TestLabels:
         return Fakes()
 
     def test_it_should_delegate_label_visit(self, fakes: Fakes, labels: ILabels | Mock):
-        labels.enter_label = Mock()
-        labels.leave_label = Mock()
+        labels.visit_label = Mock()
         visitor = Labels(delegate=labels)
 
         label = fakes.make_label()
-        visitor.enter_label(label)
-        visitor.leave_label(label)
+        visitor.visit_label(label)
+        labels.visit_label.assert_called_once_with(label)
 
-        labels.enter_label.assert_called_once_with(label)
-        labels.leave_label.assert_called_once_with(label)
+    def test_it_should_delegate_label_visit_with_context_manager(self, fakes: Fakes, labels: ILabels | Mock):
+        @contextmanager
+        def visit_label(_):
+            yield
 
-    def test_it_should_not_delegate_label_visit(self, fakes: Fakes, non_visitor: Mock):
-        visitor = Labels(delegate=non_visitor)
+        labels.visit_label = Mock(side_effect=visit_label)
+        visitor = Labels(delegate=labels)
 
         label = fakes.make_label()
-        visitor.enter_label(label)
-        visitor.leave_label(label)
+        visitor.visit_label(label)
+        labels.visit_label.assert_called_once_with(label)
 
-        assert not hasattr(non_visitor, 'enter_label') or not non_visitor.enter_label.called
-        assert not hasattr(non_visitor, 'leave_label') or not non_visitor.leave_label.called
+    def test_it_should_not_delegate_label_visit(self, fakes: Fakes, non_visitor: Mock):
+        non_visitor.visit_label = Mock()
 
-    def test_it_should_not_fail_none_delegate(self, fakes: Fakes):
-        visitor = Labels(delegate=None)
-        visitor.enter_label(label=fakes.make_label())
-        visitor.leave_label(label=fakes.make_label())
+        visitor = Labels(delegate=non_visitor)
+        visitor.visit_label(label=fakes.make_label())
+
+        assert non_visitor.visit_label.call_count == 0

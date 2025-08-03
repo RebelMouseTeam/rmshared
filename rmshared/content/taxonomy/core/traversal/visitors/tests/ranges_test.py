@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from unittest.mock import Mock
 
 from pytest import fixture
@@ -21,28 +22,29 @@ class TestRanges:
         return Fakes()
 
     def test_it_should_delegate_range_visit(self, fakes: Fakes, ranges: IRanges | Mock):
-        ranges.enter_range = Mock()
-        ranges.leave_range = Mock()
+        ranges.visit_range = Mock()
         visitor = Ranges(delegate=ranges)
 
         range_ = fakes.make_range()
-        visitor.enter_range(range_)
-        visitor.leave_range(range_)
+        visitor.visit_range(range_)
+        ranges.visit_range.assert_called_once_with(range_)
 
-        ranges.enter_range.assert_called_once_with(range_)
-        ranges.leave_range.assert_called_once_with(range_)
+    def test_it_should_delegate_range_visit_with_context_manager(self, fakes: Fakes, ranges: IRanges | Mock):
+        @contextmanager
+        def visit_range(_):
+            yield
 
-    def test_it_should_not_delegate_range_visit(self, fakes: Fakes, non_visitor: Mock):
-        visitor = Ranges(delegate=non_visitor)
+        ranges.visit_range = Mock(side_effect=visit_range)
+        visitor = Ranges(delegate=ranges)
 
         range_ = fakes.make_range()
-        visitor.enter_range(range_)
-        visitor.leave_range(range_)
+        visitor.visit_range(range_)
+        ranges.visit_range.assert_called_once_with(range_)
 
-        assert not hasattr(non_visitor, 'enter_range') or not non_visitor.enter_range.called
-        assert not hasattr(non_visitor, 'leave_range') or not non_visitor.leave_range.called
+    def test_it_should_not_delegate_range_visit(self, fakes: Fakes, non_visitor: Mock):
+        non_visitor.visit_range = Mock()
 
-    def test_it_should_not_fail_none_delegate(self, fakes: Fakes):
-        visitor = Ranges(delegate=None)
-        visitor.enter_range(range_=fakes.make_range())
-        visitor.leave_range(range_=fakes.make_range())
+        visitor = Ranges(delegate=non_visitor)
+        visitor.visit_range(range_=fakes.make_range())
+
+        assert non_visitor.visit_range.call_count == 0

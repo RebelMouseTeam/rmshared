@@ -1,9 +1,11 @@
 from collections.abc import Callable
 from collections.abc import Mapping
+from contextlib import AbstractContextManager
 from typing import Any
 from typing import Type
 from typing import TypeVar
 
+from rmshared.tools import ensure_context_manager
 from rmshared.tools import ensure_map_is_complete
 
 from rmshared.content.taxonomy.core import labels
@@ -23,17 +25,12 @@ class Labels(ILabels[Label]):
 
     def traverse_labels(self, labels_, visitor) -> None:
         for label_ in labels_:
-            self._enter_label(label_, visitor=visitors.Labels(delegate=visitor))
-            self._traverse_label(label_, visitor)
-            self._leave_label(label_, visitor=visitors.Labels(delegate=visitor))
+            with self._visit_label(label_, visitor=visitors.Labels(delegate=visitor)):
+                self._traverse_label(label_, visitor)
 
     @staticmethod
-    def _enter_label(label_: Label, visitor: visitors.ILabels) -> None:
-        return visitor.enter_label(label_)
-
-    @staticmethod
-    def _leave_label(label_: Label, visitor: visitors.ILabels) -> None:
-        return visitor.leave_label(label_)
+    def _visit_label(label_: Label, visitor: visitors.ILabels) -> AbstractContextManager[None]:
+        return ensure_context_manager(delegate=visitor.visit_label(label_))
 
     def _traverse_label(self, label_: Label, visitor: Any) -> None:
         self.label_to_traverse_func_map[type(label_)](label_, visitor)

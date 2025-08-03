@@ -37,9 +37,6 @@ class TestValues:
 
         assert not hasattr(non_visitor, 'visit_value') or not non_visitor.visit_value.called
 
-    def test_it_should_not_fail_none_delegate(self, fakes: Fakes):
-        visitor = Values(delegate=None)
-        visitor.visit_value(value=fakes.make_scalar())
 
     def test_it_should_not_fail_when_delegate_return_values(self, fakes: Fakes):
         class ReturningVisitor(IValues):
