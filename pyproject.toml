@@ -36,9 +36,6 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/RebelMouseTeam/rmshared"
 
-[tool.setuptools]
-packages = ["rmshared"]
-
 [tool.setuptools.packages.find]
 include = ["rmshared*"]
 exclude = ["*.tests.*"]
