@@ -19,10 +19,10 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "lark==1.2.2",
-    "orjson==3.10.1",
-    "aiohttp==3.10.11",
-    "enumclasses @ https://github.com/RebelMouseTeam/enumclasses/archive/refs/tags/v1.1.7.tar.gz"
+    "lark==1.2.2 --hash=sha256:c2276486b02f0f1b90be155f2c8ba4a8e194d42775786db622faccd652d8e80c",
+    "orjson==3.10.1 --hash=sha256:b345a3d6953628df2f42502297f6c1e1b475cfbf6268013c94c5ac80e8abc04c",
+    "aiohttp==3.10.11 --hash=sha256:82052be3e6d9e0c123499127782a01a2b224b8af8c62ab46b3f6197035ad94e9",
+    "enumclasses @ https://github.com/RebelMouseTeam/enumclasses/archive/refs/tags/v1.1.7.tar.gz --hash=sha256:66dbbdfe284a51316e40a8f50270c7e0e24c2e47d125950b6504370f92320e7f"
 ]
 
 [project.optional-dependencies]
