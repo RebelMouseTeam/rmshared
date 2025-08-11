@@ -35,8 +35,8 @@ class IResolver(metaclass=ABCMeta):
 
     @abstractmethod
     def dereference_filters_partially(
-            self, operators_: Iterable[Operator[Filter]], arguments_: IArguments
-    ) -> tuple[Iterable[Filter], Iterable[Operator[Filter]]]: ...
+            self, operators_: Iterable[Operator[Filter]], arguments_: IArguments) -> tuple[Iterable[Filter], Iterable[Operator[Filter]]]:
+        ...
 
     class IArguments(metaclass=ABCMeta):
         @abstractmethod
