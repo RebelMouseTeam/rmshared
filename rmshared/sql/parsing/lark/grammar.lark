@@ -1,0 +1,8 @@
+number: SIGNED_NUMBER | NUMBER
+string: ESCAPED_STRING
+
+ESCAPED_STRING: /("([^"\\]|\\.)*"|'([^'\\]|\\.)*')/
+
+%import common.SIGNED_NUMBER
+%import common.NUMBER
+%import common.INT -> INTEGER
