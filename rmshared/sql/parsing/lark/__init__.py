@@ -1,6 +1,4 @@
 __all__ = (
-    'exceptions',
-
     'Interpreter',
 
     'read_grammar',
@@ -14,7 +12,6 @@ __all__ = (
     'group_rules',
 )
 
-from rmshared.sql.parsing.lark import exceptions
 from rmshared.sql.parsing.lark.ext import read_grammar
 from rmshared.sql.parsing.lark.ext import visit_none
 from rmshared.sql.parsing.lark.ext import visit_tree
