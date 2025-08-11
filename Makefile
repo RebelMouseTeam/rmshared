@@ -7,7 +7,7 @@ filename=rmshared-`python -c 'import rmshared; print(rmshared..__version__)'`.ta
 
 lint:
 	@echo "$(OK_COLOR)==> Linting code ...$(NO_COLOR)"
-	@flake8 --exclude=tests --max-line-length=160 .
+	@flake8 --exclude=tests --max-line-length=160 --ignore=F541,E741 .
 
 test: clean lint
 	@echo "$(OK_COLOR)==> Running tests ...$(NO_COLOR)"
@@ -34,3 +34,7 @@ publish:
 	@python setup.py sdist bdist_wheel
 	@twine upload dist/*
 	@rm -fr build dist .egg pook.egg-info
+
+install-dependencies:
+	@echo "$(OK_COLOR)==> Installing development dependencies ...$(NO_COLOR)"
+	@pip install -e .[dev]

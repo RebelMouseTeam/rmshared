@@ -1,0 +1,131 @@
+// %import .shared (number, string, ESCAPED_STRING, INTEGER)
+
+taxonomy_scope: TAXONOMY_SCOPE
+TAXONOMY_SCOPE: /[a-zA-Z_]+/
+
+taxonomy_id_field: TAXONOMY_CNAME
+
+?taxonomy_filter_expression: taxonomy_filter_return
+                           | taxonomy_filter_switch_if_variable_is_null
+                           | taxonomy_filter_switch_if_variable_is_not_null
+
+taxonomy_filter_return: taxonomy_filter
+taxonomy_filter_switch_if_variable_is_null: taxonomy_filter "IF"i taxonomy_variable_reference "IS NULL"i ["OTHERWISE"i taxonomy_filter]
+taxonomy_filter_switch_if_variable_is_not_null: taxonomy_filter "IF"i taxonomy_variable_reference "IS NOT NULL"i ["OTHERWISE"i taxonomy_filter]
+
+?taxonomy_filter: taxonomy_filter_with_variables
+                | taxonomy_filter_without_variables
+
+?taxonomy_filter_with_variables: taxonomy_filter_with_variable_operands
+
+?taxonomy_filter_without_variables: taxonomy_filter_without_operands
+                                  | taxonomy_filter_with_constant_operands
+
+?taxonomy_filter_without_operands: taxonomy_filter_is_true
+                                 | taxonomy_filter_is_false
+                                 | taxonomy_filter_is_null
+                                 | taxonomy_filter_is_not_null
+                                 | taxonomy_filter_is_empty
+                                 | taxonomy_filter_is_not_empty
+
+?taxonomy_filter_with_constant_operands: taxonomy_constant_filter_is
+                                       | taxonomy_constant_filter_is_not
+                                       | taxonomy_constant_filter_contain
+                                       | taxonomy_constant_filter_not_contain
+                                       | taxonomy_constant_filter_in
+                                       | taxonomy_constant_filter_not_in
+                                       | taxonomy_constant_filter_contain_any
+                                       | taxonomy_constant_filter_contain_none
+                                       | taxonomy_constant_filter_between
+                                       | taxonomy_constant_filter_less_than
+                                       | taxonomy_constant_filter_more_than
+
+?taxonomy_filter_with_variable_operands: taxonomy_variable_filter_is
+                                       | taxonomy_variable_filter_is_not
+                                       | taxonomy_variable_filter_contain
+                                       | taxonomy_variable_filter_not_contain
+                                       | taxonomy_variable_filter_in
+                                       | taxonomy_variable_filter_not_in
+                                       | taxonomy_variable_filter_contain_any
+                                       | taxonomy_variable_filter_contain_none
+                                       | taxonomy_variable_filter_between
+                                       | taxonomy_variable_filter_less_than
+                                       | taxonomy_variable_filter_more_than
+
+taxonomy_filter_is_true: taxonomy_badge_field | taxonomy_badge_field "IS TRUE"i
+taxonomy_filter_is_false: "NOT"i taxonomy_badge_field | taxonomy_badge_field "IS FALSE"i
+taxonomy_filter_is_null: taxonomy_single_value_field "IS NULL"i
+taxonomy_filter_is_not_null: taxonomy_single_value_field "IS NOT NULL"i
+taxonomy_filter_is_empty: taxonomy_multi_value_field "IS EMPTY"i
+taxonomy_filter_is_not_empty: taxonomy_multi_value_field "IS NOT EMPTY"i
+
+taxonomy_constant_filter_is: taxonomy_single_value_field "IS"i taxonomy_constant -> taxonomy_filter_is
+taxonomy_variable_filter_is: taxonomy_single_value_field "IS"i taxonomy_variable -> taxonomy_filter_is
+taxonomy_constant_filter_is_not: taxonomy_single_value_field "IS NOT"i taxonomy_constant -> taxonomy_filter_is_not
+taxonomy_variable_filter_is_not: taxonomy_single_value_field "IS NOT"i taxonomy_variable -> taxonomy_filter_is_not
+
+taxonomy_constant_filter_contain: taxonomy_multi_value_field "CONTAIN"i taxonomy_constant -> taxonomy_filter_contain
+taxonomy_variable_filter_contain: taxonomy_multi_value_field "CONTAIN"i taxonomy_variable -> taxonomy_filter_contain
+taxonomy_constant_filter_not_contain: taxonomy_multi_value_field "NOT CONTAIN"i taxonomy_constant -> taxonomy_filter_not_contain
+taxonomy_variable_filter_not_contain: taxonomy_multi_value_field "NOT CONTAIN"i taxonomy_variable -> taxonomy_filter_not_contain
+
+taxonomy_constant_filter_in: taxonomy_single_value_field "IN"i "(" taxonomy_constants ")" -> taxonomy_filter_in
+taxonomy_variable_filter_in: taxonomy_single_value_field "IN"i "(" taxonomy_variables_and_constants ")" -> taxonomy_filter_in
+taxonomy_constant_filter_not_in: taxonomy_single_value_field "NOT IN"i "(" taxonomy_constants ")" -> taxonomy_filter_not_in
+taxonomy_variable_filter_not_in: taxonomy_single_value_field "NOT IN"i "(" taxonomy_variables_and_constants ")" -> taxonomy_filter_not_in
+// TODO: taxonomy_variable_filter_not_in: taxonomy_single_value_field "NOT IN"i "(" taxonomy_variables_and_constants_or_nulls ")" -> taxonomy_filter_not_in
+
+taxonomy_constant_filter_contain_any: taxonomy_multi_value_field "CONTAIN ANY"i "(" taxonomy_constants ")" -> taxonomy_filter_contain_any
+taxonomy_variable_filter_contain_any: taxonomy_multi_value_field "CONTAIN ANY"i "(" taxonomy_variables_and_constants ")" -> taxonomy_filter_contain_any
+taxonomy_constant_filter_contain_none: taxonomy_multi_value_field "CONTAIN NONE"i "(" taxonomy_constants ")" -> taxonomy_filter_contain_none
+taxonomy_variable_filter_contain_none: taxonomy_multi_value_field "CONTAIN NONE"i "(" taxonomy_variables_and_constants ")" -> taxonomy_filter_contain_none
+
+taxonomy_constant_filter_between: taxonomy_single_value_field "BETWEEN"i taxonomy_constant "AND"i taxonomy_constant -> taxonomy_filter_between
+taxonomy_variable_filter_between: taxonomy_single_value_field "BETWEEN"i taxonomy_variable_or_constant "AND"i taxonomy_variable_or_constant -> taxonomy_filter_between
+
+taxonomy_constant_filter_less_than: taxonomy_single_value_field LESS_THAN_OR_EQUAL taxonomy_constant -> taxonomy_filter_less_than
+taxonomy_variable_filter_less_than: taxonomy_single_value_field LESS_THAN_OR_EQUAL taxonomy_variable -> taxonomy_filter_less_than
+
+taxonomy_constant_filter_more_than: taxonomy_single_value_field MORE_THAN_OR_EQUAL taxonomy_constant -> taxonomy_filter_more_than
+taxonomy_variable_filter_more_than: taxonomy_single_value_field MORE_THAN_OR_EQUAL taxonomy_variable -> taxonomy_filter_more_than
+
+LESS_THAN_OR_EQUAL.64: "<=" | "LESS THAN OR EQUAL TO"i
+MORE_THAN_OR_EQUAL.64: ">=" | "MORE THAN OR EQUAL TO"i
+
+?taxonomy_field: taxonomy_badge_field | taxonomy_multi_value_field | taxonomy_single_value_field
+
+taxonomy_badge_field: taxonomy_badge_system_field | taxonomy_custom_field
+taxonomy_badge_system_field: TAXONOMY_CNAME
+
+taxonomy_multi_value_field: taxonomy_multi_value_system_field | taxonomy_custom_field
+taxonomy_multi_value_system_field: TAXONOMY_CNAME
+
+taxonomy_single_value_field: taxonomy_single_value_system_field | taxonomy_custom_field
+taxonomy_single_value_system_field: TAXONOMY_CNAME
+
+taxonomy_custom_field: "CUSTOM_FIELD"i "(" taxonomy_custom_field_path_expression ")"
+taxonomy_custom_field_path_expression: TAXONOMY_CNAME -> taxonomy_custom_field_path
+                                     | "'" TAXONOMY_CNAME "'" -> taxonomy_custom_field_path
+                                     | "\"" TAXONOMY_CNAME "\"" -> taxonomy_custom_field_path
+
+taxonomy_event: TAXONOMY_CNAME
+
+TAXONOMY_CNAME: /[a-zA-Z_][a-zA-Z0-9_.]*/
+
+?taxonomy_variables_and_constants: taxonomy_variable_or_constant ("," taxonomy_variable_or_constant)+
+?taxonomy_variable_or_constant: taxonomy_variable | taxonomy_constant
+
+taxonomy_variable: taxonomy_variable_reference ["[" number "]"]
+
+?taxonomy_variable_reference: taxonomy_variable_reference_by_index
+                            | taxonomy_variable_reference_by_alias
+
+taxonomy_variable_reference_by_index: TAXONOMY_VARIABLE_REFERENCE_BY_INDEX
+TAXONOMY_VARIABLE_REFERENCE_BY_INDEX: /@@[0-9]+/
+taxonomy_variable_reference_by_alias: TAXONOMY_REFERENCE_BY_ALIAS
+TAXONOMY_REFERENCE_BY_ALIAS: /@[a-zA-Z_][a-zA-Z0-9_]*/
+
+?taxonomy_constants: taxonomy_constant ("," taxonomy_constant)+
+taxonomy_constant: taxonomy_scalar
+
+?taxonomy_scalar: string | number

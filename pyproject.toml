@@ -4,7 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rmshared"
-version = "0.7.6"
+readme = "README.md"
+version = "0.9.6"
 authors = [
     {name = "CordiS", email = "cordis@rebelmouse.com"}
 ]
@@ -17,9 +18,28 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
 ]
 requires-python = ">=3.11"
+dependencies = [
+    "lark==1.2.2",
+    "orjson==3.10.1",
+    "aiohttp==3.10.11",
+    "enumclasses @ https://github.com/RebelMouseTeam/enumclasses/archive/refs/tags/v1.1.7.tar.gz"
+]
+
+[project.optional-dependencies]
+dev = [
+    "mock==5.1.0",
+    "faker==24.14.0",
+    "pytest==8.2.0",
+    "flake8==7.0.0"
+]
 
 [project.urls]
 Homepage = "https://github.com/RebelMouseTeam/rmshared"
 
-[tool.setuptools]
-packages = ["rmshared"]
+[tool.setuptools.packages.find]
+include = ["rmshared*"]
+exclude = ["*.tests.*"]
+
+[tool.setuptools.package-data]
+"rmshared.sql.parsing.lark" = ["*.lark"]
+"rmshared.content.taxonomy.sql.parsing.lark" = ["*.lark"]
