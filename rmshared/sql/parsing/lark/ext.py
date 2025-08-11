@@ -14,7 +14,7 @@ from lark.tree import Meta
 
 from rmshared.tools import group_to_mapping
 
-from rmshared.sql.parsing.lark import exceptions
+from rmshared.sql import exceptions
 
 T = TypeVar('T')
 
