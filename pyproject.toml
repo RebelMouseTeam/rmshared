@@ -42,3 +42,7 @@ packages = ["rmshared"]
 [tool.setuptools.packages.find]
 include = ["rmshared*"]
 exclude = ["*.tests.*"]
+
+[tool.setuptools.package-data]
+"rmshared.sql.parsing.lark" = ["*.lark"]
+"rmshared.content.taxonomy.sql.parsing.lark" = ["*.lark"]
