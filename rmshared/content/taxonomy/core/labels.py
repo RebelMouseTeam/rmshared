@@ -17,7 +17,7 @@ class Label(Generic[Field], metaclass=ABCMeta):
 
 @dataclass(frozen=True)
 @total_ordering
-class Value(Label[Field], Generic[Field, Scalar]):
+class Value(Label[Field], Generic[Field, Scalar]):  # TODO: Consider renaming to `Match` or `Exact` or `Equal`
     value: Scalar
 
 
