@@ -5,8 +5,8 @@ from ast import literal_eval
 from lark import Token
 from lark import visitors
 
-from rmshared.sql.parsing.lark.lark_ext import read_grammar
-from rmshared.sql.parsing.lark.lark_ext import visit_children
+from rmshared.sql.parsing.lark.ext import read_grammar
+from rmshared.sql.parsing.lark.ext import visit_children
 
 
 class Interpreter(visitors.Interpreter):
