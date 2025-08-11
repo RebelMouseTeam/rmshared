@@ -59,12 +59,3 @@ class Compacted(ITree):
 
     def compile(self):
         return self.decorator(self.delegate.compile)()
-
-
-class NewLineAfter(ITree):
-    def __init__(self, delegate: ITree):
-        self.delegate = delegate
-
-    def compile(self):
-        yield from self.delegate.compile()
-        yield '\n'
