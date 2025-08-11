@@ -1,3 +1,4 @@
+import inspect
 import os
 
 from collections.abc import Callable
@@ -30,8 +31,12 @@ __all__ = (
 )
 
 
-def read_grammar(filename: str) -> str:
-    with open(os.path.join(os.path.dirname(__file__), filename), 'r') as file:
+def read_grammar(filename: str, caller_file=None) -> str:
+    if caller_file is None:
+        caller_frame = inspect.stack()[1]
+        caller_file = caller_frame.filename
+
+    with open(os.path.join(os.path.dirname(caller_file), filename), 'r') as file:
         return file.read()
 
 
