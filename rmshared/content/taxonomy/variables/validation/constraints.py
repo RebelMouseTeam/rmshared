@@ -30,7 +30,7 @@ class SwitchFilter(IConstraint):
     def __init__(self, arguments_: IArguments, filter_: operators.Switch[core.filters.Filter]):
         self.arguments = arguments_
         self.filter = filter_
-        self.yield_to_validate_case_func: Mapping[Type[A], Callable[[O, R], None]] = ensure_map_is_complete(A, {
+        self.yield_to_validate_case_func: Mapping[Type[A], Callable[[O, R], None]] = ensure_map_is_complete(Argument, {
             arguments.Any: self._validate_any_yield_case,
             arguments.Empty: self._validate_empty_yield_case,
             arguments.Value: self._validate_value_yield_case,
