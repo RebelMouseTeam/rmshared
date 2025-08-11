@@ -89,26 +89,6 @@ class VariablesAreNotSupportedError(ValueError):
         super().__init__(f'Variables are not supported in this context')
 
 
-class VariableValuesOfDifferentTypesError(TypeError):
-    def __init__(self, types: Collection[type]):
-        super().__init__(f'Expected all variable values have the same type. Got: {", ".join(t.__name__ for t in types)}')
-        self.types = types
-
-
-class VariableAliasError(LookupError):
-    def __init__(self, alias: str, arguments: Collection[str] = ()):
-        super().__init__(f'Variable alias `{alias}` is not defined. Available aliases: {", ".join(arguments)}')
-        self.alias = alias
-        self.arguments = arguments
-
-
-class ArgumentIndexError(LookupError):
-    def __init__(self, index: int, arguments: int):
-        super().__init__(f'Argument index {index} is out of range (1-{arguments}')
-        self.index = index
-        self.arguments = arguments
-
-
 class ArgumentCanBeOptionalError(LookupError):
     def __init__(self, alias: str, yields: Collection[Any]):
         super().__init__(f'Argument `{alias}` can be optional. Yields: {", ".join(yields)}')
@@ -132,10 +112,4 @@ class ArgumentNotDefinedError(LookupError):
 class ArgumentNotFoundError(LookupError):
     def __init__(self, alias: str):
         super().__init__(f'Argument `{alias}` is not found in the current context')
-        self.alias = alias
-
-
-class ArgumentNotUsedError(LookupError):
-    def __init__(self, alias: str):
-        super().__init__(f'Argument `{alias}` is not used in the current context')
         self.alias = alias
