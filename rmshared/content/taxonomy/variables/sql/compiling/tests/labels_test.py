@@ -67,17 +67,36 @@ class TestLabels:
         case_6 = Mock()
         case_7 = Mock()
         case_8 = Mock()
+        case_9 = Mock()
         matcher = Mock()
 
         return_operator_1 = operators.Return(cases=[case_1])
         return_operator_2 = operators.Return(cases=[case_2])
-        switch_operator_1 = operators.Switch(ref=Reference(alias='var1'), cases={arguments.Value: operators.Return(cases=[case_3])})
-        switch_operator_2 = operators.Switch(ref=Reference(alias='var2'), cases={arguments.Any: operators.Return(cases=[case_4])})
+        switch_operator_1 = operators.Switch(ref=Reference(alias='var1'), cases={
+            arguments.Any: operators.Return(cases=[]),
+            arguments.Value: operators.Return(cases=[case_3]),
+        })
+        switch_operator_2 = operators.Switch(ref=Reference(alias='var2'), cases={
+            arguments.Any: operators.Return(cases=[case_4]),
+            arguments.Value: operators.Return(cases=[]),
+        })
         return_operator_3 = operators.Return(cases=[case_5])
         return_operator_4 = operators.Return(cases=[case_6])
-        switch_operator_3 = operators.Switch(ref=Reference(alias='var3'), cases={arguments.Value: operators.Return(cases=[case_7]), arguments.Any: operators.Return(cases=[])})
-        return_operator_5 = operators.Return(cases=[case_8])
-        labels_ = [return_operator_1, return_operator_2, switch_operator_1, switch_operator_2, return_operator_3, return_operator_4, switch_operator_3, return_operator_5]
+        switch_operator_3 = operators.Switch(ref=Reference(alias='var3'), cases={
+            arguments.Any: operators.Return(cases=[case_8]),
+            arguments.Value: operators.Return(cases=[case_7]),
+        })
+        return_operator_5 = operators.Return(cases=[case_9])
+        labels_ = [
+            return_operator_1,
+            return_operator_2,
+            switch_operator_1,
+            switch_operator_2,
+            return_operator_3,
+            return_operator_4,
+            switch_operator_3,
+            return_operator_5,
+        ]
         tree = labels.make_tree_from_labels(labels_, matcher)
         compiled = list(tree.compile())
 
@@ -87,8 +106,8 @@ class TestLabels:
             call([case_4], matcher),
             call((case_5, case_6), matcher),
             call([case_7], matcher),
-            call([], matcher),
-            call([case_8], matcher)
+            call([case_8], matcher),
+            call([case_9], matcher)
         ]
         assert compiled == [
             '(',

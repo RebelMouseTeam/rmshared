@@ -33,17 +33,23 @@ class TestOperators:
         compiled_1 = list(tree_1.compile())
 
         return_operator_2 = operators.Return(cases=[case_1])
-        switch_operator_2 = operators.Switch(ref=ref, cases={arguments.Value: return_operator_2})
+        return_operator_3 = operators.Return(cases=[])
+        switch_operator_2 = operators.Switch(ref=ref, cases={arguments.Value: return_operator_2, arguments.Any: return_operator_3})
         tree_2 = operators_.make_tree_from_operator(switch_operator_2, make_tree_from_cases_func)
         compiled_2 = list(tree_2.compile())
 
-        return_operator_3 = operators.Return(cases=[case_2])
-        return_operator_4 = operators.Return(cases=[case_1])
-        switch_operator_3 = operators.Switch(ref=ref, cases={arguments.Value: return_operator_3, arguments.Any: return_operator_4})
+        return_operator_4 = operators.Return(cases=[case_2])
+        return_operator_5 = operators.Return(cases=[case_1])
+        switch_operator_3 = operators.Switch(ref=ref, cases={arguments.Value: return_operator_4, arguments.Any: return_operator_5})
         tree_3 = operators_.make_tree_from_operator(switch_operator_3, make_tree_from_cases_func)
         compiled_3 = list(tree_3.compile())
 
-        assert make_tree_from_cases_func.call_args_list == [call([case_1, case_2]), call([case_1]), call([case_2]), call([case_1])]
+        assert make_tree_from_cases_func.call_args_list == [
+            call([case_1, case_2]),
+            call([case_1]),
+            call([case_2]),
+            call([case_1])
+        ]
         assert compiled_1 == ['compiled_cases', 'IF', '@test_ref', 'IS NULL']
         assert compiled_2 == ['compiled_cases', 'IF', '@test_ref', 'IS NOT NULL']
         assert compiled_3 == ['compiled_cases', 'IF', '@test_ref', 'IS NOT NULL', 'OTHERWISE', 'compiled_cases']
