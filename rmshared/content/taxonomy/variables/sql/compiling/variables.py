@@ -7,7 +7,7 @@ from rmshared.content.taxonomy.variables.sql.compiling.abc import IVariables
 
 
 class Variables(IVariables):
-    REFERENCE_BY_INDEX_REGEXP = re.compile(r'^\$\d+$')
+    REFERENCE_BY_INDEX_REGEXP = re.compile(r'^\$(\d+)$')
 
     def make_tree_from_reference(self, reference: Reference):
         if match := self.REFERENCE_BY_INDEX_REGEXP.match(reference.alias):
