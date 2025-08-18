@@ -52,7 +52,7 @@ class VisitTreeWrapper(WrapperProtocol, Generic[T]):
         except exceptions.InterpreterError:
             raise
         except Exception as e:
-            raise exceptions.InterpreterError(rule, meta.line, meta.column, original=e) from e
+            raise exceptions.InterpreterError(rule, meta.line, meta.column, meta.end_line, meta.end_column, original=e) from e
 
 
 class VisitChildrenWrapper(WrapperProtocol, Generic[T]):
@@ -65,7 +65,7 @@ class VisitChildrenWrapper(WrapperProtocol, Generic[T]):
         except exceptions.InterpreterError:
             raise
         except Exception as e:
-            raise exceptions.InterpreterError(rule, meta.line, meta.column, original=e) from e
+            raise exceptions.InterpreterError(rule, meta.line, meta.column, meta.end_line, meta.end_column, original=e) from e
 
 
 visit_tree = v_args(wrapper=VisitTreeWrapper())
@@ -85,7 +85,7 @@ class GroupRulesWrapper(WrapperProtocol, Generic[T]):
         except exceptions.InterpreterError:
             raise
         except Exception as e:
-            raise exceptions.InterpreterError(rule, meta.line, meta.column, original=e) from e
+            raise exceptions.InterpreterError(rule, meta.line, meta.column, meta.end_line, meta.end_column, original=e) from e
 
     def _group_children_by_rules(self, children: Sequence[Tree | Token]) -> Iterator[Sequence[Tree] | Sequence[Token]]:
         rule_to_children_map = group_to_mapping(children, key_func=self._get_rule_name_or_token_type)
