@@ -2,6 +2,7 @@ __all__ = (
     'Interpreter',
 
     'read_grammar',
+    'read_grammar_lazy',
 
     'visit_none',
     'visit_tree',
@@ -13,6 +14,7 @@ __all__ = (
 )
 
 from rmshared.sql.parsing.lark.ext import read_grammar
+from rmshared.sql.parsing.lark.ext import read_grammar_lazy
 from rmshared.sql.parsing.lark.ext import visit_none
 from rmshared.sql.parsing.lark.ext import visit_tree
 from rmshared.sql.parsing.lark.ext import visit_rules
