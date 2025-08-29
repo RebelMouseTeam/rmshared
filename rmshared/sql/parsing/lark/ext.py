@@ -44,7 +44,7 @@ def read_grammar_lazy(filename: str, caller_file=None) -> LazyGrammar:
 
 def _find_file(filename: str, caller_file: str = None) -> str:
     if caller_file is None:
-        caller_frame = inspect.stack()[1]
+        caller_frame = inspect.stack()[2]
         caller_file = caller_frame.filename
 
     return os.path.join(os.path.dirname(caller_file), filename)
