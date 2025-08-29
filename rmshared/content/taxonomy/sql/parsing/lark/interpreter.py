@@ -39,7 +39,7 @@ V = TypeVar('V')
 
 
 class Interpreter(visitors.Interpreter, ContextManager):
-    GRAMMAR = sql.parsing.lark.read_grammar('grammar.lark')  # TODO: Decouple from Shared.GRAMMAR
+    GRAMMAR = sql.parsing.lark.read_grammar_lazy('grammar.lark')  # TODO: Decouple from Shared.GRAMMAR
 
     @sql.parsing.lark.visit_children
     def taxonomy_id_field(self, taxonomy_id_field: Token) -> core.fields.Field:

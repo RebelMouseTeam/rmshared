@@ -5,12 +5,12 @@ from ast import literal_eval
 from lark import Token
 from lark import visitors
 
-from rmshared.sql.parsing.lark.ext import read_grammar
+from rmshared.sql.parsing.lark.ext import read_grammar_lazy
 from rmshared.sql.parsing.lark.ext import visit_children
 
 
 class Interpreter(visitors.Interpreter):
-    GRAMMAR = read_grammar('grammar.lark')
+    GRAMMAR = read_grammar_lazy('grammar.lark')
 
     @staticmethod
     @visit_children
