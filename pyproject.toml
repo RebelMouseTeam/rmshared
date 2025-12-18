@@ -20,7 +20,7 @@ classifiers = [
 requires-python = ">=3.11"
 dependencies = [
     "lark==1.2.2",
-    "orjson==3.10.1",
+    "orjson>=3.10,<3.12",
     "aiohttp==3.10.11",
     "enumclasses @ https://github.com/RebelMouseTeam/enumclasses/archive/refs/tags/v1.1.7.tar.gz"
 ]
