@@ -15,11 +15,13 @@ from lark.tree import Meta
 from rmshared.tools import group_to_mapping
 
 from rmshared.sql import exceptions
+from rmshared.sql.parsing.lark.lazy import LazyGrammar
 
 T = TypeVar('T')
 
 __all__ = (
     'read_grammar',
+    'read_grammar_lazy',
 
     'visit_tree',
     'visit_none',
@@ -32,12 +34,20 @@ __all__ = (
 
 
 def read_grammar(filename: str, caller_file=None) -> str:
+    with open(_find_file(filename, caller_file), 'r') as file:
+        return file.read()
+
+
+def read_grammar_lazy(filename: str, caller_file=None) -> LazyGrammar:
+    return LazyGrammar(filename=_find_file(filename, caller_file))
+
+
+def _find_file(filename: str, caller_file: str = None) -> str:
     if caller_file is None:
-        caller_frame = inspect.stack()[1]
+        caller_frame = inspect.stack()[2]
         caller_file = caller_frame.filename
 
-    with open(os.path.join(os.path.dirname(caller_file), filename), 'r') as file:
-        return file.read()
+    return os.path.join(os.path.dirname(caller_file), filename)
 
 
 class WrapperProtocol(Callable):
@@ -52,7 +62,7 @@ class VisitTreeWrapper(WrapperProtocol, Generic[T]):
         except exceptions.InterpreterError:
             raise
         except Exception as e:
-            raise exceptions.InterpreterError(rule, meta.line, meta.column, original=e) from e
+            raise exceptions.InterpreterError(rule, meta.line, meta.column, meta.end_line, meta.end_column, original=e) from e
 
 
 class VisitChildrenWrapper(WrapperProtocol, Generic[T]):
@@ -65,7 +75,7 @@ class VisitChildrenWrapper(WrapperProtocol, Generic[T]):
         except exceptions.InterpreterError:
             raise
         except Exception as e:
-            raise exceptions.InterpreterError(rule, meta.line, meta.column, original=e) from e
+            raise exceptions.InterpreterError(rule, meta.line, meta.column, meta.end_line, meta.end_column, original=e) from e
 
 
 visit_tree = v_args(wrapper=VisitTreeWrapper())
@@ -85,7 +95,7 @@ class GroupRulesWrapper(WrapperProtocol, Generic[T]):
         except exceptions.InterpreterError:
             raise
         except Exception as e:
-            raise exceptions.InterpreterError(rule, meta.line, meta.column, original=e) from e
+            raise exceptions.InterpreterError(rule, meta.line, meta.column, meta.end_line, meta.end_column, original=e) from e
 
     def _group_children_by_rules(self, children: Sequence[Tree | Token]) -> Iterator[Sequence[Tree] | Sequence[Token]]:
         rule_to_children_map = group_to_mapping(children, key_func=self._get_rule_name_or_token_type)

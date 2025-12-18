@@ -1,5 +1,3 @@
-from unittest.mock import Mock
-
 from lark import Token
 from pytest import fixture
 
@@ -66,4 +64,3 @@ class TestInterpreter:
         result = Interpreter.number(token)
         assert result == 0.0
         assert isinstance(result, float)
-
