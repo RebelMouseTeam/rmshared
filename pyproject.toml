@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools >= 42.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
 
 [project]
 name = "rmshared"
 readme = "README.md"
-version = "0.9.15"
+dynamic = ["version"]
 authors = [
     {name = "CordiS", email = "cordis@rebelmouse.com"}
 ]
@@ -36,10 +36,15 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/RebelMouseTeam/rmshared"
 
-[tool.setuptools.packages.find]
-include = ["rmshared*"]
-exclude = ["*.tests.*"]
+[tool.hatch.metadata]
+allow-direct-references = true
 
-[tool.setuptools.package-data]
-"rmshared.sql.parsing.lark" = ["*.lark"]
-"rmshared.content.taxonomy.sql.parsing.lark" = ["*.lark"]
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+fallback-version = "0.0.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["rmshared"]
+exclude = ["rmshared/**/tests"]
