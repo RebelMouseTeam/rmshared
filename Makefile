@@ -2,12 +2,12 @@ OK_COLOR=\033[32;01m
 NO_COLOR=\033[0m
 
 export PYTHONPATH:=${PWD}
-version=`python -c 'import rmshared; print(rmshared.__version__)'`
-filename=rmshared-`python -c 'import rmshared; print(rmshared.__version__)'`.tar.gz
+version=`python3 -c 'import rmshared; print(rmshared.__version__)'`
+filename=rmshared-`python3 -c 'import rmshared; print(rmshared.__version__)'`.tar.gz
 
 lint:
 	@echo "$(OK_COLOR)==> Linting code ...$(NO_COLOR)"
-	@flake8 --exclude=tests --max-line-length=160 --ignore=F541,E741 .
+	@flake8 --exclude=tests,.venv --max-line-length=160 --ignore=F541,E741 .
 
 test: clean lint
 	@echo "$(OK_COLOR)==> Running tests ...$(NO_COLOR)"
@@ -31,7 +31,7 @@ clean:
 
 publish:
 	@echo "$(OK_COLOR)==> Releasing package ...$(NO_COLOR)"
-	@python -m build
+	@python3 -m build
 	@twine upload dist/*
 	@rm -fr build dist *.egg-info
 
