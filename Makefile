@@ -31,9 +31,9 @@ clean:
 
 publish:
 	@echo "$(OK_COLOR)==> Releasing package ...$(NO_COLOR)"
-	@python setup.py sdist bdist_wheel
+	@python -m build
 	@twine upload dist/*
-	@rm -fr build dist .egg pook.egg-info
+	@rm -fr build dist *.egg-info
 
 install-dependencies:
 	@echo "$(OK_COLOR)==> Installing development dependencies ...$(NO_COLOR)"
